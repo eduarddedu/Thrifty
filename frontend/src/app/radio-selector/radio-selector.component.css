@@ -1,0 +1,22 @@
+.app-radio-label {
+	display: inline-block;
+	margin: 2px;
+	color: white;
+	background-color: rgba(0, 80, 80, 0.5);
+	font-weight: 400;
+	line-height: 2;
+	border-radius: 8px;
+	padding: 2px 6px;
+}
+
+.app-radio-label:hover {
+	cursor: pointer;
+}
+
+.app-radio-label span {
+	user-select: none;
+}
+
+.checked {
+   background-color: rgba(0, 80, 80, 0.7);
+}

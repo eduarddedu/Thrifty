@@ -1,0 +1,31 @@
+<!-- Sidebar -->
+<div class="sidebar-nav navbar-collapse">
+    <ul class="nav in" id="side-menu">
+        <li>
+        	<a [routerLink]="['/account']"> Account </a>
+        </li>
+        <li>
+	        <a href="#"><i class="fas fa-chart-pie"></i> Categories <span class="fa arrow"></span></a>
+	        <ul class="nav nav-second-level">
+	            <li *ngFor="let link of links">
+	            	<a [routerLink]="['/category', link.id]">{{ link.name }}</a>
+	            </li>
+	        </ul>
+        </li>
+        <li>
+	        <a href="#"><i class="glyphicon glyphicon-plus-sign"></i> New<span class="fa arrow"></span></a>
+	        <ul class="nav nav-second-level">
+				<li><a [routerLink]="['/new/expense']" [queryParams]="{categoryId: -1}"> Expense</a></li>
+				<li><a [routerLink]="['/new/category']"> Category</a></li>
+				<li><a [routerLink]="['/new/label']"> Label</a></li>
+	        </ul>
+        </li>
+        <li>
+	        <a href="#"><i class="fa fa-edit fa-fw"></i> Update<span class="fa arrow"></span></a>
+	        <ul class="nav nav-second-level">
+	        	<li><a [routerLink]="['/update/labels']"> Labels</a></li>
+	        	<li><a [routerLink]="['/update/categories']"> Categories</a></li>
+	        </ul>
+	    </li>
+    </ul>
+</div>

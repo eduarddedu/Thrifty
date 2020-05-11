@@ -1,0 +1,35 @@
+<app-modal [display]="showModal" [message]="modalMessage" (confirm)="onConfirmDelete()"></app-modal>
+<div class="container-fluid">
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <div *ngIf="showNotification">
+                <app-notification [message]="notificationMessage"></app-notification>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="showForm">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="text-muted"> {{formTitle}}</h3>
+                </div>
+                <div class="panel-body" *ngIf="showForm">
+                    <div class="col-lg-6">
+                        <app-radio-selector [options]="radioOptions" [singleSelectMode]="true" (click$)="onClickOption($event)"></app-radio-selector>
+                    </div>
+                    <div  class="col-lg-6">
+                        <h4 class="text-muted">Pick action</h4>
+                        <app-dropdown-selector [options]="actions" (selectEvent)="setFormAction($event)"></app-dropdown-selector>
+                    </div>
+                    <div class="col-lg-12">
+                        <br>
+                        <button type="button" [disabled]="!goButtonEnabled()" class="btn btn-primary btn-block" (click)="handleSelectedAction()">
+                            Go
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
