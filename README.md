@@ -1,2 +1,3 @@
-###Build a module
-mvn -pl backend install
+###Run app 
+
+    mvn -pl backend spring-boot:run
