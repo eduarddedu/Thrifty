@@ -41,6 +41,7 @@
     </dependencies>
 
     <build>
+        <finalName>mythrifty</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -81,5 +82,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>wildfly</id>
+            <dependencies>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>
