@@ -1,15 +1,14 @@
-###Run app 
+Serve app 
 
-    mvn -pl backend spring-boot:run
+
+    mvn -pl backend -P dev spring-boot:run
     
-###Deploy to Wildfly server running locally
+Deploy to WildFly server running on localhost
 
-    mvn -pl backend -P deploy wildfly:deploy
+
+    mvn -pl backend -P dev wildfly:deploy
     
-###Redeploy
+Deploy the _production_ version of the app to the WildFly server running on codecritique.org
 
-    mvn -pl backend -P deploy wildfly:redeploy
-    
-###Deploy to production server
 
-    $ ssh -L 9990:localhost:9990 root@hostname
+    $ mvn -pl backend -P prod wildfly:deploy
