@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HelloController extends BaseController {
+public class ExpensesController extends BaseController {
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/greeting")
+    @RequestMapping("/expenses")
     public String greeting(@RequestParam(value="name", defaultValue="World") String name) {
         return "Hello";
     }
