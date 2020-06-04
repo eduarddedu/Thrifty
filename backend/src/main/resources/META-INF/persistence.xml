@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd" version="2.2">
+    <persistence-unit name="thriftyPersistenceUnit" transaction-type="JTA">
+        <description>
+            Thrifty application persistence unit
+        </description>
+        <class>org.codecritique.thrifty.entity.Expense</class>
+        <class>org.codecritique.thrifty.entity.Label</class>
+        <class>org.codecritique.thrifty.entity.Category</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/thrifty?serverTimezone=UTC"/>
+            <property name="javax.persistence.jdbc.user" value="thrifty"/>
+            <property name="javax.persistence.jdbc.password" value="H[4;fJ./4VXu"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.ddl-auto" value="none"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.jdbc.time_zone" value="UTC"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </properties>
+    </persistence-unit>
+</persistence>

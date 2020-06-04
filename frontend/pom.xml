@@ -8,7 +8,7 @@
   <artifactId>frontend</artifactId>
   <name>frontend</name>
   <packaging>pom</packaging>
-  <description>Web component of Thrifty, a personal budget app</description>
+  <description>Thrifty project - frontend</description>
   <url>https://thrifty.codecritique.org</url>
 
   <parent>
