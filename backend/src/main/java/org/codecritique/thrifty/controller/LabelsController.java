@@ -6,16 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @RestController
 @RequestMapping("/rest-api/labels")
-public class LabelsController {
-    @PersistenceContext
-    EntityManager em;
+public class LabelsController extends BaseController {
 
     @GetMapping
     public List<Label> getAllLabels() {
