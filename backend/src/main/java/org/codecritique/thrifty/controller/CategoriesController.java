@@ -1,7 +1,8 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.dao.CategoryServiceBean;
 import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +14,17 @@ import java.util.List;
 @RequestMapping("/rest-api/categories")
 public class CategoriesController extends BaseController {
 
+    @Autowired
+    CategoryServiceBean categoryServiceBean;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Category> getAllCategories() {
-        return em.createQuery("select e from Category e order by e.name", Category.class).getResultList();
+    public List<Category> getCategories() {
+        return categoryServiceBean.getCategories();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Category getCategoryById(@PathVariable int id) {
-        return em.find(Category.class, id);
+        return categoryServiceBean.getCategoryById(id);
     }
 }
