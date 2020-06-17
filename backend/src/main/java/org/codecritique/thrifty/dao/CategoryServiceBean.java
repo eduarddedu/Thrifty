@@ -6,10 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CategoryServiceBean extends AbstractServiceBean {
+public class CategoryServiceBean extends BaseServiceBean {
 
     public List<Category> getCategories() {
-        return em.createQuery("Select r from Category r Order by r.name", Category.class)
+        String sql = "Select r from Category r Order by r.name";
+        return em.createQuery(sql, Category.class)
                 .getResultList();
     }
 

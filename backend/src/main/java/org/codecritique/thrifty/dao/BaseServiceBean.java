@@ -9,10 +9,10 @@ import javax.persistence.EntityManagerFactory;
 
 
 @Configuration
-public class AbstractServiceBean {
-    protected static EntityManager em;
+public abstract class BaseServiceBean {
+    protected EntityManager em;
 
-    static {
+    BaseServiceBean() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         EntityManagerFactory emf = context.getBean(EntityManagerFactory.class);
         em = emf.createEntityManager();

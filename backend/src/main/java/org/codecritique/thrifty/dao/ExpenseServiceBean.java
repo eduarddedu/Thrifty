@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ExpenseServiceBean extends AbstractServiceBean {
+public class ExpenseServiceBean extends BaseServiceBean {
 
     public List<Expense> getExpenses() {
-        String sql = "Select c from Expense c Order By c.createdOn";
+        String sql = "Select r from Expense r Order By r.createdOn";
         return em.createQuery(sql, Expense.class).getResultList();
     }
 
