@@ -9,21 +9,18 @@ import java.util.List;
 public class LabelServiceBean extends BaseEntityService implements LabelService {
 
     @Override
-    public void addEntity(Label label) {
-
+    public void addLabel(Label label) {
         super.addEntity(label);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Label> getLabelsSortedByName() {
-
-        return (List<Label>) super.getEntitiesSortedByName(Label.class);
+    public List<Label> getLabels() {
+        return super.getEntitiesSortedByName(Label.class);
     }
 
     @Override
     public Label getLabel(int id) {
-        return this.getEntity(Label.class, id);
+        return em.find(Label.class, id);
     }
 
     @Override

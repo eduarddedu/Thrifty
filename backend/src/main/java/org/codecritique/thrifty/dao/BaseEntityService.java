@@ -16,29 +16,30 @@ public abstract class BaseEntityService {
 
     BaseEntityService() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        EntityManagerFactory emf = context.getBean(EntityManagerFactory.class);
-        em = emf.createEntityManager();
+        em = context.getBean(EntityManagerFactory.class).createEntityManager();
     }
 
-    protected  <T extends BaseEntity> void addEntity(T o) {
+    protected <T extends BaseEntity> void addEntity(T o) {
         em.getTransaction().begin();
         em.persist(o);
         em.getTransaction().commit();
     }
 
-    protected <T extends BaseEntity> T getEntity(Class<T> klazz, int id) {
-        return em.find(klazz, id);
-    }
-
-    protected void removeEntity(Class<?> entityClass, int id) {
+    protected void removeEntity(Class<? extends BaseEntity> entityClass, int id) {
         em.getTransaction().begin();
         em.remove(em.find(entityClass, id));
         em.getTransaction().commit();
     }
 
-    protected <T extends BaseEntity> List<? extends T> getEntitiesSortedByName(Class<T> klazz) {
-        String table = klazz.getSimpleName();
+    protected <T extends BaseEntity> List<T> getEntitiesSortedByName(Class<T> entityClass) {
+        String table = entityClass.getSimpleName();
         String sql = "Select r from " + table + " r Order by r.name ";
-        return em.createQuery(sql, klazz).getResultList();
+        return em.createQuery(sql, entityClass).getResultList();
+    }
+
+    protected <T extends BaseEntity> List<T> getEntities(Class<T> entityClass) {
+        String table = entityClass.getSimpleName();
+        String sql = "Select r from " + table + " r";
+        return em.createQuery(sql, entityClass).getResultList();
     }
 }

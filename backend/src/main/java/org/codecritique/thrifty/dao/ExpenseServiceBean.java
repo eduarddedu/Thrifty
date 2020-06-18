@@ -3,7 +3,6 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Component
@@ -11,7 +10,7 @@ public class ExpenseServiceBean extends BaseEntityService implements ExpenseServ
 
     @Override
     public void addExpense(Expense o) {
-        this.addEntity(o);
+        super.addEntity(o);
     }
 
     @Override
@@ -20,13 +19,12 @@ public class ExpenseServiceBean extends BaseEntityService implements ExpenseServ
     }
 
     @Override
-    public List<Expense> getExpensesSortedByName() {
-        String s = "Select r from Expense r Order By r.createdOn";
-        return em.createQuery(s, Expense.class).getResultList();
+    public List<Expense> getExpenses() {
+        return super.getEntities(Expense.class);
     }
 
     @Override
     public void removeExpense(int id) {
-        this.removeEntity(Expense.class, id);
+        super.removeEntity(Expense.class, id);
     }
 }

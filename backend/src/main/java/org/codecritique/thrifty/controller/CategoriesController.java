@@ -19,7 +19,7 @@ public class CategoriesController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Category> getCategories() {
-        return categoryServiceBean.getCategoriesSortedByName();
+        return categoryServiceBean.getCategories();
     }
 
     @GetMapping(path = "{id}",

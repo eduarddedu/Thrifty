@@ -40,12 +40,12 @@ class CategoryServiceBeanTest {
             list.add(o);
             service.addCategory(o);
         }
-        assertEquals(list.size(), service.getCategoriesSortedByName().size());
-        assertEquals(list, service.getCategoriesSortedByName());
+        assertEquals(list.size(), service.getCategories().size());
+        assertEquals(list, service.getCategories());
     }
 
     @AfterAll
     void removeAll() {
-        service.getCategoriesSortedByName().forEach(category -> service.removeCategory(category.getId()));
+        service.getCategories().forEach(category -> service.removeCategory(category.getId()));
     }
 }

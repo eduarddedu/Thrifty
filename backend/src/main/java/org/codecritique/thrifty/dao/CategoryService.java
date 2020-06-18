@@ -8,6 +8,6 @@ public interface CategoryService {
 
     void addCategory(Category o);
     Category getCategory(int id);
-    List<Category> getCategoriesSortedByName();
+    List<Category> getCategories();
     void removeCategory(int id);
 }

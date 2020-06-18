@@ -20,16 +20,14 @@ public class Expense extends BaseEntity {
     @NotNull
     private Double amount;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "Expense_Label",
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "Expense_Label",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "Expense_Category",
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "Expense_Category",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;

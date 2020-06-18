@@ -24,36 +24,38 @@ class LabelServiceBeanTest {
 
     @Test
     void testAddGetLabels() {
-        Label label = new Label();
-        label.setName("Cash");
-        service.addEntity(label);
+        Label label = getLabel("Cash");
+        service.addLabel(label);
         assertEquals(label, service.getLabel(label.getId()));
+    }
+
+    private Label getLabel(String name) {
+        Label label = new Label();
+        label.setName(name);
+        return label;
     }
 
     @Test
     void testGetLabelsSortedByName() {
         List<Label> list = new ArrayList<>();
-        String [] arr = {"A", "B", "C"};
+        String [] arr = {"C", "A", "B"};
         for(int i = 0; i < 3; i++) {
-            Label o = new Label();
-            o.setName(arr[i]);
-            list.add(o);
-            service.addEntity(o);
+            Label label = getLabel(arr[i]);
+            list.add(label);
+            service.addLabel(label);
         }
-        assertEquals(list.size(), service.getLabelsSortedByName().size());
-        assertEquals(list, service.getLabelsSortedByName());
+        assertEquals(list.get(0), service.getLabels().get(2));
     }
 
     @AfterAll
     void removeAll() {
-        service.getLabelsSortedByName().forEach(label -> service.removeLabel(label.getId()));
+        service.getLabels().forEach(label -> service.removeLabel(label.getId()));
     }
 
     @Test
     void testRemoveLabel() {
-        Label label = new Label();
-        label.setName("Rent");
-        service.addEntity(label);
+        Label label = getLabel("Rent");
+        service.addLabel(label);
         service.removeLabel(label.getId());
         assertNull(service.getLabel(label.getId()));
     }

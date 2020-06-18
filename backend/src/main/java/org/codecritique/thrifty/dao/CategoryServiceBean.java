@@ -15,13 +15,12 @@ public class CategoryServiceBean extends BaseEntityService implements CategorySe
 
     @Override
     public Category getCategory(int id) {
-        return super.getEntity(Category.class, id);
+        return em.find(Category.class, id);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Category> getCategoriesSortedByName() {
-        return (List<Category>) super.getEntitiesSortedByName(Category.class);
+    public List<Category> getCategories() {
+        return super.getEntitiesSortedByName(Category.class);
     }
 
     @Override
