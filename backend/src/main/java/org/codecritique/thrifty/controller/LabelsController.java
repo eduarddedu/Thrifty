@@ -18,12 +18,12 @@ public class LabelsController extends BaseController {
 
     @GetMapping
     public List<Label> getLabels() {
-        return labelServiceBean.getLabels();
+        return labelServiceBean.getLabelsOrderByName();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Label getLabelById(@PathVariable int id) {
-        return labelServiceBean.getLabelById(id);
+        return labelServiceBean.getLabel(id);
     }
 }
