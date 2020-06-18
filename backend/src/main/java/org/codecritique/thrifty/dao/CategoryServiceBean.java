@@ -6,30 +6,26 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CategoryServiceBean extends BaseService implements CategoryService {
+public class CategoryServiceBean extends BaseEntityService implements CategoryService {
 
     @Override
     public void addCategory(Category o) {
-        em.getTransaction().begin();
-        em.persist(o);
-        em.getTransaction().commit();
+        super.addEntity(o);
     }
 
     @Override
     public Category getCategory(int id) {
-        return em.find(Category.class, id);
+        return super.getEntity(Category.class, id);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Category> getCategoriesSortedByName() {
-        String s = "Select r from Category r Order by r.name";
-        return em.createQuery(s, Category.class).getResultList();
+        return (List<Category>) super.getEntitiesSortedByName(Category.class);
     }
 
     @Override
     public void removeCategory(int id) {
-        em.getTransaction().begin();
-        em.remove(em.find(Category.class, id));
-        em.getTransaction().commit();
+        super.removeEntity(Category.class, id);
     }
 }

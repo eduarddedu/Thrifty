@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface LabelService {
 
-    void addLabel(Label label);
+    void addEntity(Label label);
     Label getLabel(int id);
-    List<Label> getLabelsOrderByName();
+    List<Label> getLabelsSortedByName();
     void removeLabel(int id);
 }

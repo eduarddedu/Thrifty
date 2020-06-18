@@ -18,7 +18,7 @@ public class LabelsController extends BaseController {
 
     @GetMapping
     public List<Label> getLabels() {
-        return labelServiceBean.getLabelsOrderByName();
+        return labelServiceBean.getLabelsSortedByName();
     }
 
     @GetMapping(path = "{id}",

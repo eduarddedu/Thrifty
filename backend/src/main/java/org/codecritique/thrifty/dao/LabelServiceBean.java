@@ -6,30 +6,28 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class LabelServiceBean extends BaseService implements LabelService {
+public class LabelServiceBean extends BaseEntityService implements LabelService {
 
     @Override
-    public void addLabel(Label label) {
-        em.getTransaction().begin();
-        em.persist(label);
-        em.getTransaction().commit();
+    public void addEntity(Label label) {
+
+        super.addEntity(label);
     }
 
     @Override
-    public List<Label> getLabelsOrderByName() {
-        String s = "Select r from Label r Order by r.name";
-        return em.createQuery(s, Label.class).getResultList();
+    @SuppressWarnings("unchecked")
+    public List<Label> getLabelsSortedByName() {
+
+        return (List<Label>) super.getEntitiesSortedByName(Label.class);
     }
 
     @Override
     public Label getLabel(int id) {
-        return em.find(Label.class, id);
+        return this.getEntity(Label.class, id);
     }
 
     @Override
     public void removeLabel(int id) {
-        em.getTransaction().begin();
-        em.remove(em.find(Label.class, id));
-        em.getTransaction().commit();
+        super.removeEntity(Label.class, id);
     }
 }

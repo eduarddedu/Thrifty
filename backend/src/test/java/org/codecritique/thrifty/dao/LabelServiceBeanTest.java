@@ -26,7 +26,7 @@ class LabelServiceBeanTest {
     void testAddGetLabels() {
         Label label = new Label();
         label.setName("Cash");
-        service.addLabel(label);
+        service.addEntity(label);
         assertEquals(label, service.getLabel(label.getId()));
     }
 
@@ -38,22 +38,22 @@ class LabelServiceBeanTest {
             Label o = new Label();
             o.setName(arr[i]);
             list.add(o);
-            service.addLabel(o);
+            service.addEntity(o);
         }
-        assertEquals(list.size(), service.getLabelsOrderByName().size());
-        assertEquals(list, service.getLabelsOrderByName());
+        assertEquals(list.size(), service.getLabelsSortedByName().size());
+        assertEquals(list, service.getLabelsSortedByName());
     }
 
     @AfterAll
     void removeAll() {
-        service.getLabelsOrderByName().forEach(label -> service.removeLabel(label.getId()));
+        service.getLabelsSortedByName().forEach(label -> service.removeLabel(label.getId()));
     }
 
     @Test
     void testRemoveLabel() {
         Label label = new Label();
         label.setName("Rent");
-        service.addLabel(label);
+        service.addEntity(label);
         service.removeLabel(label.getId());
         assertNull(service.getLabel(label.getId()));
     }

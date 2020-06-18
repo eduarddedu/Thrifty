@@ -20,13 +20,13 @@ public class ExpensesController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Expense> getExpenses() {
-        return expenseServiceBean.getExpenses();
+        return expenseServiceBean.getExpensesSortedByName();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Expense getExpenseById(@PathVariable int id) {
-        return expenseServiceBean.getExpenseById(id);
+        return expenseServiceBean.getExpense(id);
     }
 
 }

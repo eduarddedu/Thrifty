@@ -7,14 +7,26 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ExpenseServiceBean extends BaseService {
+public class ExpenseServiceBean extends BaseEntityService implements ExpenseService {
 
-    public List<Expense> getExpenses() {
+    @Override
+    public void addExpense(Expense o) {
+        this.addEntity(o);
+    }
+
+    @Override
+    public Expense getExpense(int id) {
+        return em.find(Expense.class, id);
+    }
+
+    @Override
+    public List<Expense> getExpensesSortedByName() {
         String s = "Select r from Expense r Order By r.createdOn";
         return em.createQuery(s, Expense.class).getResultList();
     }
 
-    public Expense getExpenseById(int id) {
-        return em.find(Expense.class, id);
+    @Override
+    public void removeExpense(int id) {
+        this.removeEntity(Expense.class, id);
     }
 }
