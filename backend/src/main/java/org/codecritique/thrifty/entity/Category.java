@@ -61,4 +61,11 @@ public class Category extends BaseEntity {
         return "Category[" + id + "]";
     }
 
+    public static Category getInstance(String name, String description) {
+        Category instance = new Category();
+        instance.setName(name);
+        instance.setDescription(description);
+        return instance;
+    }
+
 }
