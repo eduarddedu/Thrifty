@@ -1,11 +1,12 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Category;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+import org.codecritique.thrifty.entity.Category;
+
+@Service
 public class CategoryServiceBean extends BaseEntityService implements CategoryService {
 
     @Override

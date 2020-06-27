@@ -1,11 +1,12 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Label;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+import org.codecritique.thrifty.entity.Label;
+
+@Service
 public class LabelServiceBean extends BaseEntityService implements LabelService {
 
     @Override

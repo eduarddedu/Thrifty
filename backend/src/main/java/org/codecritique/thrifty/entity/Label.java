@@ -2,13 +2,16 @@ package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name="Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+@Table(name = "Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Label extends BaseEntity {
 
     @NotNull

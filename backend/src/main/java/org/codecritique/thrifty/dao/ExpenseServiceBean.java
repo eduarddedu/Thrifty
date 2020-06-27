@@ -1,12 +1,12 @@
 package org.codecritique.thrifty.dao;
 
-
-import org.codecritique.thrifty.entity.Expense;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+import org.codecritique.thrifty.entity.Expense;
+
+@Service
 public class ExpenseServiceBean extends BaseEntityService implements ExpenseService {
 
     @Override
