@@ -1,6 +1,5 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Label;
 import org.springframework.stereotype.Component;
 
