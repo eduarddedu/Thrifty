@@ -8,7 +8,7 @@ import java.util.*;
 
 
 @Entity
-@Table(name = "Category")
+@Table(name = "Category", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Category extends BaseEntity {
 
     @NotNull
@@ -17,7 +17,7 @@ public class Category extends BaseEntity {
     @NotNull
     private String description;
 
-    @ManyToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "category")
     private Set<Expense> expenses;
 
     @JsonIgnore

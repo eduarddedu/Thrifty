@@ -10,15 +10,19 @@ import java.util.Set;
 @Entity
 @Table(name = "Expense")
 public class Expense extends BaseEntity {
-
     @NotNull
     private LocalDate createdOn;
-
     @NotNull
     private String description;
-
     @NotNull
     private Double amount;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "Expense_Category",
+            joinColumns = @JoinColumn(name = "expense_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Category category;
+
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "Expense_Label",
@@ -26,18 +30,12 @@ public class Expense extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "Expense_Category",
-            joinColumns = @JoinColumn(name = "expense_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
-
-    public Set<Category> getCategories() {
-        return categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public LocalDate getCreatedOn() {
@@ -74,10 +72,6 @@ public class Expense extends BaseEntity {
 
     public void removeLabel(Label label) {
         labels.remove(label);
-    }
-
-    public void removeCategory(Category category) {
-        categories.remove(category);
     }
 
     @Override

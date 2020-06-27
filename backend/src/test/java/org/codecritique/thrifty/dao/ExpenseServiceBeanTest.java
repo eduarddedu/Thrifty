@@ -3,7 +3,6 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -20,32 +19,30 @@ import java.util.HashSet;
 @SpringBootTest(classes = org.codecritique.thrifty.Application.class)
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ExpenseServiceBeanTest {
+class ExpenseServiceBeanTest extends BaseServiceBeanTest  {
     @Autowired
     ExpenseServiceBean service;
 
     @Test
     void testAddExpense() {
-        service.addExpense(getInstance());
+        service.addExpense(getExpense());
     }
 
     @Test
     void testGetExpense() {
-        Expense expense = getInstance();
+        Expense expense = getExpense();
         service.addExpense(expense);
         assertEquals(1, service.getExpenses().size());
         assertEquals(expense, service.getExpense(expense.getId()));
     }
 
-    private static Expense getInstance() {
-        Label label = Label.getInstance("Foo");
-        Category category = Category.getInstance("A", "Description");
+    private Expense getExpense() {
         Expense exp = new Expense();
-        exp.setLabels(new HashSet<>(Collections.singletonList(label)));
-        exp.setCategories(new HashSet<>(Collections.singletonList(category)));
+        exp.setLabels(new HashSet<>(Collections.singletonList(Label.getInstance(rNameGen.get()))));
+        exp.setCategory(Category.getInstance(rNameGen.get(), rNameGen.get()));
         exp.setAmount(0d);
         exp.setCreatedOn(LocalDate.MIN);
-        exp.setDescription("Buy oranges");
+        exp.setDescription(rNameGen.get());
         return exp;
     }
 }

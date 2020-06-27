@@ -13,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes=org.codecritique.thrifty.Application.class)
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class LabelServiceBeanTest {
+class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Autowired
     LabelServiceBean service;
 
     @Test
     void testAddGetLabels() {
-        Label label = Label.getInstance("Cash");
+        Label label = Label.getInstance(rNameGen.get());
         service.addLabel(label);
         assertEquals(label, service.getLabel(label.getId()));
     }
@@ -28,7 +28,7 @@ class LabelServiceBeanTest {
 
     @Test
     void testRemoveLabel() {
-        Label label = Label.getInstance("Rent");
+        Label label = Label.getInstance(rNameGen.get());
         service.addLabel(label);
         service.removeLabel(label.getId());
         assertNull(service.getLabel(label.getId()));
