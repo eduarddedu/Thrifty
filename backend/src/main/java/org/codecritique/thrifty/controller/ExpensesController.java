@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * @author Eduard Dedu
+ */
+
+
 @RestController
 @RequestMapping("/rest-api/expenses")
 public class ExpensesController extends BaseController {

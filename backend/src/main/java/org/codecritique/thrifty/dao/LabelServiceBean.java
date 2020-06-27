@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.codecritique.thrifty.entity.Label;
 
+/**
+ * @author Eduard Dedu
+ */
+
 @Service
 public class LabelServiceBean extends BaseEntityService implements LabelService {
 

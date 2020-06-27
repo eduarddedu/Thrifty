@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.codecritique.thrifty.entity.Expense;
 
+/**
+ * @author Eduard Dedu
+ */
+
 @Service
 public class ExpenseServiceBean extends BaseEntityService implements ExpenseService {
 

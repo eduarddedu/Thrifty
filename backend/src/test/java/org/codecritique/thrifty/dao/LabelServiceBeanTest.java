@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest(classes=org.codecritique.thrifty.Application.class)
+@SpringBootTest(classes = org.codecritique.thrifty.Application.class)
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LabelServiceBeanTest extends BaseServiceBeanTest {
@@ -27,7 +27,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testUpdateLabel() {
-        Label label =labelSupplier.get();
+        Label label = labelSupplier.get();
         service.addLabel(label);
 
         label.setName(rNameGen.get());

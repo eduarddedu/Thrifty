@@ -6,6 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+/**
+ * @author Eduard Dedu
+ */
 
 @Entity
 @Table(name = "Category", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))

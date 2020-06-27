@@ -20,7 +20,7 @@ public abstract class BaseServiceBeanTest {
         return sb.toString();
     };
 
-    protected static Supplier <Label> labelSupplier = () -> {
+    protected static Supplier<Label> labelSupplier = () -> {
         Label label = new Label();
         label.setName(rNameGen.get());
         return label;

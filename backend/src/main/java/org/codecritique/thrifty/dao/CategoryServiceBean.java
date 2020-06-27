@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.codecritique.thrifty.entity.Category;
 
+/**
+ * @author Eduard Dedu
+ */
+
 @Service
 public class CategoryServiceBean extends BaseEntityService implements CategoryService {
 
