@@ -10,4 +10,5 @@ public interface LabelService {
     Label getLabel(int id);
     List<Label> getLabels();
     void removeLabel(int id);
+    void updateLabel(Label label);
 }

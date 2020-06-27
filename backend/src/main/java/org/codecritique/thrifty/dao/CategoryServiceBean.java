@@ -27,4 +27,13 @@ public class CategoryServiceBean extends BaseEntityService implements CategorySe
     public void removeCategory(int id) {
         super.removeEntity(Category.class, id);
     }
+
+    @Override
+    public void updateCategory(Category o) {
+        em.getTransaction().begin();
+        Category c = em.find(Category.class, o.getId());
+        c.setName(o.getName());
+        c.setDescription(o.getDescription());
+        em.getTransaction().commit();
+    }
 }

@@ -27,4 +27,11 @@ public class LabelServiceBean extends BaseEntityService implements LabelService 
     public void removeLabel(int id) {
         super.removeEntity(Label.class, id);
     }
+
+    @Override
+    public void updateLabel(Label label) {
+        em.getTransaction().begin();
+        em.find(Label.class, label.getId()).setName(label.getName());
+        em.getTransaction().commit();
+    }
 }

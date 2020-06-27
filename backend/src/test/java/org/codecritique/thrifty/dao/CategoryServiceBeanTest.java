@@ -48,6 +48,16 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         }
     }
 
+    @Test
+    void testUpdateCategory() {
+        Category o = getCategory();
+        service.addCategory(o);
+        o.setName(rNameGen.get());
+        o.setDescription(rNameGen.get());
+        service.updateCategory(o);
+        assertEquals(o, service.getCategory(o.getId()));
+    }
+
     private Category getCategory() {
         return Category.getInstance(rNameGen.get(), rNameGen.get());
     }

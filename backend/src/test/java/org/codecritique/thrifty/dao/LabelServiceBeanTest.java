@@ -25,6 +25,16 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         assertEquals(label, service.getLabel(label.getId()));
     }
 
+    @Test
+    void testUpdateLabel() {
+        Label label = Label.getInstance(rNameGen.get());
+        service.addLabel(label);
+
+        label.setName(rNameGen.get());
+        service.updateLabel(label);
+
+        assertEquals(label, service.getLabel(label.getId()));
+    }
 
     @Test
     void testRemoveLabel() {
