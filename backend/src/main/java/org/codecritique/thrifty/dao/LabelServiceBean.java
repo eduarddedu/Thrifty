@@ -1,5 +1,6 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Label;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,8 @@ public class LabelServiceBean extends BaseEntityService implements LabelService 
 
     @Override
     public List<Label> getLabels() {
-        return super.getEntitiesSortedByName(Label.class);
+        String sql = "Select r from Label r Order by r.name ";
+        return em.createQuery(sql, Label.class).getResultList();
     }
 
     @Override

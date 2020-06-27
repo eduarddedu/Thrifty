@@ -31,15 +31,4 @@ public abstract class BaseEntityService {
         em.getTransaction().commit();
     }
 
-    protected <T extends BaseEntity> List<T> getEntitiesSortedByName(Class<T> entityClass) {
-        String table = entityClass.getSimpleName();
-        String sql = "Select r from " + table + " r Order by r.name ";
-        return em.createQuery(sql, entityClass).getResultList();
-    }
-
-    protected <T extends BaseEntity> List<T> getEntities(Class<T> entityClass) {
-        String table = entityClass.getSimpleName();
-        String sql = "Select r from " + table + " r";
-        return em.createQuery(sql, entityClass).getResultList();
-    }
 }

@@ -20,7 +20,8 @@ public class CategoryServiceBean extends BaseEntityService implements CategorySe
 
     @Override
     public List<Category> getCategories() {
-        return super.getEntitiesSortedByName(Category.class);
+        String sql = "Select r from Category r Order by r.name ";
+        return em.createQuery(sql, Category.class).getResultList();
     }
 
     @Override
