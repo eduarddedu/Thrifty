@@ -21,7 +21,7 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testAddCategory() {
-        Category category = getCategory();
+        Category category = categorySupplier.get();
         service.addCategory(category);
         assertEquals(category, service.getCategory(category.getId()));
     }
@@ -32,7 +32,7 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            service.addCategory(getCategory());
+            service.addCategory(categorySupplier.get());
 
         assertTrue(service.getCategories().size() >= numEntities);
 
@@ -50,16 +50,12 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testUpdateCategory() {
-        Category o = getCategory();
+        Category o = categorySupplier.get();
         service.addCategory(o);
         o.setName(rNameGen.get());
         o.setDescription(rNameGen.get());
         service.updateCategory(o);
         assertEquals(o, service.getCategory(o.getId()));
-    }
-
-    private Category getCategory() {
-        return Category.getInstance(rNameGen.get(), rNameGen.get());
     }
 
 }

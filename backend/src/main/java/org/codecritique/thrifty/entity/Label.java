@@ -49,9 +49,4 @@ public class Label extends BaseEntity {
         return "Label[" + name + "]";
     }
 
-    public static Label getInstance(String name) {
-        Label instance = new Label();
-        instance.setName(name);
-        return instance;
-    }
 }

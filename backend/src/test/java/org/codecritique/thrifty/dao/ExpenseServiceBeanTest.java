@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,24 +26,15 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest  {
 
     @Test
     void testAddExpense() {
-        service.addExpense(getExpense());
+        service.addExpense(expenseSupplier.get());
     }
 
     @Test
     void testGetExpense() {
-        Expense expense = getExpense();
+        Expense expense = expenseSupplier.get();
         service.addExpense(expense);
-        assertEquals(1, service.getExpenses().size());
+        assertTrue(service.getExpenses().size() >= 1);
         assertEquals(expense, service.getExpense(expense.getId()));
     }
 
-    private Expense getExpense() {
-        Expense exp = new Expense();
-        exp.setLabels(new HashSet<>(Collections.singletonList(Label.getInstance(rNameGen.get()))));
-        exp.setCategory(Category.getInstance(rNameGen.get(), rNameGen.get()));
-        exp.setAmount(0d);
-        exp.setCreatedOn(LocalDate.MIN);
-        exp.setDescription(rNameGen.get());
-        return exp;
-    }
 }

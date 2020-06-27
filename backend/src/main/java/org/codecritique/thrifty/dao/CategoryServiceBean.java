@@ -30,8 +30,10 @@ public class CategoryServiceBean extends BaseEntityService implements CategorySe
 
     @Override
     public void updateCategory(Category o) {
-        em.getTransaction().begin();
         Category c = em.find(Category.class, o.getId());
+        if (c == null)
+            return;
+        em.getTransaction().begin();
         c.setName(o.getName());
         c.setDescription(o.getDescription());
         em.getTransaction().commit();

@@ -20,14 +20,14 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testAddGetLabels() {
-        Label label = Label.getInstance(rNameGen.get());
+        Label label = labelSupplier.get();
         service.addLabel(label);
         assertEquals(label, service.getLabel(label.getId()));
     }
 
     @Test
     void testUpdateLabel() {
-        Label label = Label.getInstance(rNameGen.get());
+        Label label =labelSupplier.get();
         service.addLabel(label);
 
         label.setName(rNameGen.get());
@@ -38,7 +38,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testRemoveLabel() {
-        Label label = Label.getInstance(rNameGen.get());
+        Label label = labelSupplier.get();
         service.addLabel(label);
         service.removeLabel(label.getId());
         assertNull(service.getLabel(label.getId()));
