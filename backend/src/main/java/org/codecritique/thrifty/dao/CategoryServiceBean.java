@@ -11,37 +11,32 @@ import org.codecritique.thrifty.entity.Category;
  */
 
 @Service
-public class CategoryServiceBean extends BaseEntityService implements CategoryService {
+public class CategoryServiceBean extends BaseService implements CategoryService {
 
     @Override
-    public void addCategory(Category o) {
-        super.addEntity(o);
+    public void store(Category o) {
+        super.persist(o);
     }
 
     @Override
-    public Category getCategory(int id) {
+    public Category get(int id) {
         return em.find(Category.class, id);
     }
 
     @Override
-    public List<Category> getCategories() {
+    public List<Category> getCategoriesSortedByName() {
         String sql = "Select r from Category r Order by r.name ";
         return em.createQuery(sql, Category.class).getResultList();
     }
 
     @Override
-    public void removeCategory(int id) {
-        super.removeEntity(Category.class, id);
+    public void remove(int id) {
+        super.remove(Category.class, id);
     }
 
     @Override
-    public void updateCategory(Category o) {
-        Category c = em.find(Category.class, o.getId());
-        if (c == null)
-            return;
-        em.getTransaction().begin();
-        c.setName(o.getName());
-        c.setDescription(o.getDescription());
-        em.getTransaction().commit();
+    public void update(Category category) {
+        if (em.find(Category.class, category.getId()) != null)
+            super.persist(category);
     }
 }

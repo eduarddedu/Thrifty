@@ -3,43 +3,62 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.function.Supplier;
 
+@SpringBootTest(classes = org.codecritique.thrifty.Application.class)
+@ActiveProfiles("dev")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseServiceBeanTest {
-    protected static Supplier<String> rNameGen = () -> {
+    @Autowired
+    protected ExpenseServiceBean expenseService;
+    @Autowired
+    protected LabelServiceBean labelService;
+    @Autowired
+    protected CategoryServiceBean categoryService;
+
+    protected Supplier<String> randomName = () -> {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            sb.append((char) (65 + random.nextInt(24)));
+        final int size = 8;
+        for (int i = 0; i < size; i++) {
+            sb.append((char) (65 + random.nextInt(26)));
         }
         return sb.toString();
     };
 
-    protected static Supplier<Label> labelSupplier = () -> {
+    protected Supplier<LocalDate> randomDate = () -> {
+        Random r = new Random();
+        return LocalDate.of(r.nextInt(2000), 1 + r.nextInt(11), 1 + r.nextInt(27));
+    };
+
+    protected Supplier<Label> labelSupplier = () -> {
         Label label = new Label();
-        label.setName(rNameGen.get());
+        label.setName(randomName.get());
         return label;
     };
 
-    protected static Supplier<Category> categorySupplier = () -> {
+    protected Supplier<Category> categorySupplier = () -> {
         Category category = new Category();
-        category.setName(rNameGen.get());
-        category.setDescription(rNameGen.get());
+        category.setName(randomName.get());
+        category.setDescription(randomName.get());
         return category;
     };
 
-    protected static Supplier<Expense> expenseSupplier = () -> {
+    protected Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
-        expense.setCreatedOn(LocalDate.MIN);
+        expense.setCreatedOn(randomDate.get());
         expense.setAmount(0d);
         expense.setCategory(categorySupplier.get());
-        expense.setLabels(new HashSet<>(Arrays.asList(labelSupplier.get(), labelSupplier.get())));
-        expense.setDescription(rNameGen.get());
+        expense.addExpenseLabel(labelSupplier.get());
+        expense.addExpenseLabel(labelSupplier.get());
+        expense.setDescription(randomName.get());
         return expense;
     };
 }

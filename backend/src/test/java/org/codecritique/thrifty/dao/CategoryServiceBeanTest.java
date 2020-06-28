@@ -2,28 +2,19 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Category;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = org.codecritique.thrifty.Application.class)
-@ActiveProfiles("dev")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CategoryServiceBeanTest extends BaseServiceBeanTest {
-    @Autowired
-    CategoryServiceBean service;
 
     @Test
     void testAddCategory() {
         Category category = categorySupplier.get();
-        service.addCategory(category);
-        assertEquals(category, service.getCategory(category.getId()));
+        categoryService.store(category);
+        assertEquals(category, categoryService.get(category.getId()));
     }
 
     @Test
@@ -32,30 +23,31 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            service.addCategory(categorySupplier.get());
+            categoryService.store(categorySupplier.get());
 
-        assertTrue(service.getCategories().size() >= numEntities);
+        Iterator<String> it = categoryService.getCategoriesSortedByName()
+                .stream().map(Category::getName).iterator();
 
-        Iterator<Category> iterator = service.getCategories().iterator();
-        while (true) {
-            String name = iterator.next().getName();
-            if (iterator.hasNext()) {
-                String name2 = iterator.next().getName();
-                assertTrue(name.compareTo(name2) <= 0);
-            } else {
-                break;
+        while (it.hasNext()) {
+            String name = it.next();
+            if (it.hasNext()) {
+                assertTrue(name.compareTo(it.next()) <= 0);
             }
         }
     }
 
     @Test
     void testUpdateCategory() {
-        Category o = categorySupplier.get();
-        service.addCategory(o);
-        o.setName(rNameGen.get());
-        o.setDescription(rNameGen.get());
-        service.updateCategory(o);
-        assertEquals(o, service.getCategory(o.getId()));
+        //setup
+        Category cat = categorySupplier.get();
+        categoryService.store(cat);
+
+        //exercise
+        cat.setName(randomName.get());
+        cat.setDescription(randomName.get());
+
+        //verify
+        assertEquals(cat, categoryService.get(cat.getId()));
     }
 
 }

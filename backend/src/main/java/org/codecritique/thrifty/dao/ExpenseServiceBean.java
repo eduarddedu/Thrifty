@@ -11,40 +11,38 @@ import org.codecritique.thrifty.entity.Expense;
  */
 
 @Service
-public class ExpenseServiceBean extends BaseEntityService implements ExpenseService {
+public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
-    public void addExpense(Expense o) {
-        super.addEntity(o);
+    public void store(Expense o) {
+        super.persist(o);
     }
 
     @Override
-    public Expense getExpense(int id) {
+    public Expense get(int id) {
         return em.find(Expense.class, id);
     }
 
     @Override
     public List<Expense> getExpenses() {
-        String sql = "Select r from Expense r";
+        String sql = "SELECT r from Expense r";
         return em.createQuery(sql, Expense.class).getResultList();
     }
 
     @Override
-    public void removeExpense(int id) {
-        super.removeEntity(Expense.class, id);
+    public List<Expense> getExpensesSortedByDateDescending() {
+        String sql = "SELECT r from Expense r ORDER BY r.createdOn DESC";
+        return em.createQuery(sql, Expense.class).getResultList();
     }
 
     @Override
-    public void updateExpense(Expense o) {
-        Expense e = em.find(Expense.class, o.getId());
-        if (e == null)
-            return;
-        em.getTransaction().begin();
-        e.setCreatedOn(o.getCreatedOn());
-        e.setDescription(o.getDescription());
-        e.setCategory(o.getCategory());
-        e.setLabels(o.getLabels());
-        e.setAmount(o.getAmount());
-        em.getTransaction().commit();
+    public void remove(int id) {
+        super.remove(Expense.class, id);
+    }
+
+    @Override
+    public void update(Expense expense) {
+        if (em.find(Expense.class, expense.getId()) != null)
+            super.persist(expense);
     }
 }

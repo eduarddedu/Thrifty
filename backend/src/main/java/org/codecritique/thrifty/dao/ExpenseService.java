@@ -11,13 +11,15 @@ import java.util.List;
 
 public interface ExpenseService {
 
-    void addExpense(Expense o);
+    void store(Expense o);
 
-    Expense getExpense(int id);
+    Expense get(int id);
 
     List<Expense> getExpenses();
 
-    void removeExpense(int id);
+    List<Expense> getExpensesSortedByDateDescending();
 
-    void updateExpense(Expense e);
+    void remove(int id);
+
+    void update(Expense e);
 }

@@ -2,46 +2,54 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = org.codecritique.thrifty.Application.class)
-@ActiveProfiles("dev")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Autowired
     LabelServiceBean service;
 
     @Test
-    void testAddGetLabels() {
+    void testAddLabel() {
         Label label = labelSupplier.get();
-        service.addLabel(label);
-        assertEquals(label, service.getLabel(label.getId()));
+        service.store(label);
+        assertEquals(label, service.get(label.getId()));
+    }
+
+    @Test
+    void testGetLabelsSortedByName() {
+
+        int numEntities = 10;
+
+        for (int i = 0; i < numEntities; i++)
+            labelService.store(labelSupplier.get());
+
+        Iterator<String> it = labelService.getLabelsSortedByName()
+                .stream().map(Label::getName).iterator();
+
+        while (it.hasNext()) {
+            String name = it.next();
+            if (it.hasNext()) {
+                assertTrue(name.compareTo(it.next()) <= 0);
+            }
+        }
     }
 
     @Test
     void testUpdateLabel() {
         Label label = labelSupplier.get();
-        service.addLabel(label);
+        service.store(label);
 
-        label.setName(rNameGen.get());
-        service.updateLabel(label);
+        label.setName(randomName.get());
+        service.update(label);
 
-        assertEquals(label, service.getLabel(label.getId()));
-    }
-
-    @Test
-    void testRemoveLabel() {
-        Label label = labelSupplier.get();
-        service.addLabel(label);
-        service.removeLabel(label.getId());
-        assertNull(service.getLabel(label.getId()));
+        assertEquals(label, service.get(label.getId()));
     }
 
 }

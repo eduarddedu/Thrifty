@@ -1,5 +1,6 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,33 +12,42 @@ import org.codecritique.thrifty.entity.Label;
  */
 
 @Service
-public class LabelServiceBean extends BaseEntityService implements LabelService {
+public class LabelServiceBean extends BaseService implements LabelService {
 
     @Override
-    public void addLabel(Label label) {
-        super.addEntity(label);
+    public void store(Label label) {
+        super.persist(label);
     }
 
     @Override
-    public List<Label> getLabels() {
-        String sql = "Select r from Label r Order by r.name ";
-        return em.createQuery(sql, Label.class).getResultList();
-    }
-
-    @Override
-    public Label getLabel(int id) {
+    public Label get(int id) {
         return em.find(Label.class, id);
     }
 
     @Override
-    public void removeLabel(int id) {
-        super.removeEntity(Label.class, id);
+    public List<Label> getLabelsSortedByName() {
+        String sql = "SELECT r from Label r ORDER BY r.name ";
+        return em.createQuery(sql, Label.class).getResultList();
     }
 
     @Override
-    public void updateLabel(Label label) {
+    public void update(Label label) {
+        if (em.find(Label.class, label.getId()) != null)
+            super.persist(label);
+    }
+
+    @Override
+    public void remove(int id) {
+        Label label = em.find(Label.class, id);
+
+        if (label == null)
+            return;
+
         em.getTransaction().begin();
-        em.find(Label.class, label.getId()).setName(label.getName());
+        for (Expense expense : label.getExpenses())
+            expense.removeExpenseLabel(label);
+        em.remove(label);
         em.getTransaction().commit();
     }
+
 }

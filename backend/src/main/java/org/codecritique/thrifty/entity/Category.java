@@ -21,7 +21,7 @@ public class Category extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    private Set<Expense> expenses;
+    private Set<Expense> expenses = new HashSet<>();
 
     @JsonIgnore
     public Set<Expense> getExpenses() {
@@ -50,7 +50,8 @@ public class Category extends BaseEntity {
             return true;
         else if (!(o instanceof Category))
             return false;
-        return Objects.equals(name, ((Category) o).name);
+        Category other = (Category) o;
+        return Objects.equals(name, other.name) && Objects.equals(description, other.description);
     }
 
     @Override

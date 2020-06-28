@@ -7,6 +7,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class Label extends BaseEntity {
     private String name;
 
     @ManyToMany(mappedBy = "labels")
-    private Set<Expense> expenses;
+    private Set<Expense> expenses = new HashSet<>();
 
     @JsonIgnore
     public Set<Expense> getExpenses() {

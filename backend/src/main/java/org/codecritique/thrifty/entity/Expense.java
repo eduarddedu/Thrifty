@@ -3,6 +3,7 @@ package org.codecritique.thrifty.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,24 +22,30 @@ public class Expense extends BaseEntity {
     @NotNull
     private Double amount;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(name = "Expense_Category",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Category category;
 
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(name = "Expense_Label",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
-    private Set<Label> labels;
+    private Set<Label> labels = new HashSet<>();
 
     public Category getCategory() {
         return category;
     }
 
     public void setCategory(Category category) {
+        category.getExpenses().add(this);
         this.category = category;
     }
 
@@ -74,7 +81,13 @@ public class Expense extends BaseEntity {
         this.labels = labels;
     }
 
-    public void removeLabel(Label label) {
+    public void addExpenseLabel(Label label) {
+        label.getExpenses().add(this);
+        labels.add(label);
+    }
+
+    public void removeExpenseLabel(Label label) {
+        label.getExpenses().remove(this);
         labels.remove(label);
     }
 
@@ -84,7 +97,13 @@ public class Expense extends BaseEntity {
             return true;
         else if (!(o instanceof Expense))
             return false;
-        return Objects.equals(id, ((Expense) o).id);
+        Expense other = (Expense) o;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(amount, other.amount)
+                && Objects.equals(createdOn, other.createdOn)
+                && Objects.equals(description, other.description)
+                && Objects.equals(category, other.category)
+                && Objects.equals(labels, other.labels);
     }
 
     @Override

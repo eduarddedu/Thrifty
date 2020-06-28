@@ -10,23 +10,23 @@ import javax.persistence.EntityManagerFactory;
 
 
 @Configuration
-public abstract class BaseEntityService {
+public abstract class BaseService {
     protected EntityManager em;
 
-    BaseEntityService() {
+    BaseService() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         em = context.getBean(EntityManagerFactory.class).createEntityManager();
     }
 
-    protected <T extends BaseEntity> void addEntity(T o) {
+    protected <T extends BaseEntity> void persist(T o) {
         em.getTransaction().begin();
         em.persist(o);
         em.getTransaction().commit();
     }
 
-    protected void removeEntity(Class<? extends BaseEntity> entityClass, int id) {
+    protected void remove(Class<? extends BaseEntity> clazz, int id) {
         em.getTransaction().begin();
-        em.remove(em.find(entityClass, id));
+        em.remove(em.find(clazz, id));
         em.getTransaction().commit();
     }
 

@@ -31,7 +31,7 @@ public class ExpensesController extends BaseController {
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Expense getExpenseById(@PathVariable int id) {
-        return expenseServiceBean.getExpense(id);
+        return expenseServiceBean.get(id);
     }
 
 }

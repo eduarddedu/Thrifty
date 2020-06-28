@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface LabelService {
 
-    void addLabel(Label label);
+    void store(Label label);
 
-    Label getLabel(int id);
+    Label get(int id);
 
-    List<Label> getLabels();
+    List<Label> getLabelsSortedByName();
 
-    void removeLabel(int id);
+    void remove(int id);
 
-    void updateLabel(Label label);
+    void update(Label label);
 }

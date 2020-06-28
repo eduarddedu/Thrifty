@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void addCategory(Category c);
+    void store(Category o);
 
-    Category getCategory(int id);
+    Category get(int id);
 
-    List<Category> getCategories();
+    List<Category> getCategoriesSortedByName();
 
-    void removeCategory(int id);
+    void remove(int id);
 
-    void updateCategory(Category c);
+    void update(Category o);
 }

@@ -25,12 +25,12 @@ public class CategoriesController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Category> getCategories() {
-        return categoryServiceBean.getCategories();
+        return categoryServiceBean.getCategoriesSortedByName();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Category getCategoryById(@PathVariable int id) {
-        return categoryServiceBean.getCategory(id);
+        return categoryServiceBean.get(id);
     }
 }
