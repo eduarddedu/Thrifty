@@ -13,13 +13,11 @@ public interface ExpenseService {
 
     void store(Expense o);
 
-    Expense get(int id);
+    Expense get(long id);
 
     List<Expense> getExpenses();
 
-    List<Expense> getExpensesSortedByDateDescending();
-
-    void remove(int id);
+    void remove(long id);
 
     void update(Expense e);
 }

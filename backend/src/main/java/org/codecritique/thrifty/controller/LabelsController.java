@@ -20,16 +20,16 @@ import java.util.List;
 @RequestMapping("/rest-api/labels")
 public class LabelsController extends BaseController {
     @Autowired
-    LabelServiceBean labelServiceBean;
+    LabelServiceBean service;
 
     @GetMapping
-    public List<Label> getLabels() {
-        return labelServiceBean.getLabelsSortedByName();
+    public List<Label> getLabelsSortedByName() {
+        return service.getLabels();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Label getLabelById(@PathVariable int id) {
-        return labelServiceBean.get(id);
+    public Label getLabel(@PathVariable int id) {
+        return service.get(id);
     }
 }

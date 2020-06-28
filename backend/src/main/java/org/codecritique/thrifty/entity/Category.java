@@ -23,6 +23,13 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category")
     private Set<Expense> expenses = new HashSet<>();
 
+    public Category() { }
+
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @JsonIgnore
     public Set<Expense> getExpenses() {
         return expenses;

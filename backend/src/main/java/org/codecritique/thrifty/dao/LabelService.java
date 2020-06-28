@@ -13,11 +13,11 @@ public interface LabelService {
 
     void store(Label label);
 
-    Label get(int id);
+    Label get(long id);
 
-    List<Label> getLabelsSortedByName();
+    List<Label> getLabels();
 
-    void remove(int id);
+    void remove(long id);
 
     void update(Label label);
 }

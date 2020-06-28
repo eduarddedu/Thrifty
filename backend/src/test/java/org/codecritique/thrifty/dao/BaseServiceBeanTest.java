@@ -16,12 +16,6 @@ import java.util.function.Supplier;
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseServiceBeanTest {
-    @Autowired
-    protected ExpenseServiceBean expenseService;
-    @Autowired
-    protected LabelServiceBean labelService;
-    @Autowired
-    protected CategoryServiceBean categoryService;
 
     protected Supplier<String> randomName = () -> {
         Random random = new Random();
@@ -38,27 +32,18 @@ public abstract class BaseServiceBeanTest {
         return LocalDate.of(r.nextInt(2000), 1 + r.nextInt(11), 1 + r.nextInt(27));
     };
 
-    protected Supplier<Label> labelSupplier = () -> {
-        Label label = new Label();
-        label.setName(randomName.get());
-        return label;
-    };
+    protected Supplier<Label> labelSupplier = () -> new Label(randomName.get());
 
-    protected Supplier<Category> categorySupplier = () -> {
-        Category category = new Category();
-        category.setName(randomName.get());
-        category.setDescription(randomName.get());
-        return category;
-    };
+    protected Supplier<Category> categorySupplier = () -> new Category(randomName.get(), randomName.get());
 
     protected Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
         expense.setCreatedOn(randomDate.get());
         expense.setAmount(0d);
-        expense.setCategory(categorySupplier.get());
-        expense.addExpenseLabel(labelSupplier.get());
-        expense.addExpenseLabel(labelSupplier.get());
         expense.setDescription(randomName.get());
+        expense.setCategory(categorySupplier.get());
+        for(int i = 0; i < 3; i++)
+        expense.addLabel(labelSupplier.get());
         return expense;
     };
 }

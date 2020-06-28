@@ -1,5 +1,7 @@
 package org.codecritique.thrifty.entity;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -40,12 +42,23 @@ public class Expense extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
 
+    public Expense() {}
+
+    public Expense(LocalDate createdOn, Double amount, String description, Category c, Set<Label> labels) {
+        this.createdOn = createdOn;
+        this.amount = amount;
+        this.description = description;
+        this.category = c;
+        this.labels = labels;
+    }
+
     public Category getCategory() {
         return category;
     }
 
     public void setCategory(Category category) {
-        category.getExpenses().add(this);
+        if (category != null)
+            category.getExpenses().add(this);
         this.category = category;
     }
 
@@ -81,12 +94,12 @@ public class Expense extends BaseEntity {
         this.labels = labels;
     }
 
-    public void addExpenseLabel(Label label) {
+    public void addLabel(Label label) {
         label.getExpenses().add(this);
         labels.add(label);
     }
 
-    public void removeExpenseLabel(Label label) {
+    public void removeLabel(Label label) {
         label.getExpenses().remove(this);
         labels.remove(label);
     }
@@ -98,8 +111,8 @@ public class Expense extends BaseEntity {
         else if (!(o instanceof Expense))
             return false;
         Expense other = (Expense) o;
-        return Objects.equals(id, other.id) &&
-                Objects.equals(amount, other.amount)
+        return Objects.equals(id, other.id)
+                && Objects.equals(amount, other.amount)
                 && Objects.equals(createdOn, other.createdOn)
                 && Objects.equals(description, other.description)
                 && Objects.equals(category, other.category)

@@ -6,14 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Autowired
     LabelServiceBean service;
+
+    @Autowired
+    protected LabelServiceBean labelService;
 
     @Test
     void testAddLabel() {
@@ -30,7 +32,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         for (int i = 0; i < numEntities; i++)
             labelService.store(labelSupplier.get());
 
-        Iterator<String> it = labelService.getLabelsSortedByName()
+        Iterator<String> it = labelService.getLabels()
                 .stream().map(Label::getName).iterator();
 
         while (it.hasNext()) {
@@ -50,6 +52,15 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         service.update(label);
 
         assertEquals(label, service.get(label.getId()));
+    }
+
+    @Test
+    void removeLabel() {
+        Label label = new Label("Foo");
+        service.store(label);
+        assertNotNull(service.get(label.getId()));
+        service.remove(label.getId());
+        assertNull(service.get(label.getId()));
     }
 
 }

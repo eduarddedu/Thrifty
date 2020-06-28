@@ -21,17 +21,17 @@ import java.util.List;
 @RequestMapping("/rest-api/expenses")
 public class ExpensesController extends BaseController {
     @Autowired
-    ExpenseServiceBean expenseServiceBean;
+    ExpenseServiceBean service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Expense> getExpenses() {
-        return expenseServiceBean.getExpenses();
+    public List<Expense> getExpensesSortedByDate() {
+        return service.getExpenses();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Expense getExpenseById(@PathVariable int id) {
-        return expenseServiceBean.get(id);
+    public Expense getExpense(@PathVariable int id) {
+        return service.get(id);
     }
 
 }

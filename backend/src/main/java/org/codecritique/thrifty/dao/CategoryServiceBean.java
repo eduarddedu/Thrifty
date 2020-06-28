@@ -1,5 +1,6 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,24 +20,37 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
     }
 
     @Override
-    public Category get(int id) {
+    public Category get(long id) {
         return em.find(Category.class, id);
     }
 
     @Override
-    public List<Category> getCategoriesSortedByName() {
-        String sql = "Select r from Category r Order by r.name ";
-        return em.createQuery(sql, Category.class).getResultList();
+    public List<Category> getCategories() {
+        return getCategoriesSortedByName();
     }
 
-    @Override
-    public void remove(int id) {
-        super.remove(Category.class, id);
+    private List<Category> getCategoriesSortedByName() {
+        String sql = "Select r from Category r Order by r.name ";
+        return em.createQuery(sql, Category.class).getResultList();
     }
 
     @Override
     public void update(Category category) {
         if (em.find(Category.class, category.getId()) != null)
             super.persist(category);
+    }
+
+    @Override
+    public void remove(long categoryId) {
+
+        Category category = em.find(Category.class, categoryId);
+        if (category == null)
+            return;
+        em.getTransaction().begin();
+        for (Expense expense : category.getExpenses()) {
+            expense.setCategory(null);
+        }
+        em.remove(category);
+        em.getTransaction().commit();
     }
 }

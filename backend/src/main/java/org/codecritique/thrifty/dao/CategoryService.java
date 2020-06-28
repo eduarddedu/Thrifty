@@ -13,11 +13,11 @@ public interface CategoryService {
 
     void store(Category o);
 
-    Category get(int id);
+    Category get(long id);
 
-    List<Category> getCategoriesSortedByName();
+    List<Category> getCategories();
 
-    void remove(int id);
+    void remove(long id);
 
     void update(Category o);
 }

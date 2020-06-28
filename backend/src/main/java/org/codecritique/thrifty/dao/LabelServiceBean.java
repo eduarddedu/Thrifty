@@ -20,14 +20,13 @@ public class LabelServiceBean extends BaseService implements LabelService {
     }
 
     @Override
-    public Label get(int id) {
+    public Label get(long id) {
         return em.find(Label.class, id);
     }
 
     @Override
-    public List<Label> getLabelsSortedByName() {
-        String sql = "SELECT r from Label r ORDER BY r.name ";
-        return em.createQuery(sql, Label.class).getResultList();
+    public List<Label> getLabels() {
+       return getLabelsSortedByName();
     }
 
     @Override
@@ -37,7 +36,7 @@ public class LabelServiceBean extends BaseService implements LabelService {
     }
 
     @Override
-    public void remove(int id) {
+    public void remove(long id) {
         Label label = em.find(Label.class, id);
 
         if (label == null)
@@ -45,9 +44,14 @@ public class LabelServiceBean extends BaseService implements LabelService {
 
         em.getTransaction().begin();
         for (Expense expense : label.getExpenses())
-            expense.removeExpenseLabel(label);
+            expense.removeLabel(label);
         em.remove(label);
         em.getTransaction().commit();
+    }
+
+    private List<Label> getLabelsSortedByName() {
+        String sql = "SELECT r from Label r ORDER BY r.name ";
+        return em.createQuery(sql, Label.class).getResultList();
     }
 
 }

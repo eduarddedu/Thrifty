@@ -26,6 +26,12 @@ public class Label extends BaseEntity {
     @ManyToMany(mappedBy = "labels")
     private Set<Expense> expenses = new HashSet<>();
 
+    public Label() {}
+
+    public Label(String name) {
+        this.name = name;
+    }
+
     @JsonIgnore
     public Set<Expense> getExpenses() {
         return expenses;

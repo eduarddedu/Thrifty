@@ -21,16 +21,16 @@ import java.util.List;
 public class CategoriesController extends BaseController {
 
     @Autowired
-    CategoryServiceBean categoryServiceBean;
+    CategoryServiceBean service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Category> getCategories() {
-        return categoryServiceBean.getCategoriesSortedByName();
+    public List<Category> getCategoriesSortedByName() {
+        return service.getCategories();
     }
 
     @GetMapping(path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Category getCategoryById(@PathVariable int id) {
-        return categoryServiceBean.get(id);
+    public Category getCategory(@PathVariable int id) {
+        return service.get(id);
     }
 }
