@@ -1,15 +1,14 @@
 package org.codecritique.thrifty.dao;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDate;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.codecritique.thrifty.TestUtils.*;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 class ExpenseServiceBeanTest extends BaseServiceBeanTest {

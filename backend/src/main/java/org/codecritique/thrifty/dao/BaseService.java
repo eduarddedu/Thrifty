@@ -18,7 +18,7 @@ public abstract class BaseService {
         em = context.getBean(EntityManagerFactory.class).createEntityManager();
     }
 
-    protected <T extends BaseEntity> void persist(T o) {
+    protected void persist(BaseEntity o) {
         em.getTransaction().begin();
         em.persist(o);
         em.getTransaction().commit();

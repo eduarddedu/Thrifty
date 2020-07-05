@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.codecritique.thrifty.TestUtils.*;
 
 class CategoryServiceBeanTest extends BaseServiceBeanTest {
 

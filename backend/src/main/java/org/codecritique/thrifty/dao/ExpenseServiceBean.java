@@ -14,8 +14,8 @@ import org.codecritique.thrifty.entity.Expense;
 public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
-    public void store(Expense o) {
-        super.persist(o);
+    public void store(Expense expense) {
+        super.persist(expense);
     }
 
     @Override
@@ -35,8 +35,14 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void update(Expense expense) {
-        if (em.find(Expense.class, expense.getId()) != null)
-            super.persist(expense);
+        Expense expense1 = em.find(Expense.class, expense.getId());
+        if (expense1 != null) {
+            expense1.setCreatedOn(expense.getCreatedOn());
+            expense1.setDescription(expense.getDescription());
+            expense1.setAmount(expense.getAmount());
+            expense1.setCategory(expense.getCategory());
+            expense1.setLabels(expense.getLabels());
+        }
     }
 
     private List<Expense> getExpensesSortedByDateDescending() {

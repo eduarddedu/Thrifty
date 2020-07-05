@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 
+import static org.codecritique.thrifty.TestUtils.labelSupplier;
+import static org.codecritique.thrifty.TestUtils.randomName;
 import static org.junit.jupiter.api.Assertions.*;
-
 
 class LabelServiceBeanTest extends BaseServiceBeanTest {
 

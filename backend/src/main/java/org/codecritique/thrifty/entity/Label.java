@@ -56,7 +56,7 @@ public class Label extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return Objects.hash(id, name);
     }
 
     @Override

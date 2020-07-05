@@ -14,11 +14,11 @@ import java.time.LocalDate;
 public class LocalDateSerializer extends JsonSerializer<LocalDate> {
 
     @Override
-    public void serialize(LocalDate localDate, JsonGenerator jg, SerializerProvider provider) throws IOException {
-        jg.writeStartObject();
-        jg.writeNumberField("year", localDate.getYear());
-        jg.writeNumberField("month", localDate.getMonthValue());
-        jg.writeNumberField("day", localDate.getDayOfMonth());
-        jg.writeEndObject();
+    public void serialize(LocalDate localDate, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        gen.writeStartObject();
+        gen.writeNumberField("year", localDate.getYear());
+        gen.writeNumberField("month", localDate.getMonthValue());
+        gen.writeNumberField("day", localDate.getDayOfMonth());
+        gen.writeEndObject();
     }
 }

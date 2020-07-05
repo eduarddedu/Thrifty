@@ -2,12 +2,13 @@ package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.dao.LabelServiceBean;
 import org.codecritique.thrifty.entity.Label;
+import org.codecritique.thrifty.exception.WebException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,21 +16,64 @@ import java.util.List;
  * @author Eduard Dedu
  */
 
-
 @RestController
 @RequestMapping("/rest-api/labels")
 public class LabelsController extends BaseController {
     @Autowired
-    LabelServiceBean service;
+    private LabelServiceBean service;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Label> getLabelsSortedByName() {
         return service.getLabels();
     }
 
-    @GetMapping(path = "{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Label getLabel(@PathVariable int id) {
-        return service.get(id);
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Label> getLabel(@PathVariable long id) {
+        Label label = service.get(id);
+        if (label != null) {
+            return ResponseEntity.ok(label);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> storeLabel(@RequestBody Label label) {
+        try {
+            service.store(label);
+            return ResponseEntity.created(toAbsoluteUri("/rest-api/labels/" + label.getId())).build();
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> updateLabel(@RequestBody Label label) {
+        try {
+            service.update(label);
+            return ResponseEntity.ok().build();
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping(path= "{id}")
+    public ResponseEntity<Resource> deleteLabel(@PathVariable long id) {
+        try {
+            Label label = service.get(id);
+            if (label != null) {
+                service.remove(id);
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
     }
 }
+

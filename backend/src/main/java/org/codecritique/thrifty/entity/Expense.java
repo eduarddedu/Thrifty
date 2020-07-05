@@ -1,7 +1,5 @@
 package org.codecritique.thrifty.entity;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -44,11 +42,11 @@ public class Expense extends BaseEntity {
 
     public Expense() {}
 
-    public Expense(LocalDate createdOn, Double amount, String description, Category c, Set<Label> labels) {
+    public Expense(LocalDate createdOn, Double amount, String description, Category category, Set<Label> labels) {
         this.createdOn = createdOn;
         this.amount = amount;
         this.description = description;
-        this.category = c;
+        this.category = category;
         this.labels = labels;
     }
 
@@ -121,7 +119,7 @@ public class Expense extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return 17;
+        return Objects.hash(id, amount, createdOn, description, category, labels);
     }
 
     @Override

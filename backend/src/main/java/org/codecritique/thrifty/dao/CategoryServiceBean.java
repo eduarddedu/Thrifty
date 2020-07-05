@@ -36,21 +36,25 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
 
     @Override
     public void update(Category category) {
-        if (em.find(Category.class, category.getId()) != null)
-            super.persist(category);
+        Category category1 = em.find(Category.class, category.getId());
+        if (category1 != null) {
+            em.getTransaction().begin();
+            category1.setName(category.getName());
+            category1.setDescription(category.getDescription());
+            em.getTransaction().commit();
+        }
     }
 
     @Override
     public void remove(long categoryId) {
-
         Category category = em.find(Category.class, categoryId);
-        if (category == null)
-            return;
-        em.getTransaction().begin();
-        for (Expense expense : category.getExpenses()) {
-            expense.setCategory(null);
+        if (category != null) {
+            em.getTransaction().begin();
+            for (Expense expense : category.getExpenses()) {
+                expense.setCategory(null);
+            }
+            em.remove(category);
+            em.getTransaction().commit();
         }
-        em.remove(category);
-        em.getTransaction().commit();
     }
 }
