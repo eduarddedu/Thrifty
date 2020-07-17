@@ -2,10 +2,13 @@ package org.codecritique.thrifty.dao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.time.LocalDate;
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.codecritique.thrifty.TestUtils.*;
+
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
@@ -13,24 +16,77 @@ import org.codecritique.thrifty.entity.Label;
 
 class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Autowired
-    ExpenseService service;
+    private ExpenseService expenseService;
 
     @Autowired
-    LabelService labelService;
+    private LabelService labelService;
 
     @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
 
     @Test
-    void testAddExpense() {
-        service.store(expenseSupplier.get());
+    void testStoreExpense() {
+        expenseService.store(expenseSupplier.get());
     }
 
     @Test
     void testGetExpense() {
         Expense expense = expenseSupplier.get();
-        service.store(expense);
-        assertEquals(expense, service.get(expense.getId()));
+        expenseService.store(expense);
+        assertEquals(expense, expenseService.get(expense.getId()));
+    }
+
+    @Test
+    void testAddLabel() {
+        //setup
+        Label label = labelSupplier.get();
+        Expense expense = expenseSupplier.get();
+        labelService.store(label);
+        expenseService.store(expense);
+
+        //exercise
+        expense.addLabel(label);
+
+        //verify
+        assertTrue(expense.getLabels().contains(label));
+        assertTrue(label.getExpenses().contains(expense));
+        assertEquals(expense, expenseService.get(expense.getId()));
+    }
+
+    @Test
+    void testSetCategory() {
+        Category category = categorySupplier.get();
+        Expense expense = expenseSupplier.get();
+        categoryService.store(category);
+        expenseService.store(expense);
+
+        //exercise
+        expense.setCategory(category);
+
+        //verify
+        assertEquals(category, expense.getCategory());
+        assertEquals(expense, expenseService.get(expense.getId()));
+    }
+
+    @Test
+    void testRemoveLabel() {
+        //setup
+        Label label1 = labelSupplier.get();
+        Label label2 = labelSupplier.get();
+        labelService.store(label1);
+        labelService.store(label2);
+
+        Expense expense = expenseSupplier.get();
+        expense.setLabels(new HashSet<>(Arrays.asList(label1, label2)));
+        expenseService.store(expense);
+
+        //exercise
+        expense.removeLabel(label1);
+
+        //verify
+        assertEquals(expense, expenseService.get(expense.getId()));
+        assertTrue(labelService.getLabels().contains(label1));
+        assertFalse(expense.getLabels().contains(label1));
     }
 
     @Test
@@ -38,10 +94,10 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++) {
-            service.store(expenseSupplier.get());
+            expenseService.store(expenseSupplier.get());
         }
 
-        Iterator<LocalDate> it = service.getExpenses().
+        Iterator<LocalDate> it = expenseService.getExpenses().
                 stream().map(Expense::getCreatedOn).iterator();
 
         while (it.hasNext()) {
@@ -53,105 +109,50 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     }
 
     @Test
-    void updateExpense() {
+    void testUpdateExpense() {
         //setup
         Expense expense = expenseSupplier.get();
-        service.store(expense);
-
-        //exercise
-        expense.setCreatedOn(LocalDate.MAX);
-        expense.setAmount((double) Integer.MAX_VALUE);
-        expense.setDescription(randomName.get());
-        expense.setCategory(categorySupplier.get());
-        expense.addLabel(labelSupplier.get());
-        service.update(expense);
-
-        //verify
-        assertEquals(expense, service.get(expense.getId()));
-    }
-
-
-    @Test
-    void testSetCategory() {
-        //setup
         Category category = categorySupplier.get();
-        Expense expense = expenseSupplier.get();
-        service.store(expense);
-
-        //exercise
-        expense.setCategory(category);
-
-        //verify
-        assertEquals(category, service.get(expense.getId()).getCategory());
-    }
-
-    @Test
-    void testAddLabel() {
-        //setup
         Label label = labelSupplier.get();
-        Expense expense = expenseSupplier.get();
-        service.store(expense);
-
-        //exercise
-        expense.addLabel(label);
-
-        //verify
-        assertTrue(service.get(expense.getId()).getLabels().contains(label));
-        for (Label label1 : labelService.getLabels()) {
-            if (label1.equals(label))
-                assertTrue(label.getExpenses().contains(expense));
-        }
-    }
-
-    @Test
-    void testRemoveLabelFromExpense() {
-        //setup
-        Label label = labelSupplier.get();
-        Expense expense = expenseSupplier.get();
+        expenseService.store(expense);
+        categoryService.store(category);
         labelService.store(label);
-        service.store(expense);
+
+
+        //exercise
+        expense.setCreatedOn(randomDate.get());
+        expense.setAmount((double) Integer.MAX_VALUE);
+        expense.setDescription("Baz");
+        expense.setCategory(category);
         expense.addLabel(label);
-
-        //exercise
-        labelService.remove(label.getId());
+        expenseService.update(expense);
 
         //verify
-        assertNull(labelService.get(label.getId()));
-        assertFalse(expense.getLabels().contains(label));
-        assertFalse(service.get(expense.getId()).getLabels().contains(label));
-    }
-
-    @Test
-    void testSetLabels() {
-        Expense expense = expenseSupplier.get();
-        service.store(expense);
-
-        //exercise
-        Set<Label> labels = new HashSet<>(Arrays.asList(labelSupplier.get(), labelSupplier.get()));
-        expense.setLabels(labels);
-
-        //verify
-        assertEquals(labels, service.get(expense.getId()).getLabels());
+        assertEquals(expense, expenseService.get(expense.getId()));
     }
 
     @Test
     void testRemoveExpense() {
         //setup
+        //setup
         Expense expense = expenseSupplier.get();
-        Set<Label> labels = expense.getLabels();
-        Category category = expense.getCategory();
-        service.store(expense);
+        Category category = categorySupplier.get();
+        Label label = labelSupplier.get();
+        categoryService.store(category);
+        labelService.store(label);
+        expense.setCategory(category);
+        expense.addLabel(label);
+        expenseService.store(expense);
 
         //exercise
-        service.remove(expense.getId());
+        expenseService.remove(expense.getId());
 
         //verify that:
         //- expense has been deleted
-        assertNull(service.get(expense.getId()));
+        assertNull(expenseService.get(expense.getId()));
 
         //- existing labels have not been deleted
-        for (Label label : labels)
-            assertTrue(labelService.getLabels().contains(label));
+        assertTrue(labelService.getLabels().contains(label));
 
         //- existing category has not been deleted
         assertTrue(categoryService.getCategories().contains(category));

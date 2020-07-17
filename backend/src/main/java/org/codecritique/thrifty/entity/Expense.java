@@ -23,7 +23,6 @@ public class Expense extends BaseEntity {
     private Double amount;
 
     @ManyToOne(cascade = {
-            CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(name = "Expense_Category",
@@ -32,7 +31,6 @@ public class Expense extends BaseEntity {
     private Category category;
 
     @ManyToMany(cascade = {
-            CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(name = "Expense_Label",
@@ -40,14 +38,7 @@ public class Expense extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
 
-    public Expense() {}
-
-    public Expense(LocalDate createdOn, Double amount, String description, Category category, Set<Label> labels) {
-        this.createdOn = createdOn;
-        this.amount = amount;
-        this.description = description;
-        this.category = category;
-        this.labels = labels;
+    public Expense() {
     }
 
     public Category getCategory() {
@@ -55,9 +46,8 @@ public class Expense extends BaseEntity {
     }
 
     public void setCategory(Category category) {
-        if (category != null)
-            category.getExpenses().add(this);
         this.category = category;
+        category.getExpenses().add(this);
     }
 
     public LocalDate getCreatedOn() {
@@ -84,17 +74,18 @@ public class Expense extends BaseEntity {
         this.amount = amount;
     }
 
-    public Set<Label> getLabels() {
-        return labels;
+    public void setLabels(Set<Label> labels) {
+        this.labels.clear();
+        this.labels.addAll(labels);
     }
 
-    public void setLabels(Set<Label> labels) {
-        this.labels = labels;
+    public Set<Label> getLabels() {
+        return new HashSet<>(labels);
     }
 
     public void addLabel(Label label) {
-        label.getExpenses().add(this);
         labels.add(label);
+        label.getExpenses().add(this);
     }
 
     public void removeLabel(Label label) {
@@ -109,6 +100,7 @@ public class Expense extends BaseEntity {
         else if (!(o instanceof Expense))
             return false;
         Expense other = (Expense) o;
+
         return Objects.equals(id, other.id)
                 && Objects.equals(amount, other.amount)
                 && Objects.equals(createdOn, other.createdOn)

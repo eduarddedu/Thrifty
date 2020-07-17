@@ -77,6 +77,11 @@
                         <properties>
                             <spring.profiles.active>dev</spring.profiles.active>
                         </properties>
+                        <includes>
+                            <include>**/LabelServiceBeanTest.java</include>
+                            <include>**/CategoryServiceBeanTest.java</include>
+                            <include>**/ExpenseServiceBeanTest.java</include>
+                        </includes>
                     </configuration>
                 </plugin>
                 <plugin>

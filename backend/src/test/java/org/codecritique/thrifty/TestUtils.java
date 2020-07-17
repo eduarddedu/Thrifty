@@ -21,7 +21,7 @@ public class TestUtils {
 
     public static Supplier<LocalDate> randomDate = () -> {
         Random r = new Random();
-        return LocalDate.of(r.nextInt(2000), 1 + r.nextInt(11), 1 + r.nextInt(27));
+        return LocalDate.of(r.nextInt(2000), 1 + r.nextInt(12), 1 + r.nextInt(28));
     };
 
     public static Supplier<Label> labelSupplier = () -> new Label(randomName.get());
@@ -33,9 +33,6 @@ public class TestUtils {
         expense.setCreatedOn(randomDate.get());
         expense.setAmount(0d);
         expense.setDescription(randomName.get());
-        expense.setCategory(categorySupplier.get());
-        for(int i = 0; i < 3; i++)
-            expense.addLabel(labelSupplier.get());
         return expense;
     };
 }

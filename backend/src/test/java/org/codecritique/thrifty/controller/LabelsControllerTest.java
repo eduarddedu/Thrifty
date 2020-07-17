@@ -1,5 +1,6 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDate;
+
+import static org.codecritique.thrifty.TestUtils.expenseSupplier;
 import static org.codecritique.thrifty.TestUtils.labelSupplier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,8 +58,7 @@ class LabelsControllerTest extends BaseControllerTest {
     @Test
     void updateLabel() throws Exception {
         String json = mapper.writeValueAsString(new Label("Foo"));
-        ResultActions actions = mockMvc.perform(post(resourcePath)
-                .contentType(MediaType.APPLICATION_JSON).content(json));
+        ResultActions actions = mockMvc.perform(post(resourcePath).contentType(MediaType.APPLICATION_JSON).content(json));
         long labelId = parseEntityIdFromLocationHeader(actions.andReturn().getResponse().getHeader("Location"),
                 locationHeaderPattern);
         json = mockMvc.perform(get(resourcePath + "/" + labelId))
@@ -79,6 +82,22 @@ class LabelsControllerTest extends BaseControllerTest {
         //verify
         mockMvc.perform(get(resourcePath + "/" + label.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteLabelLinkedToExpense() throws Exception {
+        Label label = storeLabel();
+        Expense expense = new Expense();
+        expense.setAmount(0d);
+        expense.setDescription("Foo");
+        expense.setCreatedOn(LocalDate.MIN);
+        expense.addLabel(label);
+        mockMvc.perform(post("/rest-api/expenses").contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(expense)))
+                .andDo(print()).andExpect(status().isCreated());
+        //verify
+        mockMvc.perform(delete(resourcePath + "/" + label.getId()))
+                .andExpect(status().isOk());
     }
 
 }

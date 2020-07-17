@@ -1,7 +1,6 @@
 package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,16 +12,14 @@ import static org.codecritique.thrifty.TestUtils.*;
 class CategoryServiceBeanTest extends BaseServiceBeanTest {
 
     @Autowired
-    CategoryService service;
+    private CategoryService categoryService;
 
-    @Autowired
-    protected ExpenseServiceBean expenseService;
 
     @Test
-    void testAddCategory() {
+    void testStoreCategory() {
         Category category = categorySupplier.get();
-        service.store(category);
-        assertEquals(category, service.get(category.getId()));
+        categoryService.store(category);
+        assertEquals(category, categoryService.get(category.getId()));
     }
 
     @Test
@@ -31,9 +28,9 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            service.store(categorySupplier.get());
+            categoryService.store(categorySupplier.get());
 
-        Iterator<String> it = service.getCategories()
+        Iterator<String> it = categoryService.getCategories()
                 .stream().map(Category::getName).iterator();
 
         while (it.hasNext()) {
@@ -47,86 +44,27 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testUpdateCategory() {
         //setup
-        Category c = categorySupplier.get();
-        service.store(c);
+        Category category = categorySupplier.get();
+        categoryService.store(category);
 
         //exercise
-        c.setName(randomName.get());
-        c.setDescription(randomName.get());
+        category.setName(randomName.get());
+        category.setDescription(randomName.get());
 
         //verify
-        assertEquals(c, service.get(c.getId()));
+        assertEquals(category, categoryService.get(category.getId()));
     }
 
     @Test
     void testRemoveCategory() {
         //setup
-        Category c = categorySupplier.get();
-        service.store(c);
+        Category category = categorySupplier.get();
+        categoryService.store(category);
 
         //exercise
-        service.remove(c.getId());
+        categoryService.remove(category.getId());
 
         //verify
-        assertNull(service.get(c.getId()));
+        assertNull(categoryService.get(category.getId()));
     }
-
-    @Test
-    void testExpenseHavingNoCategory() {
-        Expense expense = new Expense();
-        expense.setCreatedOn(randomDate.get());
-        expense.setDescription(randomName.get());
-        expense.setAmount(0d);
-        expenseService.store(expense);
-        assertNull(expense.getCategory());
-    }
-
-    @Test
-    void testSetCategory() {
-
-        Category c = categorySupplier.get();
-        Expense e = expenseSupplier.get();
-        e.setCategory(c);
-
-        expenseService.store(e);
-
-        //verify
-        assertEquals(c, e.getCategory());
-        assertEquals(c, service.get(c.getId()));
-    }
-
-    @Test
-    void testSetCategory_doesNotStoreCategory() {
-
-        Category c = categorySupplier.get();
-        Expense e = expenseSupplier.get();
-
-        expenseService.store(e);
-        e.setCategory(c);
-
-        //verify
-        assertNull(c.getId());
-    }
-
-    @Test
-    void testRemoveCategoryFromExpense() {
-        /*
-        Both entities must be stored in order for the delete operation on Category to succeed.
-         */
-        //setup
-        Expense e = expenseSupplier.get();
-        Category c = categorySupplier.get();
-
-        expenseService.store(e);
-        service.store(c); // comment out to fail the test
-
-        e.setCategory(c);
-
-        //exercise
-        service.remove(c.getId()); // get NullPointer here
-
-        //verify
-        assertNull(e.getCategory());
-    }
-
 }

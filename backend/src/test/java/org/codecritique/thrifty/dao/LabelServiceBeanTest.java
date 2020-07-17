@@ -13,21 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Autowired
-    LabelServiceBean service;
-
-    @Autowired
-    protected LabelServiceBean labelService;
+    private LabelServiceBean labelService;
 
     @Test
     void testAddLabel() {
         Label label = labelSupplier.get();
-        service.store(label);
-        assertEquals(label, service.get(label.getId()));
+        labelService.store(label);
+        assertEquals(label, labelService.get(label.getId()));
     }
 
     @Test
     void testGetLabelsSortedByName() {
-
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
@@ -47,21 +43,21 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testUpdateLabel() {
         Label label = labelSupplier.get();
-        service.store(label);
+        labelService.store(label);
 
         label.setName(randomName.get());
-        service.update(label);
+        labelService.update(label);
 
-        assertEquals(label, service.get(label.getId()));
+        assertEquals(label, labelService.get(label.getId()));
     }
 
     @Test
     void removeLabel() {
         Label label = new Label("Foo");
-        service.store(label);
-        assertNotNull(service.get(label.getId()));
-        service.remove(label.getId());
-        assertNull(service.get(label.getId()));
+        labelService.store(label);
+        assertNotNull(labelService.get(label.getId()));
+        labelService.remove(label.getId());
+        assertNull(labelService.get(label.getId()));
     }
 
 }
