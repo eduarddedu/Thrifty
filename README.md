@@ -1,6 +1,6 @@
 ## 1. Serve 
 
-Serve web app on the embedded Tomcat server: 
+Serve web app using the embedded Tomcat server: 
 
     mvn -pl backend -P dev spring-boot:run
     
