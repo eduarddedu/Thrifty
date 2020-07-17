@@ -30,7 +30,7 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             this.category = account.categories.find(c => c.id === +v[1].categoryId);
             this.setRadioOptionsLabel(account);
             this.setRadioOptionsCategory(account);
-            this.selectedCategories = this.filterChecked(this.radioOptionsCategory);
+            this.selectedCategory = this.filterChecked(this.radioOptionsCategory);
             this.expenseForm.patchValue({ date: { jsdate: new Date() } });
             this.showForm = true;
         }, err => {
@@ -45,7 +45,7 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
         this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
         const expense: Expense = Object.assign(this.readFormData(), {
             labels: this.selectedLabels,
-            categories: this.selectedCategories
+            category: this.selectedCategory
         });
         this.rs.createExpense(expense).subscribe(
             () => this.notificationMessage = this.ms.get(Kind.EXPENSE_CREATE_OK),

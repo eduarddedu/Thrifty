@@ -30,11 +30,11 @@ export interface Label {
 
 export interface Expense {
     id?: number;
-    date: LocalDate;
+    createdOn: LocalDate;
     description: string;
     amount: number;
     labels?: Label[];
-    categories?: Category[];
+    category: Category;
 }
 
 export interface LocalDate {

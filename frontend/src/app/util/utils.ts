@@ -54,7 +54,7 @@ export class Utils {
             const mapLabelIdLabel: Map<number, Label> = new Map();
             labels.forEach(label => mapLabelIdLabel.set(label.id, label));
             for (const expense of expenses) {
-                if (expense.categories.length === 0) {
+                if (!expense.category) {
                     expensesWithoutCategory.push(expense);
                 }
             }
@@ -84,12 +84,11 @@ export class Utils {
             mapCatIdCategory.set(category.id, category);
         });
         for (const expense of expenses) {
-            for (const category of expense.categories) {
+                const category = expense.category;
                 const inMapCategory = mapCatIdCategory.get(category.id);
                 mapCatIdCategory.set(category.id, inMapCategory);
                 inMapCategory.expenses = inMapCategory.expenses || [];
                 inMapCategory.expenses.push(expense);
-            }
         }
         const enrichedCategories: Category[] = Array.from(mapCatIdCategory.values());
         enrichedCategories.forEach(c => {
@@ -112,10 +111,10 @@ export class Utils {
     private static getMinMaxDatesFrom(expenses: Expense[]): DateRange {
         const dateRange = <DateRange>{};
         if (expenses.length > 1) {
-            dateRange.startDate = expenses[0].date;
-            dateRange.endDate = expenses[expenses.length - 1].date;
+            dateRange.startDate = expenses[0].createdOn;
+            dateRange.endDate = expenses[expenses.length - 1].createdOn;
         } else if (expenses.length === 1) {
-            dateRange.startDate = dateRange.endDate = expenses[0].date;
+            dateRange.startDate = dateRange.endDate = expenses[0].createdOn;
         }
         return dateRange;
     }
@@ -123,9 +122,9 @@ export class Utils {
     private static computeMapYearBalance(expenses: Expense[]): { [key: number]: number } {
         const mapYearBalance = {};
         for (const expense of expenses) {
-            let sum = mapYearBalance[expense.date.year] || 0;
+            let sum = mapYearBalance[expense.createdOn.year] || 0;
             sum += expense.amount;
-            mapYearBalance[expense.date.year] = sum;
+            mapYearBalance[expense.createdOn.year] = sum;
         }
         return mapYearBalance;
     }

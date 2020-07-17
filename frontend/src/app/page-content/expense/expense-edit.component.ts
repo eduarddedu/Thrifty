@@ -35,7 +35,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             this.setRadioOptionsLabel(account);
             this.selectedLabels = [].concat(this.expenseModel.labels);
             this.setRadioOptionsCategory(account);
-            this.selectedCategories = this.filterChecked(this.radioOptionsCategory);
+            this.selectedCategory = this.filterChecked(this.radioOptionsCategory);
             this.showForm = true;
         }, err => {
             this.showNotification = true;
@@ -50,7 +50,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
         const expense: Expense = Object.assign(this.readFormData(), {
             id: this.expenseModel.id,
             labels: this.selectedLabels,
-            categories: this.selectedCategories
+            category: this.selectedCategory
         });
         this.rs.updateExpense(expense).subscribe(
             () => this.notificationMessage = this.ms.get(Kind.EXPENSE_EDIT_OK),
@@ -59,7 +59,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
 
     private setFormWithModelValues() {
         this.expenseForm.patchValue({
-            date: { jsdate: Utils.localDateToJsDate(this.expenseModel.date) },
+            date: { jsdate: Utils.localDateToJsDate(this.expenseModel.createdOn) },
             description: this.expenseModel.description,
             amount: this.expenseModel.amount
         });

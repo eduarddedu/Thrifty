@@ -30,7 +30,7 @@ export class CategoryCreateComponent extends CategoryFormParent implements OnIni
         });
     }
 
-    private setRadioSelectorOptions(account) {
+    private setRadioSelectorOptions(account: Account) {
         account.labels.forEach(label => this.radioOptions.push({
             id: label.id,
             name: label.name,

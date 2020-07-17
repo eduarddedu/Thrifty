@@ -28,7 +28,7 @@ export class ExpenseFormParent {
 
     selectedLabels: Label[] = [];
 
-    selectedCategories: Category[] = [];
+    selectedCategory: Category;
 
     constructor(protected fb: FormBuilder) {
         this.expenseForm = this.fb.group({
@@ -52,7 +52,7 @@ export class ExpenseFormParent {
 
     protected readFormData() {
         return {
-            date: Utils.jsDateToLocalDate(this.date.value.jsdate),
+            createdOn: Utils.jsDateToLocalDate(this.date.value.jsdate),
             description: this.description.value,
             amount: this.amount.value
         };
@@ -63,7 +63,7 @@ export class ExpenseFormParent {
     }
 
     protected onClickCategoryOption(selector) {
-        this.selectedCategories = this.filterChecked(selector.options);
+        this.selectedCategory = this.filterChecked(selector.options);
     }
 
     protected filterChecked(options: RadioOption[]) {

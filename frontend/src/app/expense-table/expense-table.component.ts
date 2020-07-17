@@ -51,7 +51,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 { title: 'Description' },
                 { title: 'Amount' }
             ],
-            data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.date), e.description, e.amount]),
+            data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]),
             select: 'single',
             rowCallback: (row: Node, data: any[] | Object, index: number) => {
                 $('td', row).unbind('click');
@@ -79,7 +79,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.clear();
             this.expenses.forEach(e =>
-                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.date), e.description, e.amount]));
+                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]));
             dtInstance.draw();
             this.disableTextSelectionOnTableElements();
             this.expenseId = null;

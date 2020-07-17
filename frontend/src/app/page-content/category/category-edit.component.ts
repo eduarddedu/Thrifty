@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { MessageService, Kind } from '../../services/messages.service';
 import { RestService } from '../../services/rest.service';
-import { Account, Category, RadioOption } from '../../model';
+import { Account, Category, Label, RadioOption} from '../../model';
 import { CategoryFormParent } from './category-form-parent';
 
 
@@ -44,14 +44,14 @@ export class CategoryEditComponent extends CategoryFormParent implements OnInit 
         this.resolveCheckedStatus(account, category);
     }
 
-    private resolveCheckedStatus(account, category) {
+    private resolveCheckedStatus(account: Account, category: Category) {
         const map: Map<number, RadioOption> = new Map();
         account.labels.forEach(label => map.set(label.id, {
             id: label.id,
             name: label.name,
             checked: false
         }));
-        category.labels.forEach(label => map.set(label.id, {
+        category.labels.forEach((label: Label) => map.set(label.id, {
             id: label.id,
             name: label.name,
             checked: true

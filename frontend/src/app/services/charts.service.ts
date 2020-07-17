@@ -159,7 +159,7 @@ export class ChartsService {
 
     private filter(expenses: Expense[], onOrAfterDate: Date, beforeDate: Date): Expense[] {
         return expenses.filter(e => {
-            const transDate: Date = Utils.localDateToJsDate(e.date);
+            const transDate: Date = Utils.localDateToJsDate(e.createdOn);
             return transDate >= onOrAfterDate && transDate < beforeDate;
         });
     }

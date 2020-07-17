@@ -82,7 +82,7 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     }
 
     private getEarliestExpenseDate(expenses: Expense[]) {
-        const earliestLocalDate = expenses.reduce((prevExp, currExp) => prevExp <= currExp ? prevExp : currExp).date;
+        const earliestLocalDate = expenses.reduce((prevExp, currExp) => prevExp <= currExp ? prevExp : currExp).createdOn;
         return Utils.localDateToJsDate(earliestLocalDate);
     }
 
