@@ -2,7 +2,6 @@ package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.dao.ExpenseServiceBean;
 import org.codecritique.thrifty.entity.Expense;
-import org.codecritique.thrifty.entity.Label;
 import org.codecritique.thrifty.exception.WebException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
