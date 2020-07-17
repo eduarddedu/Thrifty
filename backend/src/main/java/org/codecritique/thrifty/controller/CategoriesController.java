@@ -24,19 +24,8 @@ public class CategoriesController extends BaseController {
     @Autowired
     CategoryServiceBean service;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Category> getCategoriesSortedByName() {
-        return service.getCategories();
-    }
-
-    @GetMapping(path = "{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Category getCategory(@PathVariable long id) {
-        return service.get(id);
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> storeCategory(@RequestBody Category category) {
+    public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
         try {
             service.store(category);
             return ResponseEntity.created(toAbsoluteUri("/rest-api/categories/" + category.getId())).build();
@@ -56,6 +45,43 @@ public class CategoriesController extends BaseController {
             return ResponseEntity.badRequest().build();
         } catch (Throwable ex) {
             throw new WebException(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Resource> removeCategory(@PathVariable long id) {
+        try {
+            Category category = service.get(id);
+            if (category != null) {
+                service.remove(id);
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
+    @GetMapping(path = "{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Category> getCategory(@PathVariable long id) {
+        try {
+            Category category = service.get(id);
+            if (category != null)
+                return ResponseEntity.ok(category);
+            return ResponseEntity.notFound().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Category> getCategoriesSortedByName() {
+        try {
+            return service.getCategories();
+        } catch (Throwable e) {
+            throw new WebException(e.getMessage());
         }
     }
 }

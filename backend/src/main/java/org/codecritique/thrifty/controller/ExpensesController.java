@@ -2,6 +2,7 @@ package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.dao.ExpenseServiceBean;
 import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.Label;
 import org.codecritique.thrifty.exception.WebException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +24,8 @@ public class ExpensesController extends BaseController {
     @Autowired
     ExpenseServiceBean service;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Expense> getExpensesSortedByDate() {
-        return service.getExpenses();
-    }
-
-    @GetMapping(path = "{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Expense getExpense(@PathVariable long id) {
-        return service.get(id);
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> storeExpense(@RequestBody Expense expense) {
+    public ResponseEntity<Resource> createExpense(@RequestBody Expense expense) {
         try {
             service.store(expense);
             return ResponseEntity.created(toAbsoluteUri("/rest-api/expenses/" + expense.getId())).build();
@@ -45,6 +35,19 @@ public class ExpensesController extends BaseController {
             throw new WebException(ex.getMessage());
         }
     }
+
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Expense> getExpense(@PathVariable long id) {
+        try {
+            Expense expense = service.get(id);
+            if (expense != null)
+                return ResponseEntity.ok(expense);
+            return ResponseEntity.notFound().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateExpense(@RequestBody Expense expense) {
@@ -56,6 +59,26 @@ public class ExpensesController extends BaseController {
         } catch (Throwable ex) {
             throw new WebException(ex.getMessage());
         }
+    }
+
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Resource> removeExpense(@PathVariable long id) {
+        try {
+            Expense expense = service.get(id);
+            if (expense != null) {
+                service.remove(id);
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Throwable ex) {
+            throw new WebException(ex.getMessage());
+        }
+    }
+
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Expense> getExpensesSortedByDate() {
+        return service.getExpenses();
     }
 
 }

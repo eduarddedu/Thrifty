@@ -22,23 +22,8 @@ public class LabelsController extends BaseController {
     @Autowired
     private LabelServiceBean service;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Label> getLabelsSortedByName() {
-        return service.getLabels();
-    }
-
-    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Label> getLabel(@PathVariable long id) {
-        Label label = service.get(id);
-        if (label != null) {
-            return ResponseEntity.ok(label);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Resource> storeLabel(@RequestBody Label label) {
+    public ResponseEntity<Resource> createLabel(@RequestBody Label label) {
         try {
             service.store(label);
             return ResponseEntity.created(toAbsoluteUri("/rest-api/labels/" + label.getId())).build();
@@ -61,19 +46,32 @@ public class LabelsController extends BaseController {
         }
     }
 
-    @DeleteMapping(path= "{id}")
-    public ResponseEntity<Resource> deleteLabel(@PathVariable long id) {
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<Resource> removeLabel(@PathVariable long id) {
         try {
             Label label = service.get(id);
             if (label != null) {
                 service.remove(id);
                 return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.notFound().build();
             }
+            return ResponseEntity.notFound().build();
         } catch (Throwable ex) {
             throw new WebException(ex.getMessage());
         }
     }
+
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Label> getLabel(@PathVariable long id) {
+        Label label = service.get(id);
+        if (label != null)
+            return ResponseEntity.ok(label);
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Label> getLabelsSortedByName() {
+        return service.getLabels();
+    }
+
 }
 

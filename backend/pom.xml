@@ -81,6 +81,9 @@
                             <include>**/LabelServiceBeanTest.java</include>
                             <include>**/CategoryServiceBeanTest.java</include>
                             <include>**/ExpenseServiceBeanTest.java</include>
+                            <include>**/LabelsControllerTest.java</include>
+                            <include>**/CategoriesControllerTest.java</include>
+                            <include>**/ExpensesControllerTest.java</include>
                         </includes>
                     </configuration>
                 </plugin>
