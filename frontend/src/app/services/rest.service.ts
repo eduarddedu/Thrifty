@@ -68,7 +68,7 @@ export class RestService {
         return this.http.post('labels', JSON.stringify(label)).pipe(tap(() => this.cleanCache()));
     }
 
-    public updateLabel(id: number, label: Label) {
+    public updateLabel(label: Label) {
         return this.http.put(`labels`, JSON.stringify(label)).pipe(tap(() => this.cleanCache()));
     }
 

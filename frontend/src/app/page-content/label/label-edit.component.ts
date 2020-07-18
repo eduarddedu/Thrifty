@@ -42,10 +42,11 @@ export class LabelEditComponent extends LabelFormParent implements OnInit {
 
     onSubmit() {
         this.showForm = false;
-        const newLabel = Object.assign(this.readFormData());
+        const newLabel = Object.assign({id: this.id}, this.readFormData());
+        newLabel.id = this.id;
         this.showNotification = true;
         this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-        this.rs.updateLabel(this.id, newLabel).subscribe(() => this.notificationMessage = this.ms.get(Kind.LABEL_EDIT_OK),
+        this.rs.updateLabel(newLabel).subscribe(() => this.notificationMessage = this.ms.get(Kind.LABEL_EDIT_OK),
             err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
     }
 
