@@ -4,7 +4,7 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
              http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd" version="2.2">
 
-    <persistence-unit name="thriftyPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="THRIFTY_PRODUCTION" transaction-type="RESOURCE_LOCAL">
         <description>
             Production persistence unit (MySQL)
         </description>
@@ -24,7 +24,7 @@
         </properties>
     </persistence-unit>
 
-    <persistence-unit name="thriftyPersistenceUnitDev" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="THRIFTY_DEV" transaction-type="RESOURCE_LOCAL">
         <description>
             Test persistence unit (H2)
         </description>

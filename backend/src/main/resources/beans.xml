@@ -7,14 +7,14 @@
 
     <beans profile="dev">
         <bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-            <property name="persistenceUnitName" value="thriftyPersistenceUnitDev"/>
+            <property name="persistenceUnitName" value="THRIFTY_DEV"/>
             <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
         </bean>
     </beans>
 
     <beans profile="default,production">
         <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-            <property name="persistenceUnitName" value="thriftyPersistenceUnit"/>
+            <property name="persistenceUnitName" value="THRIFTY_PRODUCTION"/>
             <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
         </bean>
     </beans>
