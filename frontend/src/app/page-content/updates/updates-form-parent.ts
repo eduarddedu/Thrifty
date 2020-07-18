@@ -33,8 +33,12 @@ export class UpdatesFormParent {
         }
     }
 
-    onClickOption(selector) {
-        this.checkedOption = selector.currentCheckedOption;
+    onClickOption(event: {options: RadioOption[]}) {
+        for (const option of event.options) {
+            if (option.checked) {
+                this.checkedOption = option;
+            }
+        }
         this.goButtonEnabled();
     }
 }

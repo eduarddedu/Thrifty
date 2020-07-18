@@ -12,19 +12,16 @@ export class RadioSelectorComponent {
     @Input() options: RadioOption[];
     @Input() singleSelectMode = false;
     @Output() click$: EventEmitter<Object> = new EventEmitter();
-    private lastClickedOption: RadioOption;
 
     onClickOption(option: RadioOption) {
         if (this.singleSelectMode) {
-            if (option === this.lastClickedOption) {
-                this.lastClickedOption.checked = !this.lastClickedOption.checked;
-            } else {
-                option.checked = !option.checked;
-                if (option.checked && this.lastClickedOption) {
-                    this.lastClickedOption.checked = false;
+            this.options.forEach(opt => {
+                if (opt.id === option.id) {
+                    opt.checked = true;
+                } else {
+                    opt.checked = false;
                 }
-                this.lastClickedOption = option;
-            }
+            });
         } else {
             option.checked = !option.checked;
         }
@@ -34,7 +31,6 @@ export class RadioSelectorComponent {
     private exportState() {
         this.click$.emit({
             options: this.options,
-            currentCheckedOption: this.lastClickedOption && this.lastClickedOption.checked && this.lastClickedOption
         });
     }
 }

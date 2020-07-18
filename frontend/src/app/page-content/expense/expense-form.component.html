@@ -67,7 +67,8 @@
                         <div class="col-lg-6" id="labels">
                             <p>
                                 <label>Categories</label>
-                                <app-radio-selector [options]="radioOptionsCategory" (click$)="onClickCategoryOption($event)"></app-radio-selector>
+                                <app-radio-selector [options]="radioOptionsCategory" [singleSelectMode]="true" 
+                                (click$)="onClickCategoryOption($event)"></app-radio-selector>
                             </p>
                             <p>
                                 <label>Labels</label>

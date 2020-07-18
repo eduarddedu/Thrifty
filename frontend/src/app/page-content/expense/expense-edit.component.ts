@@ -35,7 +35,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             this.setRadioOptionsLabel(account);
             this.selectedLabels = [].concat(this.expenseModel.labels);
             this.setRadioOptionsCategory(account);
-            this.selectedCategory = this.filterChecked(this.radioOptionsCategory);
+            // this.selectedCategory = this.filterChecked(this.radioOptionsCategory)[0];
             this.showForm = true;
         }, err => {
             this.showNotification = true;
@@ -82,17 +82,16 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
 
     private setRadioOptionsCategory(account: Account) {
         account.categories.forEach(category => {
-            const option = Object.assign({ checked: false }, {
+            const option = {
                 id: category.id,
                 name: category.name,
-                description: category.description
-            });
-            category.expenses.forEach(expense => {
-                if (expense.id === this.expenseModel.id) {
-                    option.checked = true;
-                }
-            });
+                description: category.description,
+                checked: category.id === this.expenseModel.category.id ? true : false
+            };
             this.radioOptionsCategory.push(<RadioOption>option);
+            if (option.checked) {
+                this.selectedCategory = category;
+            }
         });
     }
 }

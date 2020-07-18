@@ -62,8 +62,12 @@ export class ExpenseFormParent {
         this.selectedLabels = <Label[]> this.filterChecked(selector.options);
     }
 
-    protected onClickCategoryOption(selector) {
-        this.selectedCategory = this.filterChecked(selector.options);
+    protected onClickCategoryOption(event: any) {
+        for (const option of event.options) {
+            if (option.checked) {
+                this.selectedCategory = Object.assign({id: option.id, name: option.name, description: option.description});
+            }
+        }
     }
 
     protected filterChecked(options: RadioOption[]) {

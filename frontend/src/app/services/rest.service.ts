@@ -44,7 +44,7 @@ export class RestService {
     }
 
     public updateCategory(id: number, category: Category) {
-        return this.http.put(`categories/${id}`, JSON.stringify(category)).pipe(tap(() => this.cleanCache()));
+        return this.http.put(`categories`, JSON.stringify(category)).pipe(tap(() => this.cleanCache()));
     }
 
     public deleteCategory(id: number): Observable<any> {
@@ -56,7 +56,7 @@ export class RestService {
     }
 
     public updateExpense(expense: Expense): Observable<any> {
-        return this.http.put(`expenses/${expense.id}`, JSON.stringify(expense))
+        return this.http.put(`expenses`, JSON.stringify(expense))
         .pipe(tap(() => this.cleanCache()));
     }
 
@@ -69,7 +69,7 @@ export class RestService {
     }
 
     public updateLabel(id: number, label: Label) {
-        return this.http.put(`labels/${id}`, JSON.stringify(label)).pipe(tap(() => this.cleanCache()));
+        return this.http.put(`labels`, JSON.stringify(label)).pipe(tap(() => this.cleanCache()));
     }
 
     public deleteLabel(id: number): Observable<any> {
