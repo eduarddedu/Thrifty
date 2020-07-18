@@ -89,7 +89,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             };
             this.radioOptionsCategory.push(<RadioOption>option);
             if (option.checked) {
-                this.selectedCategory = category;
+                this.selectedCategory = {id: category.id, name: category.name, description: category.description};
             }
         });
     }
