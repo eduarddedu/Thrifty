@@ -43,7 +43,7 @@ export class CategoryUpdatesComponent extends UpdatesFormParent implements OnIni
             case 'Edit' : this.router.navigate(['edit/category'], {queryParams: {id: this.checkedOption.id}}); break;
             case 'Delete' :
             this.showModal = true;
-            this.modalMessage = this.ms.get(Kind.LABEL_DELETE_WARN);
+            this.modalMessage = this.ms.get(Kind.CATEGORY_DELETE_WARN);
         }
     }
 
