@@ -5,7 +5,7 @@ import { combineLatest } from 'rxjs';
 
 import { RestService } from '../../services/rest.service';
 import { MessageService, Kind } from '../../services/messages.service';
-import { Expense, Account, Category } from '../../model';
+import { Expense, Account, Category, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
 
 
@@ -30,7 +30,6 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             this.category = account.categories.find(c => c.id === +v[1].categoryId);
             this.setRadioOptionsLabel(account);
             this.setRadioOptionsCategory(account);
-            this.selectedCategory = this.filterChecked(this.radioOptionsCategory);
             this.expenseForm.patchValue({ date: { jsdate: new Date() } });
             this.showForm = true;
         }, err => {
@@ -67,14 +66,18 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
         }));
     }
 
-    setRadioOptionsCategory(account: Account) {
-        if (!this.category) {
-            account.categories.forEach(c => {
-                this.radioOptionsCategory.push(Object.assign({ checked: false }, { id: c.id, name: c.name }));
-            });
-        } else {
-            this.radioOptionsCategory.push(
-                Object.assign({ checked: true }, { id: this.category.id, name: this.category.name }));
-        }
+    private setRadioOptionsCategory(account: Account) {
+        account.categories.forEach(category => {
+            const option = {
+                id: category.id,
+                name: category.name,
+                description: category.description,
+                checked: category.id === this.category.id ? true : false
+            };
+            this.radioOptionsCategory.push(<RadioOption>option);
+            if (option.checked) {
+                this.selectedCategory = {id: category.id, name: category.name, description: category.description};
+            }
+        });
     }
 }

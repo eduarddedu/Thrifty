@@ -35,7 +35,6 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             this.setRadioOptionsLabel(account);
             this.selectedLabels = [].concat(this.expenseModel.labels);
             this.setRadioOptionsCategory(account);
-            // this.selectedCategory = this.filterChecked(this.radioOptionsCategory)[0];
             this.showForm = true;
         }, err => {
             this.showNotification = true;

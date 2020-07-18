@@ -51,7 +51,7 @@ export class RestService {
         return this.http.delete(`categories/${id}`).pipe(tap(() => this.cleanCache()));
     }
 
-    public createExpense(expense: Expense): Observable<any> {
+    public createExpense(expense: Expense): Observable<any> {console.log(expense);
         return this.http.post('expenses', JSON.stringify(expense)).pipe(tap(() => this.cleanCache()));
     }
 
