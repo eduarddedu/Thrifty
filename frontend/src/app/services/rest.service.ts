@@ -43,7 +43,7 @@ export class RestService {
         return this.http.post('categories', JSON.stringify(category)).pipe(tap(() => this.cleanCache()));
     }
 
-    public updateCategory(id: number, category: Category) {
+    public updateCategory(category: Category) {
         return this.http.put(`categories`, JSON.stringify(category)).pipe(tap(() => this.cleanCache()));
     }
 
@@ -78,7 +78,7 @@ export class RestService {
 
     private cleanCache() {
         this.account = null;
-        this.getAccount().subscribe(() => console.log('Reimported account after changes'));
+        this.getAccount().subscribe(() => console.log('Refreshing application state: load account after changes'));
     }
 
 }

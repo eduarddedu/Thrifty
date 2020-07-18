@@ -64,8 +64,8 @@ export class CategoryEditComponent extends CategoryFormParent implements OnInit 
         this.showForm = false;
         this.showNotification = true;
         this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-        const category = this.readFormData();
-        this.rs.updateCategory(this.id, category).subscribe(() =>
+        const category = Object.assign({id: this.id}, this.readFormData());
+        this.rs.updateCategory(category).subscribe(() =>
             this.notificationMessage = this.ms.get(Kind.CATEGORY_EDIT_OK),
             err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
     }
