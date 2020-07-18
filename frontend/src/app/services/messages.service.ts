@@ -77,52 +77,52 @@ export class MessageService {
             /* Create operation
             */
             case Kind.CATEGORY_CREATE_OK:
-            text = 'Category has been created.';
+            text = 'Category created.';
             alert = Alert.SUCCESS;
             break;
             case Kind.EXPENSE_CREATE_OK:
-            text = 'Expense has been created.';
+            text = 'Expense created.';
             alert = Alert.SUCCESS;
             break;
             case Kind.LABEL_CREATE_OK:
-            text = 'Label has been created.';
+            text = 'Label created.';
             alert = Alert.SUCCESS;
             break;
 
             /* Edit operation
             */
             case Kind.CATEGORY_EDIT_OK:
-            text = 'Category has been updated.';
+            text = 'Category updated.';
             alert = Alert.SUCCESS;
             break;
             case Kind.EXPENSE_EDIT_OK:
-            text = 'Expense has been updated.';
+            text = 'Expense updated.';
             alert = Alert.SUCCESS;
             break;
             case Kind.LABEL_EDIT_OK:
-            text = 'Label has been updated.';
+            text = 'Label updated.';
             alert = Alert.SUCCESS;
             break;
 
             /* Delete operation
             */
             case Kind.CATEGORY_DELETE_OK:
-            text = 'Category has been deleted.';
+            text = 'Category deleted.';
             alert = Alert.SUCCESS;
             break;
             case Kind.EXPENSE_DELETE_OK:
-            text = 'Expense has been deleted.';
+            text = 'Expense deleted.';
             alert = Alert.SUCCESS;
             break;
             case Kind.LABEL_DELETE_OK:
-            text = 'Label has been deleted.';
+            text = 'Label deleted.';
             alert = Alert.SUCCESS;
             break;
 
             /* Delete warning
             */
             case Kind.CATEGORY_DELETE_WARN:
-            text = 'Only the category will be deleted. Assigned labels and expenses, if any, will stick around. Proceed?';
+            text = 'Deleting a category which is associated to an expense may break the app. Proceed?';
             alert = Alert.WARNING;
             break;
             case Kind.EXPENSE_DELETE_WARN:
@@ -130,7 +130,7 @@ export class MessageService {
             alert = Alert.WARNING;
             break;
             case Kind.LABEL_DELETE_WARN:
-            text = 'Only the label will be deleted. Associated expenses will stick around. Proceed?';
+            text = 'This only deletes the label. Associated expenses, if any, will stick around. Proceed?';
             alert = Alert.WARNING;
 
         }
