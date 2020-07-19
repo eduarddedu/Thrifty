@@ -1,26 +1,25 @@
-## 1. Serve 
+## 1. Serve Web App
 
-Serve web app using the embedded Tomcat server: 
+Serve web app using spring-boot. 
 
     mvn -pl backend -P dev spring-boot:run
     
-Go to [http://localhost:8080/mythrifty](http://localhost:8080/mythrifty)
     
 ## 2. Test
 
-Run JUnit tests: 
+Run JUnit tests.
 
     mvn -pl backend -Dspring.profiles.active=dev test
     
-## 3. Deploy 
+## 3. Deploy Web App
 
-Deploy to WildFly server running locally: 
+Upload `thrifty.war` to a local WildFly server. 
 
 
-    mvn -P dev -pl backend clean wildfly:deploy
+    mvn  -pl backend -P dev -DskipTests=true clean wildfly:deploy
     
-Deploy app to remote WildFly server: 
+Deploy to a remote WildFly server.
 
 
-    $ mvn -P production -pl backend clean wildfly:deploy
+    $ mvn  -pl backend -P production -DskipTests=true clean wildfly:deploy
 

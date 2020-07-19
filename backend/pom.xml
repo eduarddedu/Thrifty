@@ -35,7 +35,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>provided</scope>
+            <version>8.0.19</version>
         </dependency>
 
         <dependency>
@@ -55,10 +55,11 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+
     </dependencies>
 
     <build>
-        <finalName>mythrifty</finalName>
+        <finalName>thrifty</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -156,6 +157,10 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
                         <executions>
@@ -166,13 +171,6 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <configuration>
-                            <hostname>codecritique.org</hostname>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

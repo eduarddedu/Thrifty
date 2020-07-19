@@ -13,6 +13,7 @@
         <class>org.codecritique.thrifty.entity.Category</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
+            <property name="wildfly.jpa.default-unit" value="true"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/thrifty?serverTimezone=UTC"/>
             <property name="javax.persistence.jdbc.user" value="thrifty"/>
             <property name="javax.persistence.jdbc.password" value="H[4;fJ./4VXu"/>
