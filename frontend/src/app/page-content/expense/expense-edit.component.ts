@@ -14,10 +14,10 @@ import { Utils } from '../../util/utils';
 })
 
 export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
+    pageTitle = 'Update Expense';
+    submitFormButtonText = 'Update';
+    expense: Expense;
 
-    expenseModel: Expense;
-
-    pageTitle = 'Edit expense';
 
     constructor(
         protected fb: FormBuilder,
@@ -30,10 +30,10 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
     ngOnInit() {
         combineLatest(this.rs.getAccount(), this.route.queryParams).subscribe(v => {
             const account = v[0];
-            this.expenseModel = account.expenses.find(ex => ex.id === +v[1].expenseId);
+            this.expense = account.expenses.find(ex => ex.id === +v[1].expenseId);
             this.setFormWithModelValues();
             this.setRadioOptionsLabel(account);
-            this.selectedLabels = [].concat(this.expenseModel.labels);
+            this.selectedLabels = [].concat(this.expense.labels);
             this.setRadioOptionsCategory(account);
             this.showForm = true;
         }, err => {
@@ -47,7 +47,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
         this.showNotification = true;
         this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
         const expense: Expense = Object.assign(this.readFormData(), {
-            id: this.expenseModel.id,
+            id: this.expense.id,
             labels: this.selectedLabels,
             category: this.selectedCategory
         });
@@ -58,9 +58,9 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
 
     private setFormWithModelValues() {
         this.expenseForm.patchValue({
-            date: { jsdate: Utils.localDateToJsDate(this.expenseModel.createdOn) },
-            description: this.expenseModel.description,
-            amount: this.expenseModel.amount
+            date: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
+            description: this.expense.description,
+            amount: this.expense.amount
         });
     }
 
@@ -71,7 +71,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             name: label.name,
             checked: false
         }));
-        this.expenseModel.labels.forEach(label => map.set(label.id, {
+        this.expense.labels.forEach(label => map.set(label.id, {
             id: label.id,
             name: label.name,
             checked: true
@@ -85,7 +85,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
                 id: category.id,
                 name: category.name,
                 description: category.description,
-                checked: category.id === this.expenseModel.category.id ? true : false
+                checked: category.id === this.expense.category.id ? true : false
             };
             this.radioOptionsCategory.push(<RadioOption>option);
             if (option.checked) {

@@ -13,10 +13,9 @@ import { ExpenseFormParent } from './expense-form-parent';
     templateUrl: './expense-form.component.html',
 })
 export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit {
-
+    pageTitle = 'New Expense';
+    submitFormButtonText = 'Save';
     category: Category;
-
-    pageTitle = 'New expense';
 
     constructor(
         protected fb: FormBuilder,
@@ -51,15 +50,8 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
     }
 
-    private setRadioOptionsLabel(account) {
-        const resolveEntityLabels = (ac: Account) => {
-            if (!this.category) {
-                return ac.labels;
-            } else {
-                return this.category.labels;
-            }
-        };
-        resolveEntityLabels(account).forEach(label => this.radioOptionsLabel.push({
+    private setRadioOptionsLabel(account: Account) {
+        account.labels.forEach(label => this.radioOptionsLabel.push({
             id: label.id,
             name: label.name,
             checked: false
@@ -72,12 +64,9 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
                 id: category.id,
                 name: category.name,
                 description: category.description,
-                checked: category.id === this.category.id ? true : false
+                checked: false
             };
             this.radioOptionsCategory.push(<RadioOption>option);
-            if (option.checked) {
-                this.selectedCategory = {id: category.id, name: category.name, description: category.description};
-            }
         });
     }
 }
