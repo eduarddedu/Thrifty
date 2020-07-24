@@ -3,6 +3,7 @@ package org.codecritique.thrifty.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Expense extends BaseEntity {
     @JoinTable(name = "Expense_Category",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @NotNull
     private Category category;
 
     @ManyToMany(cascade = {
@@ -39,6 +41,14 @@ public class Expense extends BaseEntity {
     private Set<Label> labels = new HashSet<>();
 
     public Expense() {
+    }
+
+    public Expense(LocalDate createdOn, String description, double amount, Category category, Collection<Label> labels) {
+        this.createdOn = createdOn;
+        this.description = description;
+        this.amount = amount;
+        this.category = category;
+        this.labels.addAll(labels);
     }
 
     public Category getCategory() {
@@ -74,7 +84,7 @@ public class Expense extends BaseEntity {
         this.amount = amount;
     }
 
-    public void setLabels(Set<Label> labels) {
+    public void setLabels(Collection<Label> labels) {
         this.labels.clear();
         this.labels.addAll(labels);
     }

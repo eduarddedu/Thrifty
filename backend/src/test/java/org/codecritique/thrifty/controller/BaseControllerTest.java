@@ -1,6 +1,5 @@
 package org.codecritique.thrifty.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
@@ -45,18 +44,10 @@ public abstract class BaseControllerTest {
     BaseControllerTest() {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(JacksonConfig.class);
         mapper = ctx.getBean(ObjectMapper.class);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     protected Expense createExpense() throws Exception {
         Expense expense = expenseSupplier.get();
-
-        /*
-         * Null values are ignored when serializing to json, but not when de-serializing.
-         * Thus when reading a json string into an Expense instance, we get a mapping exception.
-         * As a workaround we create an Expense instance with a non-null category field.
-         */
-
         expense.setCategory(createCategory());
         String json = mapper.writeValueAsString(expense);
         ResultActions actions = mockMvc.perform(post(EXPENSE_RESOURCE_PATH).contentType(MediaType.APPLICATION_JSON).content(json));

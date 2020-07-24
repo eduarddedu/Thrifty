@@ -1,17 +1,17 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.codecritique.thrifty.TestUtils.*;
-
-import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
-import org.codecritique.thrifty.entity.Label;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class ExpenseServiceBeanTest extends BaseServiceBeanTest {
@@ -26,12 +26,19 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testStoreExpense() {
-        expenseService.store(expenseSupplier.get());
+        Expense expense = expenseSupplier.get();
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+        expense.setCategory(category);
+        expenseService.store(expense);
     }
 
     @Test
     void testGetExpense() {
         Expense expense = expenseSupplier.get();
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+        expense.setCategory(category);
         expenseService.store(expense);
         assertEquals(expense, expenseService.get(expense.getId()));
     }
@@ -39,10 +46,13 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testAddLabel() {
         //setup
-        Label label = labelSupplier.get();
         Expense expense = expenseSupplier.get();
-        labelService.store(label);
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+        expense.setCategory(category);
         expenseService.store(expense);
+        Label label = labelSupplier.get();
+        labelService.store(label);
 
         //exercise
         expense.addLabel(label);
@@ -55,10 +65,14 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testSetCategory() {
-        Category category = categorySupplier.get();
         Expense expense = expenseSupplier.get();
-        categoryService.store(category);
+        Category c = categorySupplier.get();
+        categoryService.store(c);
+        expense.setCategory(c);
         expenseService.store(expense);
+
+        Category category = categorySupplier.get();
+        categoryService.store(category);
 
         //exercise
         expense.setCategory(category);
@@ -77,7 +91,10 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         labelService.store(label2);
 
         Expense expense = expenseSupplier.get();
-        expense.setLabels(new HashSet<>(Arrays.asList(label1, label2)));
+        Category c = categorySupplier.get();
+        categoryService.store(c);
+        expense.setCategory(c);
+        expense.setLabels(Arrays.asList(label1, label2));
         expenseService.store(expense);
 
         //exercise
@@ -94,7 +111,11 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++) {
-            expenseService.store(expenseSupplier.get());
+            Category c = categorySupplier.get();
+            categoryService.store(c);
+            Expense expense = expenseSupplier.get();
+            expense.setCategory(c);
+            expenseService.store(expense);
         }
 
         Iterator<LocalDate> it = expenseService.getExpenses().
@@ -111,10 +132,14 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testUpdateExpense() {
         //setup
+        Category c = categorySupplier.get();
+        categoryService.store(c);
         Expense expense = expenseSupplier.get();
+        expense.setCategory(c);
+        expenseService.store(expense);
+
         Category category = categorySupplier.get();
         Label label = labelSupplier.get();
-        expenseService.store(expense);
         categoryService.store(category);
         labelService.store(label);
 
@@ -134,13 +159,13 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testRemoveExpense() {
         //setup
-        //setup
-        Expense expense = expenseSupplier.get();
         Category category = categorySupplier.get();
-        Label label = labelSupplier.get();
         categoryService.store(category);
-        labelService.store(label);
+        Expense expense = expenseSupplier.get();
         expense.setCategory(category);
+
+        Label label = labelSupplier.get();
+        labelService.store(label);
         expense.addLabel(label);
         expenseService.store(expense);
 
