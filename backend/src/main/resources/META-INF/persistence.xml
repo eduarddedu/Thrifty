@@ -14,7 +14,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="wildfly.jpa.default-unit" value="true"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/thrifty?serverTimezone=UTC&amp;autoReconnect=true"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/thrifty?serverTimezone=UTC&amp;socketTimeout=500"/>
             <property name="javax.persistence.jdbc.user" value="thrifty"/>
             <property name="javax.persistence.jdbc.password" value="H[4;fJ./4VXu"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
