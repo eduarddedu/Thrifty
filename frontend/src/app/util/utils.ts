@@ -2,7 +2,7 @@ import { LocalDate, Account, Expense, Category, Label, DateRange } from '../mode
 
 export class Utils {
 
-    static deepFreeze(object): object {
+    static deepFreeze(object: any) {
         try {
             const propNames = Object.getOwnPropertyNames(object);
             for (const name of propNames) {
@@ -50,22 +50,11 @@ export class Utils {
     static buildAccount(expenses: Expense[], labels: Label[], categories: Category[]): Account {
         const account: Account = {};
         try {
-            const expensesWithoutCategory = [];
-            const mapLabelIdLabel: Map<number, Label> = new Map();
-            labels.forEach(label => mapLabelIdLabel.set(label.id, label));
-            for (const expense of expenses) {
-                if (!expense.category) {
-                    expensesWithoutCategory.push(expense);
-                }
-            }
             account.expenses = expenses;
-            account.labels = Array.from(mapLabelIdLabel.values());
+            account.labels = labels;
             account.categories = Utils.enrichedCategories(expenses, categories);
-            if (expensesWithoutCategory.length > 0) {
-                account.other = Utils.createUncategorized(expensesWithoutCategory);
-            }
             account.dateRange = Utils.getDateRange(expenses);
-            account.mapYearBalance = Utils.computeMapYearBalance(expenses);
+            account.mapYearBalance = Utils.getMapYearBalance(expenses);
             account.balance = Utils.sumExpenses(expenses);
         } catch (error) {
             console.log('Error building account: ', error);
@@ -78,22 +67,18 @@ export class Utils {
     }
 
     private static enrichedCategories(expenses: Expense[], categories: Category[]): Category[] {
-        const mapCatIdCategory: Map<number, Category> = new Map();
-        categories.forEach(category => {
-            category.expenses = category.expenses || [];
-            mapCatIdCategory.set(category.id, category);
-        });
-        for (const expense of expenses) {
-                const category = expense.category;
-                const inMapCategory = mapCatIdCategory.get(category.id);
-                mapCatIdCategory.set(category.id, inMapCategory);
-                inMapCategory.expenses = inMapCategory.expenses || [];
-                inMapCategory.expenses.push(expense);
+        const map: Map<number, Category> = new Map();
+        for (const category of categories) {
+            map.set(category.id, category);
+            category.expenses = [];
         }
-        const enrichedCategories: Category[] = Array.from(mapCatIdCategory.values());
+        for (const expense of expenses) {
+            map.get(expense.category.id).expenses.push(expense);
+        }
+        const enrichedCategories: Category[] = Array.from(map.values());
         enrichedCategories.forEach(c => {
             c.balance = Utils.sumExpenses(c.expenses);
-            c.mapYearBalance = Utils.computeMapYearBalance(c.expenses);
+            c.mapYearBalance = Utils.getMapYearBalance(c.expenses);
             c.labels = Utils.getUniqueLabels(c.expenses);
         });
         return enrichedCategories;
@@ -119,7 +104,7 @@ export class Utils {
         return dateRange;
     }
 
-    private static computeMapYearBalance(expenses: Expense[]): { [key: number]: number } {
+    private static getMapYearBalance(expenses: Expense[]): { [key: number]: number } {
         const mapYearBalance = {};
         for (const expense of expenses) {
             let sum = mapYearBalance[expense.createdOn.year] || 0;
@@ -127,17 +112,6 @@ export class Utils {
             mapYearBalance[expense.createdOn.year] = sum;
         }
         return mapYearBalance;
-    }
-
-    private static createUncategorized(expenses: Expense[]): Category {
-        return Object.assign(<Category>{
-            id: -1,
-            name: 'Other',
-            description: 'Expenses not linked to a category',
-            expenses: expenses,
-            balance: Utils.sum(expenses.map(e => e.amount)),
-            labels: []
-        });
     }
 
 }
