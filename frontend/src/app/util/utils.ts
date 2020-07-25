@@ -64,7 +64,7 @@ export class Utils {
             if (expensesWithoutCategory.length > 0) {
                 account.other = Utils.createUncategorized(expensesWithoutCategory);
             }
-            account.dateRange = Utils.getMinMaxDatesFrom(expenses);
+            account.dateRange = Utils.getDateRange(expenses);
             account.mapYearBalance = Utils.computeMapYearBalance(expenses);
             account.balance = Utils.sumExpenses(expenses);
         } catch (error) {
@@ -108,11 +108,11 @@ export class Utils {
         }
         return Array.from(mapLabelIdLabel.values());
     }
-    private static getMinMaxDatesFrom(expenses: Expense[]): DateRange {
+    private static getDateRange(expenses: Expense[]): DateRange {
         const dateRange = <DateRange>{};
         if (expenses.length > 1) {
-            dateRange.startDate = expenses[0].createdOn;
-            dateRange.endDate = expenses[expenses.length - 1].createdOn;
+            dateRange.startDate = expenses[expenses.length - 1].createdOn;
+            dateRange.endDate = expenses[0].createdOn;
         } else if (expenses.length === 1) {
             dateRange.startDate = dateRange.endDate = expenses[0].createdOn;
         }
