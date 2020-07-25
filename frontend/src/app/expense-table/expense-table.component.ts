@@ -1,5 +1,7 @@
-import { Component, OnInit, AfterViewInit,
-    Input, Output, ViewChild, OnChanges, EventEmitter } from '@angular/core';
+import {
+    Component, OnInit, AfterViewInit,
+    Input, Output, ViewChild, OnChanges, EventEmitter
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 
@@ -42,7 +44,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     ngOnInit() {
         this.dtOptions = {
-            searching: false,
+            searching: true,
             lengthChange: false,
             pageLength: 10,
             columns: [
@@ -59,7 +61,8 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
                     this.onRowSelected(data);
                 });
                 return row;
-            }
+            },
+            order: [['1', 'desc']]
         };
     }
 
@@ -78,8 +81,9 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.clear();
-            this.expenses.forEach(e =>
-                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]));
+            for (const e of this.expenses) {
+                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]);
+            }
             dtInstance.draw();
             this.disableTextSelectionOnTableElements();
             this.expenseId = null;
@@ -101,11 +105,11 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
 
     onClickNewExpense() {
-        this.router.navigate(['new/expense'], { queryParams: { categoryId: this.categoryId }});
+        this.router.navigate(['new/expense'], { queryParams: { categoryId: this.categoryId } });
     }
 
     onClickEditExpense() {
-        this.router.navigate(['edit/expense'], { queryParams: { expenseId: this.expenseId }});
+        this.router.navigate(['edit/expense'], { queryParams: { expenseId: this.expenseId } });
     }
 
     onClickDeleteExpense() {
