@@ -1,4 +1,5 @@
 package org.codecritique.thrifty.jackson;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.codecritique.thrifty.jackson.databind.LocalDateDeserializer;
@@ -21,7 +22,7 @@ public class JacksonConfig {
         SimpleModule module = new SimpleModule();
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
         module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
-       objectMapper.registerModule(module);
-       return objectMapper;
+        objectMapper.registerModule(module);
+        return objectMapper;
     }
 }

@@ -1,0 +1,43 @@
+server:
+  servlet:
+    context-path: /thrifty
+
+spring:
+  jpa:
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+---
+
+spring:
+  profiles: dev
+  profile.includes: testdb
+
+---
+
+spring:
+  profiles: testdb
+  datasource:
+    name: testdb
+  jndi-name: jdbc:h2:mem:test
+  jpa.hibernate.ddl-auto: update
+
+---
+
+spring:
+  profiles: prod
+  profiles.includes: proddb
+
+---
+
+spring:
+  profiles: proddb
+  datasource:
+  jndi-name: java:jdbc/thrifty/pool
+  jpa.hibernate:
+    ddl-auto: none
+    dialect: org.hibernate.dialect.MySQLDialect
+
+---

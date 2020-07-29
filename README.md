@@ -9,17 +9,18 @@ Serve web app using spring-boot.
 
 Run JUnit tests.
 
-    mvn -pl backend -Dspring.profiles.active=dev test
+    mvn -pl backend -P dev test
     
+
 ## 3. Deploy Web App
 
 Upload `thrifty.war` to a local WildFly server. 
 
 
-    mvn  -pl backend -P dev -DskipTests=true clean wildfly:deploy
+    mvn  -pl backend -P dev clean wildfly:deploy
     
 Deploy to a remote WildFly server.
 
 
-    $ mvn  -pl backend -P production -DskipTests=true clean wildfly:deploy
+    $ mvn  -pl backend -P prod -DskipTests=true clean wildfly:deploy
 
