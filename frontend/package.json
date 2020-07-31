@@ -34,7 +34,7 @@
     "jquery": "^3.3.1",
     "ng2-bs3-modal": "^0.15.0",
     "ngx-mydatepicker": "^2.4.5",
-    "npm": "^6.14.6",
+    "npm": "6.14.6",
     "popper.js": "^1.14.2",
     "rxjs": "^6.2.2",
     "zone.js": "^0.8.26"
