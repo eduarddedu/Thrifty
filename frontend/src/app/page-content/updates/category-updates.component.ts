@@ -5,6 +5,7 @@ import { MessageService, Kind } from '../../services/messages.service';
 import { RestService } from '../../services/rest.service';
 import { Account } from '../../model';
 import { UpdatesFormParent } from './updates-form-parent';
+import { AnalyticsService } from '../../services/analytics.service';
 
 
 
@@ -15,17 +16,20 @@ export class CategoryUpdatesComponent extends UpdatesFormParent implements OnIni
 
     formTitle = 'Update categories';
 
-    constructor(private rs: RestService, private router: Router, private ms: MessageService) {
+    constructor(private rs: RestService,
+        private router: Router,
+        private messages: MessageService,
+        private analytics: AnalyticsService) {
         super();
     }
 
     ngOnInit() {
-        this.rs.getAccount().subscribe((account: Account) => {
+        this.analytics.loadAccount().subscribe((account: Account) => {
             this.setRadioSelectorOptions(account);
             this.showForm = true;
         }, err => {
             this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
+            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
@@ -39,22 +43,23 @@ export class CategoryUpdatesComponent extends UpdatesFormParent implements OnIni
 
     handleSelectedAction() {
         switch (this.formAction) {
-            case 'New' : this.router.navigate(['new/category']); break;
-            case 'Edit' : this.router.navigate(['edit/category'], {queryParams: {id: this.checkedOption.id}}); break;
-            case 'Delete' :
-            this.showModal = true;
-            this.modalMessage = this.ms.get(Kind.CATEGORY_DELETE_WARN);
+            case 'New': this.router.navigate(['new/category']); break;
+            case 'Edit': this.router.navigate(['edit/category'], { queryParams: { id: this.checkedOption.id } }); break;
+            case 'Delete':
+                this.showModal = true;
+                this.modalMessage = this.messages.get(Kind.CATEGORY_DELETE_WARN);
         }
     }
 
     onConfirmDelete() {
         this.showForm = this.showModal = false;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
+        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
         this.showNotification = true;
         this.rs.deleteCategory(this.checkedOption.id).subscribe(() => {
-            this.notificationMessage = this.ms.get(Kind.CATEGORY_DELETE_OK);
+            this.notificationMessage = this.messages.get(Kind.CATEGORY_DELETE_OK);
+            this.analytics.reload();
         }, err => {
-            this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR);
+            this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR);
             this.showNotification = true;
         });
     }

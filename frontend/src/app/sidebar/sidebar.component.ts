@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { Account } from '../model';
-import { RestService } from '../services/rest.service';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -11,10 +11,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
 
     links: {id: number, name: string}[];
 
-    constructor(protected rs: RestService) { }
+    constructor(protected analytics: AnalyticsService) { }
 
     ngOnInit() {
-        this.rs.dataReady.subscribe((account: Account) => {
+        this.analytics.dataReady.subscribe((account: Account) => {
             if (account) {
                 this.setNavigationLinks(account);
             }
@@ -26,11 +26,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     }
 
     setNavigationLinks(account: Account) {
-
         this.links = account.categories.map(c => ({id: c.id, name: c.name}));
-
-        if (account.other) {
-            this.links.push({id: account.other.id, name: account.other.name});
-        }
     }
 }

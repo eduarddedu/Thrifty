@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { combineLatest } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { RestService } from '../../services/rest.service';
 import { MessageService, Kind } from '../../services/messages.service';
 import { Expense, Account, Category, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
+import { AnalyticsService } from '../../services/analytics.service';
 
 
 @Component({
@@ -19,12 +20,15 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
 
     constructor(
         protected fb: FormBuilder,
-        private ms: MessageService, private router: Router, private route: ActivatedRoute, private rs: RestService) {
+        private messages: MessageService,
+        private route: ActivatedRoute,
+        private rest: RestService,
+        private analytics: AnalyticsService) {
         super(fb);
     }
 
     ngOnInit() {
-        combineLatest(this.rs.getAccount(), this.route.queryParams).subscribe(v => {
+        combineLatest(this.analytics.loadAccount(), this.route.queryParams).subscribe(v => {
             const account = v[0];
             this.category = account.categories.find(c => c.id === +v[1].categoryId);
             this.setRadioOptionsLabel(account);
@@ -33,21 +37,24 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             this.showForm = true;
         }, err => {
             this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
+            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
     onSubmit() {
         this.showForm = false;
         this.showNotification = true;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
+        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
         const expense: Expense = Object.assign(this.readFormData(), {
             labels: this.selectedLabels,
             category: this.selectedCategory
         });
-        this.rs.createExpense(expense).subscribe(
-            () => this.notificationMessage = this.ms.get(Kind.EXPENSE_CREATE_OK),
-            err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
+        this.rest.createExpense(expense).subscribe(
+            () => {
+                this.notificationMessage = this.messages.get(Kind.EXPENSE_CREATE_OK);
+                this.analytics.reload();
+            },
+            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
     }
 
     private setRadioOptionsLabel(account: Account) {

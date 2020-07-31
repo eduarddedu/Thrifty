@@ -8,6 +8,7 @@ import { MessageService, Kind } from '../../services/messages.service';
 import { Expense, Account, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
 import { Utils } from '../../util/utils';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
@@ -21,14 +22,15 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
 
     constructor(
         protected fb: FormBuilder,
-        private ms: MessageService,
+        private messages: MessageService,
         private route: ActivatedRoute,
-        private rs: RestService) {
+        private rest: RestService,
+        private analytics: AnalyticsService) {
         super(fb);
     }
 
     ngOnInit() {
-        combineLatest(this.rs.getAccount(), this.route.queryParams).subscribe(v => {
+        combineLatest(this.analytics.loadAccount(), this.route.queryParams).subscribe(v => {
             const account = v[0];
             this.expense = account.expenses.find(ex => ex.id === +v[1].expenseId);
             this.setFormWithModelValues();
@@ -38,22 +40,25 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             this.showForm = true;
         }, err => {
             this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
+            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
     onSubmit() {
         this.showForm = false;
         this.showNotification = true;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
+        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
         const expense: Expense = Object.assign(this.readFormData(), {
             id: this.expense.id,
             labels: this.selectedLabels,
             category: this.selectedCategory
         });
-        this.rs.updateExpense(expense).subscribe(
-            () => this.notificationMessage = this.ms.get(Kind.EXPENSE_EDIT_OK),
-            err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
+        this.rest.updateExpense(expense).subscribe(
+            () => {
+                this.notificationMessage = this.messages.get(Kind.EXPENSE_EDIT_OK);
+                this.analytics.reload();
+            },
+            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
     }
 
     private setFormWithModelValues() {
@@ -89,7 +94,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             };
             this.radioOptionsCategory.push(<RadioOption>option);
             if (option.checked) {
-                this.selectedCategory = {id: category.id, name: category.name, description: category.description};
+                this.selectedCategory = { id: category.id, name: category.name, description: category.description };
             }
         });
     }

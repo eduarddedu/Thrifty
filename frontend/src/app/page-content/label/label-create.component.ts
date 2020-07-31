@@ -4,6 +4,7 @@ import { LabelFormParent } from './label-form-parent';
 import { MessageService, Kind } from '../../services/messages.service';
 import { RestService } from '../../services/rest.service';
 import { Account } from '../../model';
+import { AnalyticsService } from '../../services/analytics.service';
 
 
 @Component({
@@ -14,18 +15,21 @@ export class LabelCreateComponent extends LabelFormParent implements OnInit {
 
     pageTitle = 'New label';
 
-    constructor(protected fb: FormBuilder, private rs: RestService, private ms: MessageService) {
+    constructor(protected fb: FormBuilder,
+        private rest: RestService,
+        private messages: MessageService,
+        private analytics: AnalyticsService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.rs.getAccount().subscribe((account: Account) => {
+        this.analytics.loadAccount().subscribe((account: Account) => {
             this.forbiddenNames = account.labels.map(l => l.name);
             this.createForm();
             this.showForm = true;
         }, err => {
             this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
+            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
 
     }
@@ -34,8 +38,11 @@ export class LabelCreateComponent extends LabelFormParent implements OnInit {
         this.showForm = false;
         const newLabel = this.readFormData();
         this.showNotification = true;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-        this.rs.createLabel(newLabel).subscribe(() => this.notificationMessage = this.ms.get(Kind.LABEL_CREATE_OK),
-            err => this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR));
+        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
+        this.rest.createLabel(newLabel).subscribe(() => {
+            this.notificationMessage = this.messages.get(Kind.LABEL_CREATE_OK);
+            this.analytics.reload();
+        },
+            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
     }
 }

@@ -9,6 +9,7 @@ import { RestService } from '../../services/rest.service';
 import { ChartsService } from '../../services/charts.service';
 import { MessageService, Kind, Message } from '../../services/messages.service';
 import { Utils } from '../../util/utils';
+import { AnalyticsService } from '../../services/analytics.service';
 
 
 @Component({
@@ -26,8 +27,9 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     showEditDeleteCategoryButtons = false;
 
     constructor(
-        private rs: RestService,
-        private ms: MessageService,
+        private rest: RestService,
+        private analytics: AnalyticsService,
+        private messages: MessageService,
         private charts: ChartsService,
         private route: ActivatedRoute,
         private router: Router) {
@@ -37,10 +39,10 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     ngOnInit(): void {
         this.route.paramMap.pipe(switchMap(params => {
             this.categoryId = +params.get('id');
-            return this.rs.getAccount();
+            return this.analytics.loadAccount();
         })).subscribe(this.resetPageContent.bind(this), err => {
             this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
+            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
@@ -87,7 +89,7 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     }
 
     onClickDeleteCategory() {
-        this.modalMessage = this.ms.get(Kind.CATEGORY_DELETE_WARN);
+        this.modalMessage = this.messages.get(Kind.CATEGORY_DELETE_WARN);
         this.deleteActionConcernsCategory = true;
         this.showModal = true;
     }
@@ -103,7 +105,7 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     onClickDeleteExpense(selectedId) {
         this.selectedExpenseId = selectedId;
         this.deleteActionConcernsCategory = false;
-        this.modalMessage = this.ms.get(Kind.EXPENSE_DELETE_WARN);
+        this.modalMessage = this.messages.get(Kind.EXPENSE_DELETE_WARN);
         this.showModal = true;
     }
 
@@ -111,20 +113,20 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
         this.dataReady = false;
         this.showModal = false;
         this.showNotification = true;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
+        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
         let action: Observable<any>, successMessage: Message;
         if (this.deleteActionConcernsCategory) {
-            action = this.rs.deleteCategory(this.category.id);
-            successMessage = this.ms.get(Kind.CATEGORY_DELETE_OK);
+            action = this.rest.deleteCategory(this.category.id);
+            successMessage = this.messages.get(Kind.CATEGORY_DELETE_OK);
         } else {
-            action = this.rs.deleteExpense(this.selectedExpenseId);
-            successMessage = this.ms.get(Kind.EXPENSE_DELETE_OK);
+            action = this.rest.deleteExpense(this.selectedExpenseId);
+            successMessage = this.messages.get(Kind.EXPENSE_DELETE_OK);
         }
         action.subscribe(() => {
             this.notificationMessage = successMessage;
             Utils.scrollPage();
         }, err => {
-            this.notificationMessage = this.ms.get(Kind.UNEXPECTED_ERROR);
+            this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR);
             Utils.scrollPage();
         });
     }

@@ -4,6 +4,7 @@ import { Chart } from 'angular-highcharts';
 
 import { Account, Category, Expense, Label } from '../model';
 import { Utils } from '../util/utils';
+import { AnalyticsService } from '../services/analytics.service';
 
 /*
 * ChartsService exposes methods which create the various charts used by the application.
@@ -14,7 +15,7 @@ export class ChartsService {
 
     private readonly months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    constructor(private router: Router) { }
+    constructor(private router: Router, private analytics: AnalyticsService) { }
 
     public yearlyTotalSpending(mapYearBalance: Map<number, number>): Chart {
         const categories = Array.from(mapYearBalance.keys()).map(year => year.toString());
@@ -110,7 +111,7 @@ export class ChartsService {
         }));
         const expensesWithoutLabel = category.expenses.filter(exp => !exp.labels || exp.labels.length === 0);
         if (expensesWithoutLabel.length > 0) {
-            result.push({name: 'Other', y: Math.abs(Utils.sumExpenses(expensesWithoutLabel))});
+            result.push({name: 'Other', y: Math.abs(this.analytics.sumExpenses(expensesWithoutLabel))});
         }
         return result;
     }
@@ -129,7 +130,7 @@ export class ChartsService {
     }
 
     private totalPerLabel(expenses: Expense[], label: Label): number {
-        return Utils.sumExpenses(expenses.filter(expense => this.hasLabel(expense, label)));
+        return this.analytics.sumExpenses(expenses.filter(expense => this.hasLabel(expense, label)));
     }
 
     private hasLabel(expense: Expense, label: Label) {
@@ -151,7 +152,7 @@ export class ChartsService {
             const onOrAfterDate = new Date(targetYear, i);
             const beforeDate = new Date(targetYear, i + 1);
             const currentMonthExpenses = this.filter(expenses, onOrAfterDate, beforeDate);
-            const sum = Utils.sumExpenses(currentMonthExpenses);
+            const sum = this.analytics.sumExpenses(currentMonthExpenses);
             data[i] = Math.abs(sum);
         }
         return data;

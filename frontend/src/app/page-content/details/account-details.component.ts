@@ -6,6 +6,7 @@ import { Account } from '../../model';
 import { MessageService, Kind } from '../../services/messages.service';
 import { ChartsService } from '../../services/charts.service';
 import { Utils } from '../../util/utils';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     templateUrl: './details.component.html'
@@ -19,15 +20,16 @@ export class AccountDetailsComponent extends DetailsComponentParent implements O
     showEditDeleteCategoryButtons = false;
 
     constructor(
-        private rs: RestService,
+        private rest: RestService,
         private ms: MessageService,
-        private charts: ChartsService) {
+        private charts: ChartsService,
+        private analytics: AnalyticsService) {
         super();
         this.categoryId = 0;
     }
 
     ngOnInit() {
-        this.rs.getAccount().subscribe(this.setPageContent.bind(this), err => {
+        this.analytics.loadAccount().subscribe(this.setPageContent.bind(this), err => {
             this.showNotification = true;
             this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
         });
@@ -52,9 +54,9 @@ export class AccountDetailsComponent extends DetailsComponentParent implements O
 
     private setColumnChart(option: number | 'All time') {
         this.columnChart = option === 'All time' ?
-        this.charts.yearlyTotalSpending(this.mapYearBalance)
-        :
-        this.charts.monthlySharePerCategory(this.account, +option);
+            this.charts.yearlyTotalSpending(this.mapYearBalance)
+            :
+            this.charts.monthlySharePerCategory(this.account, +option);
     }
 
     onSelectOption(selectedIndex: number | 'All time') {
@@ -72,7 +74,7 @@ export class AccountDetailsComponent extends DetailsComponentParent implements O
         this.showModal = false;
         this.showNotification = true;
         this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-        this.rs.deleteExpense(this.selectedExpenseId).subscribe(() => {
+        this.rest.deleteExpense(this.selectedExpenseId).subscribe(() => {
             Utils.scrollPage();
             this.notificationMessage = this.ms.get(Kind.EXPENSE_DELETE_OK);
         });

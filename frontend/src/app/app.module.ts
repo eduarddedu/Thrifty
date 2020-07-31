@@ -31,6 +31,7 @@ import { ModalComponent } from                     './modal/modal.component';
 import { RestService } from                        './services/rest.service';
 import { MessageService } from                     './services/messages.service';
 import { ChartsService } from                      './services/charts.service';
+import { AnalyticsService } from                   './services/analytics.service';
 import { BaseUriInterceptor } from                 './http/baseuri.interceptor';
 import { ErrorInterceptor } from                   './http/error.interceptor';
 
@@ -73,6 +74,7 @@ import { ErrorInterceptor } from                   './http/error.interceptor';
         RestService,
         MessageService,
         ChartsService,
+        AnalyticsService,
         { provide: HTTP_INTERCEPTORS, useClass: BaseUriInterceptor, multi: true},
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
     ],
