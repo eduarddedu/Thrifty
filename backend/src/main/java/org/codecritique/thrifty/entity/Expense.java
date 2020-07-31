@@ -114,12 +114,16 @@ public class Expense extends BaseEntity {
                 && Objects.equals(createdOn, other.createdOn)
                 && Objects.equals(description, other.description)
                 && Objects.equals(category, other.category)
-                // && Objects.equals(labels, other.labels)
+                /*
+                 * cannot compare sets with Object.equals
+                 * See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200
+                 **/
+
                 && equals(labels, other.labels);
     }
 
-    /**
-     * [workaround] https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200
+    /*
+     * compare two sets based on logical equality between elements
      */
     private boolean equals(Set<?> set1, Set<?> set2) {
         if (set1 == null && set2 == null)
