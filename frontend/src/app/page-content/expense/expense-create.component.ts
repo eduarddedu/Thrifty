@@ -14,7 +14,7 @@ import { AnalyticsService } from '../../services/analytics.service';
     templateUrl: './expense-form.component.html',
 })
 export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit {
-    pageTitle = 'New Expense';
+    pageTitle = 'Create Expense';
     submitFormButtonText = 'Save';
     category: Category;
 

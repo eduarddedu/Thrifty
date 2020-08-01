@@ -13,7 +13,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 })
 export class LabelCreateComponent extends LabelFormParent implements OnInit {
 
-    pageTitle = 'New label';
+    pageTitle = 'Create Label';
 
     constructor(protected fb: FormBuilder,
         private rest: RestService,

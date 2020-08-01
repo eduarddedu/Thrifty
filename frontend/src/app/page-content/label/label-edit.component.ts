@@ -15,7 +15,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 })
 export class LabelEditComponent extends LabelFormParent implements OnInit {
 
-    pageTitle = 'Edit label';
+    pageTitle = 'Update Label';
 
     id: number;
 

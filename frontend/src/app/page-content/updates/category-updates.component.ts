@@ -25,15 +25,17 @@ export class CategoryUpdatesComponent extends UpdatesFormParent implements OnIni
 
     ngOnInit() {
         this.analytics.loadAccount().subscribe((account: Account) => {
-            this.setRadioSelectorOptions(account);
-            this.showForm = true;
+            if (account.categories.length > 0) {
+                this.setRadioSelectorOptions(account);
+                this.showForm = true;
+            }
         }, err => {
             this.showNotification = true;
             this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
-    private setRadioSelectorOptions(account) {
+    private setRadioSelectorOptions(account: Account) {
         account.categories.forEach(category => this.radioOptions.push({
             id: category.id,
             name: category.name,

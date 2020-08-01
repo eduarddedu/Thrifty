@@ -17,7 +17,7 @@ export class CategoryEditComponent extends CategoryFormParent implements OnInit 
 
     id: number;
 
-    pageTitle = 'Edit category';
+    pageTitle = 'Update Category';
 
     constructor(protected fb: FormBuilder,
         private route: ActivatedRoute,

@@ -27,9 +27,6 @@ export class LabelUpdatesComponent extends UpdatesFormParent implements OnInit {
             if (account.labels.length !== 0) {
                 this.setRadioSelectorOptions(account);
                 this.showForm = true;
-            } else {
-                this.showNotification = true;
-                this.notificationMessage = this.messages.get(Kind.NO_LABELS_ERROR);
             }
         }, err => {
             this.showNotification = true;

@@ -45,9 +45,6 @@ export class AccountDetailsComponent extends DetailsComponentParent implements O
                 account.other ? account.categories.concat(account.other) : account.categories);
             this.setSelectorOptions();
             this.setColumnChart('All time');
-        } else {
-            this.showNotification = true;
-            this.notificationMessage = this.ms.get(Kind.EMPTY_ACCOUNT_ERROR);
         }
         this.dataReady = true;
     }

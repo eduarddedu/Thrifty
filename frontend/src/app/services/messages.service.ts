@@ -14,8 +14,6 @@ export enum Alert {
 export enum Kind {
     IN_PROGRESS,
     UNEXPECTED_ERROR,
-    EMPTY_ACCOUNT_ERROR,
-    NO_LABELS_ERROR,
     WEB_SERVICE_OFFLINE,
     CATEGORY_CREATE_OK,
     EXPENSE_CREATE_OK,
@@ -62,16 +60,6 @@ export class MessageService {
             break;
             case Kind.WEB_SERVICE_OFFLINE:
             text = 'A server-side problem has occured. Please retry later.';
-            alert = Alert.ERROR;
-            break;
-            /* Missing data errors
-            */
-            case Kind.EMPTY_ACCOUNT_ERROR:
-            text = 'No expenses are present on your account';
-            alert = Alert.ERROR;
-            break;
-            case Kind.NO_LABELS_ERROR:
-            text = 'You haven\'t defined any labels yet. To define a category, please create a label first.',
             alert = Alert.ERROR;
             break;
             /* Create operation

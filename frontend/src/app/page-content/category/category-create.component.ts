@@ -13,7 +13,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 })
 export class CategoryCreateComponent extends CategoryFormParent implements OnInit {
 
-    pageTitle = 'New category';
+    pageTitle = 'Create Category';
 
     constructor(protected fb: FormBuilder,
         private rest: RestService,
