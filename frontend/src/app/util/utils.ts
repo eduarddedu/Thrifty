@@ -43,8 +43,9 @@ export class Utils {
     }
 
 
-    static sumExpenses(expenses: Expense[] = []): number {
-        return this.sum(expenses.map(e => e.amount));
+    static addExpenseAmounts(expenses: Expense[] = []): number {
+        const integerSum: number = this.sum(expenses.map(e => e.amount * 100));
+        return integerSum / 100;
     }
 
     static sum(series: Array<number> = []): number {

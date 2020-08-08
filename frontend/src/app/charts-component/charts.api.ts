@@ -1,6 +1,6 @@
 import { Chart } from 'angular-highcharts';
 
-import { Account, Expense, Category, Label, LocalDate, DateRange } from '../model';
+import { Account, Expense, Category, Label } from '../model';
 import { Utils } from '../util/utils';
 import { Router } from '@angular/router';
 
@@ -81,13 +81,13 @@ const getSpendingByLabelDataPoints = function (category: Category): { name: stri
     }));
     const expensesWithoutLabel = category.expenses.filter(exp => !exp.labels || exp.labels.length === 0);
     if (expensesWithoutLabel.length > 0) {
-        result.push({ name: 'Other', y: Math.abs(Utils.sumExpenses(expensesWithoutLabel)) });
+        result.push({ name: 'Other', y: Math.abs(Utils.addExpenseAmounts(expensesWithoutLabel)) });
     }
     return result;
 };
 
 const getTotalByLabel = function (expenses: Expense[], label: Label): number {
-    return Utils.sumExpenses(expenses.filter(expense => hasLabel(expense, label)));
+    return Utils.addExpenseAmounts(expenses.filter(expense => hasLabel(expense, label)));
 };
 
 const hasLabel = function (expense: Expense, label: Label) {
@@ -96,29 +96,21 @@ const hasLabel = function (expense: Expense, label: Label) {
 
 const getSpendingPerYearColumnChart = function (expenses: Expense[]) {
     const mapYearTotal: Map<number, number> = new Map();
-    expenses.forEach((exp: Expense) => {
-        const year = exp.createdOn.year;
-        let total = mapYearTotal.get(year) || 0;
-        total += exp.amount;
-        mapYearTotal.set(year, total);
+    const years: number[] = Utils.getYearsSeries(expenses);
+    years.forEach(year => {
+        mapYearTotal.set(year, Utils.addExpenseAmounts(expenses.filter(e => e.createdOn.year === year)));
     });
+    const yearsStr: string[] = Utils.getYearsSeries(expenses).map((year: number) => `${year}`);
     const series = dataSeries('Total', Array.from(mapYearTotal.values()), '#555');
-    const uniqueYears = Utils.getYearsSeries(expenses);
-    return getColumnChart(uniqueYears.map((year: number) => `${year}`), series, 'Total per year');
+    return getColumnChart(yearsStr, series, 'Total per year');
 };
 
-const getSpendingPerMonthColumnChart = function (year: number, expenseSet: Expense[]): Chart {
-    const expenses = expenseSet.filter(exp => exp.createdOn.year === year);
+const getSpendingPerMonthColumnChart = function (year: number, expenses: Expense[]): Chart {
     const mapMonthTotal: Map<number, number> = new Map();
-    for (let i = 0; i < 12; i++) {
-        mapMonthTotal.set(i, 0);
+    for (let m = 0; m < 12; m++) {
+        const total = Utils.addExpenseAmounts(expenses.filter(e => e.createdOn.year === year && e.createdOn.month === m + 1));
+        mapMonthTotal.set(m, total);
     }
-    expenses.forEach(exp => {
-        const month = exp.createdOn.month - 1;
-        let total = mapMonthTotal.get(month);
-        total += exp.amount;
-        mapMonthTotal.set(month, total);
-    });
     const series = dataSeries('Total', Array.from(mapMonthTotal.values()), '#555');
     return getColumnChart(MONTHS, series, 'Total per month');
 };
@@ -137,7 +129,7 @@ export const Charts = {
         return getSpendingPerMonthColumnChart(year, account.expenses);
     },
 
-    getCategorySpendingPerMonthColumnChart: function(year: number, category: Category) {
+    getCategorySpendingPerMonthColumnChart: function (year: number, category: Category) {
         return getSpendingPerMonthColumnChart(year, category.expenses);
     },
 

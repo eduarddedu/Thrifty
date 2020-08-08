@@ -44,8 +44,7 @@ export class AnalyticsService {
             account.labels = labels;
             account.categories = this.buildEnrichedCategories(expenses, categories);
             account.dateRange = this.getDateRange(expenses);
-            account.mapYearBalance = this.getMapYearBalance(expenses);
-            account.balance = Utils.sumExpenses(expenses);
+            account.balance = Utils.addExpenseAmounts(expenses);
         } catch (error) {
             console.log('Error building account: ', error);
         }
@@ -63,8 +62,7 @@ export class AnalyticsService {
         }
         const enrichedCategories: Category[] = Array.from(map.values());
         enrichedCategories.forEach(c => {
-            c.balance = Utils.sumExpenses(c.expenses);
-            c.mapYearBalance = this.getMapYearBalance(c.expenses);
+            c.balance = Utils.addExpenseAmounts(c.expenses);
             c.labels = this.getUniqueLabels(c.expenses);
         });
         return enrichedCategories;
@@ -88,16 +86,6 @@ export class AnalyticsService {
             dateRange.startDate = dateRange.endDate = expenses[0].createdOn;
         }
         return dateRange;
-    }
-
-    private getMapYearBalance(expenses: Expense[]): { [key: number]: number } {
-        const mapYearBalance = {};
-        for (const expense of expenses) {
-            let sum = mapYearBalance[expense.createdOn.year] || 0;
-            sum += expense.amount;
-            mapYearBalance[expense.createdOn.year] = sum;
-        }
-        return mapYearBalance;
     }
 
 }

@@ -5,9 +5,6 @@ export interface Account {
     other?: Category;
     balance?: number;
     dateRange?: DateRange;
-    mapYearBalance?: {
-        [key: number]: number;
-    };
 }
 
 export interface Category {
@@ -18,9 +15,6 @@ export interface Category {
     expenses?: Expense[];
     labels?: Label[];
     dateRange?: DateRange;
-    mapYearBalance?: {
-        [key: number]: number;
-    };
 }
 
 export interface Label {
