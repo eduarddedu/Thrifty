@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Chart } from 'angular-highcharts';
 
 
 import { AnalyticsService } from '../services/analytics.service';
-import { Account, Expense, Category, Label, LocalDate, DateRange } from '../model';
+import { Account, Category } from '../model';
 import { Charts } from './charts.api';
 import { Utils } from '../util/utils';
 
@@ -13,7 +13,7 @@ import { Utils } from '../util/utils';
   templateUrl: './charts-component.component.html',
   styleUrls: ['./charts-component.component.css']
 })
-export class ChartsComponent implements OnInit {
+export class ChartsComponent implements OnInit, OnChanges {
   private account: Account;
   private columnChart: Chart;
   private pieChart: Chart;
@@ -28,16 +28,29 @@ export class ChartsComponent implements OnInit {
   ngOnInit() {
     this.analytics.loadAccount().subscribe(account => {
       this.account = account;
-      this.setSelectorOptions();
-      if (this.category) {
-        this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category);
-        this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.category);
-      } else {
-        this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, this.router);
-        this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
-      }
+      this.init();
     });
   }
+
+  private init() {
+    if (!this.account) {
+      return;
+    }
+    this.setSelectorOptions();
+    if (this.category) {
+      this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category);
+      this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.category);
+    } else {
+      this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, this.router);
+      this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
+    }
+  }
+
+  ngOnChanges() {
+    this.init();
+  }
+
+
 
   private setSelectorOptions() {
     const options: Array<any> = [];
