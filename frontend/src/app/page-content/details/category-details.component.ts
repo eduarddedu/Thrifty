@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DetailsComponentParent } from './details-component-parent';
 import { Category, Account, Expense } from '../../model';
 import { RestService } from '../../services/rest.service';
-import { ChartsService } from '../../services/charts.service';
 import { MessageService, Kind, Message } from '../../services/messages.service';
 import { Utils } from '../../util/utils';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -30,7 +29,6 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
         private rest: RestService,
         private analytics: AnalyticsService,
         private messages: MessageService,
-        private charts: ChartsService,
         private route: ActivatedRoute,
         private router: Router) {
         super();
@@ -47,24 +45,10 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     }
 
     private resetPageContent(account: Account) {
-        if (account.other && this.categoryId === account.other.id) {
-            this.category = account.other;
-            this.hasCharts = false;
-        } else {
-            this.showEditDeleteCategoryButtons = true;
-            this.category = account.categories.find(c => c.id === this.categoryId);
-            this.mapYearBalance = this.toMap(this.category.mapYearBalance);
-            this.hasCharts = this.category.labels.length > 0;
-            if (this.category.expenses.length > 0) {
-                this.activeSince = this.getEarliestExpenseDate(this.category.expenses);
-            }
-            if (!this.category) {
-                this.router.navigate(['/not-found']);
-            } else if (this.hasCharts) {
-                this.pieChart = this.charts.spendingByLabelPieChart(this.category);
-                this.setSelectorOptions();
-                this.setColumnChart('All time');
-            }
+        this.showEditDeleteCategoryButtons = true;
+        this.category = account.categories.find(c => c.id === this.categoryId);
+        if (this.category.expenses.length > 0) {
+            this.activeSince = this.getEarliestExpenseDate(this.category.expenses);
         }
         this.resetNotification();
         Utils.scrollPage();
@@ -73,14 +57,6 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
 
     private resetNotification() {
         this.showNotification = false;
-    }
-
-    private setColumnChart(option: number | 'All time') {
-        if (option === 'All time') {
-            this.columnChart = this.charts.yearlyTotalSpending(this.mapYearBalance);
-        } else {
-            this.columnChart = this.charts.monthlySpendingByLabelColumnChart(this.category, +option);
-        }
     }
 
     private getEarliestExpenseDate(expenses: Expense[]) {
@@ -95,12 +71,9 @@ export class CategoryDetailsComponent extends DetailsComponentParent implements 
     }
 
     onClickEditCategory() {
-        this.router.navigate(['edit/category'], {queryParams: {id: this.categoryId}});
+        this.router.navigate(['edit/category'], { queryParams: { id: this.categoryId } });
     }
 
-    onSelectOption(selectedIndex) {
-        this.setColumnChart(this.selectOptions[selectedIndex]);
-    }
 
     onClickDeleteExpense(selectedId) {
         this.selectedExpenseId = selectedId;

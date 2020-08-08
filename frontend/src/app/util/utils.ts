@@ -1,4 +1,4 @@
-import { LocalDate } from '../model';
+import { LocalDate, Expense } from '../model';
 
 export class Utils {
 
@@ -40,6 +40,22 @@ export class Utils {
 
     static scrollPage() {
         document.getElementById('page').scrollTop = 0;
+    }
+
+
+    static sumExpenses(expenses: Expense[] = []): number {
+        return this.sum(expenses.map(e => e.amount));
+    }
+
+    static sum(series: Array<number> = []): number {
+        return series.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
+    }
+
+    static getYearsSeries(expenses: Expense[]): number[] {
+        const years: number[] = expenses.map(exp => exp.createdOn.year);
+        const uniqueYears: number[] = Array.from(new Set(years));
+        uniqueYears.sort((a, b) => a - b);
+        return uniqueYears;
     }
 
 }

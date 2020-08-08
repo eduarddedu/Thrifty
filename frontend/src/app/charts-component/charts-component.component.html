@@ -1,0 +1,28 @@
+<div [ngSwitch]="chartType">
+
+  <div id="pieChart" *ngSwitchCase="'pieChart'">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="text-muted"> Share per {{ viewType === 'account' ? 'category' : 'label' }}</h4>
+      </div>
+      <div [chart]="pieChart" class="panel-body"></div>
+    </div>
+  </div>
+
+
+
+  <div id="columnChart" *ngSwitchCase="'columnChart'">
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <h4 class="text-muted pull-left">Trends</h4>
+        <div style="float:right; width:40%">
+          <app-dropdown-selector [options]="selectOptions" (selectEvent)="onSelectOption($event)">
+          </app-dropdown-selector>
+        </div>
+      </div>
+      <div [chart]="columnChart" class="panel-body"></div>
+    </div>
+  </div>
+
+
+</div>
