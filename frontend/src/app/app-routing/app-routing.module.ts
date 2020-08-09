@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { PageComponent } from                      '../page/page.component';
 import { AccountDetailsComponent } from            '../page-content/details/account-details.component';
 import { CategoryDetailsComponent } from           '../page-content/details/category-details.component';
+import { LabelDetailsComponent } from              '../page-content/details/label-details.component';
 import { CategoryEditComponent } from              '../page-content/category/category-edit.component';
 import { CategoryCreateComponent } from            '../page-content/category/category-create.component';
 import { ExpenseEditComponent } from               '../page-content/expense/expense-edit.component';
@@ -30,6 +31,10 @@ const routes: Routes = [
             {
                 path: 'category/:id',
                 component: CategoryDetailsComponent
+            },
+            {
+                path: 'label/:id',
+                component: LabelDetailsComponent
             },
             {
                 path: 'new/expense',

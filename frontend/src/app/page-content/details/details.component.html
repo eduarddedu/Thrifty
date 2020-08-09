@@ -9,31 +9,35 @@
     </div>
     <div class="row">
         <div *ngIf="dataReady">
-            <div class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="text-muted">
-                            {{ viewType === 'account' ? 'My account' : category.name }}
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <h4 class="text-muted pull-left"> Spent</h4>
-                        <h4 class="text-muted pull-right">
-                            {{ viewType === 'account' ? account.balance : category.balance }} RON
-                        </h4>
+            <div [ngSwitch]="viewType">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="text-muted">
+                                {{ viewType === 'account' ? 'My account' : viewType === 'category' ? category.name : label.name}}
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <h4 class="text-muted pull-left"> Spent</h4>
+                            <h4 class="text-muted pull-right">
+                                {{ viewType === 'account' ? account.balance : viewType === 'category' ? category.balance : label.balance}}
+                                RON
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div [ngSwitch]="viewType" class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 *ngSwitchCase="'category'" class="text-muted pull-left"> {{ category.description }}</h3>
-                        <h3 style="visibility:hidden">Hidden</h3>
-                    </div>
-                    <div class="panel-body">
-                        <h4 class="text-muted pull-left"> Since</h4>
-                        <h4 *ngIf="activeSince" class="text-muted pull-right">{{ activeSince | date }}</h4>
-                        <h4 *ngIf="!activeSince" class="text-muted pull-right">?</h4>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 *ngSwitchCase="'category'" class="text-muted pull-left">{{ category.description }}</h3>
+                            <h3 *ngSwitchCase="'label'" class="text-muted pull-left"> {{ label.name }}</h3>
+                            <h3 style="visibility:hidden">Invisible padding</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h4 class="text-muted pull-left"> Since</h4>
+                            <h4 *ngIf="activeSince" class="text-muted pull-right">{{ activeSince | date }}</h4>
+                            <h4 *ngIf="!activeSince" class="text-muted pull-right">?</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,31 +46,42 @@
                 
             -->
             <div class="col-lg-6">
-                <app-charts-component [viewType]="viewType" [category]="category" [chartType]="'pieChart'"></app-charts-component>
+                <app-charts-component [viewType]="viewType" [category]="category" [label]="label" [chartType]="'pieChart'">
+                </app-charts-component>
             </div>
             <div class="col-lg-6">
-                <app-charts-component [viewType]="viewType" [category]="category" [chartType]="'columnChart'"></app-charts-component>
+                <app-charts-component [viewType]="viewType" [category]="category" [label]="label" [chartType]="'columnChart'">
+                </app-charts-component>
             </div>
 
             <!-- Expenses Table 
                 
             -->
             <div id="expenses" class="col-lg-12" *ngIf="dataReady">
-                <app-expense-table [expenses]="viewType === 'account' ? account.expenses : category.expenses" [categoryId]="categoryId"
-                    (clickDeleteExpense$)="onClickDeleteExpense($event)">
+                <app-expense-table
+                    [expenses]="viewType === 'account' ? account.expenses : viewType === 'category' ? category.expenses : label.expenses"
+                    [categoryId]="categoryId" (clickDeleteExpense$)="onClickDeleteExpense($event)">
                 </app-expense-table>
             </div>
 
             <!-- Edit/Delete buttons 
             
             -->
-            <div *ngIf="showEditDeleteCategoryButtons">
-                <div class="col-lg-12">
+            <div [ngSwitch]="viewType">
+                <div class="col-lg-12" *ngSwitchCase="'category'">
                     <button type="button" class="btn btn-primary pull-left" (click)="onClickEditCategory()">
                         Edit category <i class="glyphicon glyphicon-edit"></i>
                     </button>
                     <button class="btn btn-danger pull-right" (click)="onClickDeleteCategory()">
                         Delete category <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </div>
+                <div class="col-lg-12" *ngSwitchCase="'label'">
+                    <button type="button" class="btn btn-primary pull-left" (click)="onClickEditLabel()">
+                        Edit label <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button class="btn btn-danger pull-right" (click)="onClickDeleteLabel()">
+                        Delete label <i class="glyphicon glyphicon-trash"></i>
                     </button>
                 </div>
             </div>

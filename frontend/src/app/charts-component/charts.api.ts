@@ -61,7 +61,7 @@ const getColumnChart = function (categories: string[], series: { name: string, d
     });
 };
 
-const getSpendingByCategoryDataPoints = function (categories: Category[], router: Router): { name: string, y: number }[] {
+const getAccountSpendingByCategoryDataPoints = function (categories: Category[], router: Router) {
     const navigate = function (url) {
         router.navigate(url);
     };
@@ -74,20 +74,48 @@ const getSpendingByCategoryDataPoints = function (categories: Category[], router
     }));
 };
 
-const getSpendingByLabelDataPoints = function (category: Category): { name: string, y: number }[] {
-    const result = category.labels.map((label: Label) => ({
+const getCategorySpendingByLabelDataPoints = function (category: Category, router: Router): { name: string, y: number }[] {
+    const navigate = function (url) {
+        router.navigate(url);
+    };
+    const getTotalByLabel = function (expenses: Expense[], label: Label): number {
+        return Utils.addExpenseAmounts(expenses.filter(expense => hasLabel(expense, label)));
+    };
+    const points = category.labels.map((label: Label) => ({
         name: label.name,
-        y: Math.abs(getTotalByLabel(category.expenses, label))
+        y: Math.abs(getTotalByLabel(category.expenses, label)),
+        events: {
+            click: navigate.bind(this, ['label/' + label.id])
+        }
     }));
     const expensesWithoutLabel = category.expenses.filter(exp => !exp.labels || exp.labels.length === 0);
     if (expensesWithoutLabel.length > 0) {
-        result.push({ name: 'Other', y: Math.abs(Utils.addExpenseAmounts(expensesWithoutLabel)) });
+        points.push({
+            name: 'Other',
+            y: Math.abs(Utils.addExpenseAmounts(expensesWithoutLabel)),
+            events: null
+        });
     }
-    return result;
+    return points;
 };
 
-const getTotalByLabel = function (expenses: Expense[], label: Label): number {
-    return Utils.addExpenseAmounts(expenses.filter(expense => hasLabel(expense, label)));
+const getLabelSpendingByCategoryDataPoints = function (router: Router, label: Label): { name: string, y: number }[] {
+    const navigate = function (url) {
+        router.navigate(url);
+    };
+    const points = [];
+    const categoriesInLabel = new Set(label.expenses.map(e => e.category));
+    categoriesInLabel.forEach((category: Category) => {
+        const total = Utils.addExpenseAmounts(label.expenses.filter(e => e.category.id === category.id));
+        points.push({
+            name: category.name,
+            y: Math.abs(total),
+            events: {
+                click: navigate.bind(this, ['category/' + category.id])
+            }
+        });
+    });
+    return points;
 };
 
 const hasLabel = function (expense: Expense, label: Label) {
@@ -135,21 +163,37 @@ export const Charts = {
     },
 
     getAccountSpendingPerCategoryPieChart(account: Account, router: Router) {
-        const data = getSpendingByCategoryDataPoints(account.categories, router);
+        const points = getAccountSpendingByCategoryDataPoints(account.categories, router);
         const series = [{
             name: 'Total',
-            data: data,
+            data: points,
             cursor: 'pointer'
         }];
         return getPieChart(series);
     },
 
-    getCategorySpendingPerLabelPieChart(category: Category) {
+    getCategorySpendingPerLabelPieChart(category: Category, router: Router) {
+        const points = getCategorySpendingByLabelDataPoints(category, router);
         const series = [{
             name: 'Total',
-            data: getSpendingByLabelDataPoints(category)
+            data: points,
+            cursor: 'pointer'
         }];
         return getPieChart(series);
+    },
+
+    getLabelSpendingPerCategoryPieChart(label: Label, router: Router) {
+        const points = getLabelSpendingByCategoryDataPoints(router, label);
+        const series = [{
+            name: 'Total',
+            data: points,
+            cursor: 'pointer'
+        }];
+        return getPieChart(series);
+    },
+
+    getLabelSpendingPerYearColumnChart(label: Label) {
+        return getSpendingPerYearColumnChart(label.expenses);
     }
 
 };

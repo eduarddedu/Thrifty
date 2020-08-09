@@ -36,6 +36,7 @@ import { AnalyticsService } from './services/analytics.service';
 import { BaseUriInterceptor } from './http/baseuri.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
 import { ChartsComponent } from './charts-component/charts-component.component';
+import { LabelDetailsComponent } from './page-content/details/label-details.component';
 
 
 
@@ -62,6 +63,7 @@ import { ChartsComponent } from './charts-component/charts-component.component';
         CategoryUpdatesComponent,
         LabelEditComponent,
         ChartsComponent,
+        LabelDetailsComponent,
     ],
     imports: [
         BrowserModule,

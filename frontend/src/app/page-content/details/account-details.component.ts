@@ -1,41 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DetailsComponentParent } from './details-component-parent';
 import { RestService } from '../../services/rest.service';
 import { Account } from '../../model';
-import { MessageService, Kind } from '../../services/messages.service';
+import { MessageService, Kind, Message } from '../../services/messages.service';
 import { Utils } from '../../util/utils';
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     templateUrl: './details.component.html'
 })
-export class AccountDetailsComponent extends DetailsComponentParent implements OnInit {
+export class AccountDetailsComponent implements OnInit {
 
     account: Account;
 
     viewType = 'account';
 
-    showEditDeleteCategoryButtons = false;
+    categoryId: number;
+
+    activeSince: Date;
+
+    selectedExpenseId: number;
+
+    showNotification = false;
+
+    showModal = false;
+
+    notificationMessage: Message;
+
+    modalMessage: Message;
+
+    dataReady = false;
 
     constructor(
         private rest: RestService,
         private ms: MessageService,
         private analytics: AnalyticsService) {
-        super();
         this.categoryId = 0;
     }
 
     ngOnInit() {
-        this.analytics.loadAccount().subscribe(this.setPageContent.bind(this), err => {
+        this.analytics.loadAccount().subscribe(this.init.bind(this), err => {
             this.showNotification = true;
             this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
         });
     }
 
-    private setPageContent(account: Account) {
+    private init(account: Account) {
         this.account = account;
-        if (this.account.expenses.length > 0 && account.categories.length > 0) {
+        if (this.account.expenses.length > 0) {
             this.activeSince = Utils.localDateToJsDate(account.dateRange.startDate);
         }
         this.dataReady = true;

@@ -20,6 +20,9 @@ export interface Category {
 export interface Label {
     id?: number;
     name: string;
+    expenses?: Expense[];
+    categories?: Category[];
+    balance?: number;
 }
 
 export interface Expense {

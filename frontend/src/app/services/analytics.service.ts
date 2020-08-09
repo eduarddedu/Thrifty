@@ -41,8 +41,8 @@ export class AnalyticsService {
         const account: Account = {};
         try {
             account.expenses = expenses;
-            account.labels = labels;
-            account.categories = this.buildEnrichedCategories(expenses, categories);
+            account.labels = this.getEnrichedLabels(expenses, labels);
+            account.categories = this.getEnrichedCategories(expenses, categories);
             account.dateRange = this.getDateRange(expenses);
             account.balance = Utils.addExpenseAmounts(expenses);
         } catch (error) {
@@ -51,7 +51,7 @@ export class AnalyticsService {
         return account;
     }
 
-    private buildEnrichedCategories(expenses: Expense[], categories: Category[]): Category[] {
+    private getEnrichedCategories(expenses: Expense[], categories: Category[]): Category[] {
         const map: Map<number, Category> = new Map();
         for (const category of categories) {
             map.set(category.id, category);
@@ -66,6 +66,27 @@ export class AnalyticsService {
             c.labels = this.getUniqueLabels(c.expenses);
         });
         return enrichedCategories;
+    }
+
+    private getEnrichedLabels(expenses: Expense[], labels: Label[]): Label[] {
+        const map: Map<number, Label> = new Map();
+        for (const label of labels) {
+            map.set(label.id, label);
+            label.expenses = [];
+            label.categories = [];
+        }
+        for (const expense of expenses) {
+            for (const label of expense.labels) {
+                map.get(label.id).expenses.push(expense);
+                map.get(label.id).categories.push(expense.category);
+            }
+        }
+        const enrichedLabels: Label[] = Array.from(map.values());
+        enrichedLabels.forEach(l => {
+            l.balance = Utils.addExpenseAmounts(l.expenses);
+            l.categories = Array.from(new Set(l.categories));
+        });
+        return enrichedLabels;
     }
 
     private getUniqueLabels(expenses: Expense[] = []): Label[] {

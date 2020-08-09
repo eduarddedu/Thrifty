@@ -9,7 +9,8 @@ import { AnalyticsService } from '../services/analytics.service';
 })
 export class SidebarComponent implements OnInit, AfterViewInit {
 
-    links: {id: number, name: string}[];
+    categories: { id: number, name: string }[];
+    labels: { id: number, name: string }[];
 
     constructor(protected analytics: AnalyticsService) { }
 
@@ -26,6 +27,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     }
 
     setNavigationLinks(account: Account) {
-        this.links = account.categories.map(c => ({id: c.id, name: c.name}));
+        this.categories = account.categories.map(c => ({ id: c.id, name: c.name }));
+        this.labels = account.labels.map(l => ({ id: l.id, name: l.name }));
     }
 }

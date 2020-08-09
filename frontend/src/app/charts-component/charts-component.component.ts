@@ -4,7 +4,7 @@ import { Chart } from 'angular-highcharts';
 
 
 import { AnalyticsService } from '../services/analytics.service';
-import { Account, Category } from '../model';
+import { Account, Category, Label } from '../model';
 import { Charts } from './charts.api';
 import { Utils } from '../util/utils';
 
@@ -17,11 +17,12 @@ export class ChartsComponent implements OnInit, OnChanges {
   private account: Account;
   private columnChart: Chart;
   private pieChart: Chart;
-  @Input() viewType: 'account' | 'category';
+  @Input() viewType: 'account' | 'category' | 'label';
   @Input() category: Category;
+  @Input() label: Label;
   @Input() chartType: 'pieChart' | 'columnChart';
 
-  private selectOptions: Array<'All time' | number>;
+  private periodOptions: Array<'All time' | number> = ['All time'];
 
   constructor(private analytics: AnalyticsService, private router: Router) { }
 
@@ -36,14 +37,17 @@ export class ChartsComponent implements OnInit, OnChanges {
     if (!this.account) {
       return;
     }
-    this.setSelectorOptions();
     if (this.category) {
-      this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category);
+      this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, this.router);
       this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.category);
+    } else if (this.label) {
+      this.pieChart = Charts.getLabelSpendingPerCategoryPieChart(this.label, this.router);
+      this.columnChart = Charts.getLabelSpendingPerYearColumnChart(this.label);
     } else {
       this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, this.router);
       this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
     }
+    this.setPeriodOptions();
   }
 
   ngOnChanges() {
@@ -52,16 +56,13 @@ export class ChartsComponent implements OnInit, OnChanges {
 
 
 
-  private setSelectorOptions() {
-    const options: Array<any> = [];
-    options.push('All time');
-    Utils.getYearsSeries(this.account.expenses).reverse().forEach(year => options.push(year));
-    this.selectOptions = options;
+  private setPeriodOptions() {
+    Utils.getYearsSeries(this.account.expenses).reverse().forEach(year => this.periodOptions.push(year));
   }
 
 
-  onSelectOption(index: number) {
-    const selectedValue = this.selectOptions[index];
+  onSelectPeriod(index: number) {
+    const selectedValue = this.periodOptions[index];
     if (selectedValue === 'All time') {
       this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
     } else {
