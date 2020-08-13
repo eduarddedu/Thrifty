@@ -54,25 +54,26 @@ export class ChartsComponent implements OnInit, OnChanges {
     this.init();
   }
 
-
-
   private setPeriodOptions() {
     const expenses: Expense[] = this.label ? this.label.expenses : this.category ? this.category.expenses : this.account.expenses;
     this.periodOptions = ['All time'];
     Utils.getYearsSeries(expenses).reverse().forEach(year => this.periodOptions.push(year));
   }
 
-
   onSelectPeriod(index: number) {
-    const selectedValue = this.periodOptions[index];
-    if (selectedValue === 'All time') {
-      this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
+    const selector = this.periodOptions[index];
+    if (this.category) {
+      this.columnChart = selector === 'All time' ?
+        Charts.getCategorySpendingPerYearColumnChart(this.category) :
+        Charts.getCategorySpendingPerMonthColumnChart(selector, this.category);
+    } else if (this.label) {
+      this.columnChart = selector === 'All time' ?
+        Charts.getLabelSpendingPerYearColumnChart(this.label) :
+        Charts.getLabelSpendingPerMonthColumnChart(selector, this.label);
     } else {
-      if (this.category) {
-        this.columnChart = Charts.getCategorySpendingPerMonthColumnChart(selectedValue, this.category);
-      } else {
-        this.columnChart = Charts.getAccountSpendingPerMonthColumnChart(selectedValue, this.account);
-      }
+      this.columnChart = selector === 'All time' ?
+        Charts.getAccountSpendingPerYearColumnChart(this.account) :
+        Charts.getAccountSpendingPerMonthColumnChart(selector, this.account);
     }
   }
 

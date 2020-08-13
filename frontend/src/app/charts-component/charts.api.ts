@@ -149,16 +149,24 @@ export const Charts = {
         return getSpendingPerYearColumnChart(account.expenses);
     },
 
-    getCategorySpendingPerYearColumnChart: function (category: Category) {
-        return getSpendingPerYearColumnChart(category.expenses);
-    },
-
     getAccountSpendingPerMonthColumnChart: function (year: number, account: Account) {
         return getSpendingPerMonthColumnChart(year, account.expenses);
     },
 
+    getCategorySpendingPerYearColumnChart: function (category: Category) {
+        return getSpendingPerYearColumnChart(category.expenses);
+    },
+
     getCategorySpendingPerMonthColumnChart: function (year: number, category: Category) {
         return getSpendingPerMonthColumnChart(year, category.expenses);
+    },
+
+    getLabelSpendingPerYearColumnChart(label: Label) {
+        return getSpendingPerYearColumnChart(label.expenses);
+    },
+
+    getLabelSpendingPerMonthColumnChart: function (year: number, label: Label) {
+        return getSpendingPerMonthColumnChart(year, label.expenses);
     },
 
     getAccountSpendingPerCategoryPieChart(account: Account, router: Router) {
@@ -189,10 +197,6 @@ export const Charts = {
             cursor: 'pointer'
         }];
         return getPieChart(series);
-    },
-
-    getLabelSpendingPerYearColumnChart(label: Label) {
-        return getSpendingPerYearColumnChart(label.expenses);
     }
 
 };
