@@ -4,12 +4,13 @@ export class Utils {
 
     static deepFreeze(object: any) {
         try {
-            const propNames = Object.getOwnPropertyNames(object);
-            for (const name of propNames) {
-                const value = object[name];
-                if (typeof value === 'object' && Object.getOwnPropertyDescriptor(object, name).writable) {
+            const properties = Object.getOwnPropertyNames(object);
+            for (const prop of properties) {
+                const value = object[prop];
+                const descriptor = Object.getOwnPropertyDescriptor(object, prop);
+                if (typeof value === 'object' && descriptor.writable) {
                     Utils.deepFreeze(value);
-                    object[name] = value;
+                    object[prop] = value;
                 }
             }
             return Object.freeze(object);

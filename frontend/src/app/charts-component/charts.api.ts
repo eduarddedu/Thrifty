@@ -104,8 +104,7 @@ const getLabelSpendingByCategoryDataPoints = function (router: Router, label: La
         router.navigate(url);
     };
     const points = [];
-    const categoriesInLabel = new Set(label.expenses.map(e => e.category));
-    categoriesInLabel.forEach((category: Category) => {
+    label.categories.forEach((category: Category) => {
         const total = Utils.addExpenseAmounts(label.expenses.filter(e => e.category.id === category.id));
         points.push({
             name: category.name,

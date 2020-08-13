@@ -52,51 +52,55 @@ export class AnalyticsService {
     }
 
     private getEnrichedCategories(expenses: Expense[], categories: Category[]): Category[] {
-        const map: Map<number, Category> = new Map();
-        for (const category of categories) {
-            map.set(category.id, category);
-            category.expenses = [];
-        }
-        for (const expense of expenses) {
-            map.get(expense.category.id).expenses.push(expense);
-        }
-        const enrichedCategories: Category[] = Array.from(map.values());
-        enrichedCategories.forEach(c => {
-            c.balance = Utils.addExpenseAmounts(c.expenses);
-            c.labels = this.getUniqueLabels(c.expenses);
+        const mapRichCategories: Map<number, Category> = new Map();
+        categories.forEach(c => {
+            mapRichCategories.set(c.id, Object.assign({ expenses: [] }, c));
         });
-        return enrichedCategories;
+        expenses.forEach(expense => {
+            mapRichCategories.get(expense.category.id).expenses.push(expense);
+        });
+        const richCategories: Category[] = Array.from(mapRichCategories.values());
+        richCategories.forEach(c => {
+            c.balance = Utils.addExpenseAmounts(c.expenses);
+            c.labels = this.pickLabels(c.expenses);
+        });
+        return richCategories;
     }
 
     private getEnrichedLabels(expenses: Expense[], labels: Label[]): Label[] {
-        const map: Map<number, Label> = new Map();
-        for (const label of labels) {
-            map.set(label.id, label);
-            label.expenses = [];
-            label.categories = [];
-        }
+        const mapRichLabels = new Map<number, Label>();
+        labels.forEach(lb => {
+            mapRichLabels.set(lb.id, Object.assign({ expenses: [] }, lb));
+        });
         for (const expense of expenses) {
             for (const label of expense.labels) {
-                map.get(label.id).expenses.push(expense);
-                map.get(label.id).categories.push(expense.category);
+                mapRichLabels.get(label.id).expenses.push(expense);
             }
         }
-        const enrichedLabels: Label[] = Array.from(map.values());
-        enrichedLabels.forEach(l => {
-            l.balance = Utils.addExpenseAmounts(l.expenses);
-            l.categories = Array.from(new Set(l.categories));
+        const richLabels = Array.from(mapRichLabels.values());
+        richLabels.forEach(lb => {
+            lb.balance = Utils.addExpenseAmounts(lb.expenses);
+            lb.categories = this.pickCategories(lb.expenses);
         });
-        return enrichedLabels;
+        return richLabels;
     }
 
-    private getUniqueLabels(expenses: Expense[] = []): Label[] {
-        const mapLabelIdLabel: Map<number, Label> = new Map();
+    private pickCategories(expenses: Expense[]): Category[] {
+        const map: Map<number, Category> = new Map();
+        for (const expense of expenses) {
+            map.set(expense.category.id, expense.category);
+        }
+        return Array.from(map.values());
+    }
+
+    private pickLabels(expenses: Expense[] = []): Label[] {
+        const map: Map<number, Label> = new Map();
         for (const expense of expenses) {
             for (const label of expense.labels) {
-                mapLabelIdLabel.set(label.id, label);
+                map.set(label.id, label);
             }
         }
-        return Array.from(mapLabelIdLabel.values());
+        return Array.from(map.values());
     }
     private getDateRange(expenses: Expense[]): DateRange {
         const dateRange = <DateRange>{};
