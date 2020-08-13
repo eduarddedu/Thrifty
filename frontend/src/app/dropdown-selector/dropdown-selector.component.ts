@@ -4,13 +4,15 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   selector: 'app-dropdown-selector',
   template: `
   <select (change)="onSelectOption($event.target.selectedIndex)">
-    <option *ngFor="let option of options" >{{ option }}</option>
+    <option *ngFor="let option of options" selected="option.selected">
+      {{ option.value }}
+    </option>
   </select>`,
   styleUrls: ['./dropdown-selector.component.css']
 })
 export class DropdownSelectorComponent {
 
-  @Input() options: Array<any>;
+  @Input() options: Array<{value: any, selected: boolean}>;
 
   @Output() selectEvent: EventEmitter<number> = new EventEmitter();
 

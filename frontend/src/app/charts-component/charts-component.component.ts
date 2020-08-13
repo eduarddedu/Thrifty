@@ -22,7 +22,7 @@ export class ChartsComponent implements OnInit, OnChanges {
   @Input() label: Label;
   @Input() chartType: 'pieChart' | 'columnChart';
 
-  private periodOptions: Array<'All time' | number>;
+  private periodOptions: Array<{ value: any, selected: boolean }>;
 
   constructor(private analytics: AnalyticsService, private router: Router) { }
 
@@ -56,12 +56,22 @@ export class ChartsComponent implements OnInit, OnChanges {
 
   private setPeriodOptions() {
     const expenses: Expense[] = this.label ? this.label.expenses : this.category ? this.category.expenses : this.account.expenses;
-    this.periodOptions = ['All time'];
-    Utils.getYearsSeries(expenses).reverse().forEach(year => this.periodOptions.push(year));
+    this.periodOptions = [{ value: 'All time', selected: false }];
+    const years: number[] = Utils.getYearsSeries(expenses).reverse();
+    if (years.length > 0) {
+      const maxYear = years[0];
+      for (const year of years) {
+        this.periodOptions.push({
+          value: year,
+          selected: year === maxYear ? true : false
+        });
+      }
+      this.onSelectPeriod(1);
+    }
   }
 
   onSelectPeriod(index: number) {
-    const selector = this.periodOptions[index];
+    const selector = this.periodOptions[index].value;
     if (this.category) {
       this.columnChart = selector === 'All time' ?
         Charts.getCategorySpendingPerYearColumnChart(this.category) :

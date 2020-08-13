@@ -13,16 +13,20 @@ export class UpdatesFormParent {
 
     modalMessage: Message;
 
-    actions = ['New', 'Edit', 'Delete'];
+    dropdownOptions: Array<{ value: string, selected: boolean }> = [
+        { value: 'New', selected: true },
+        { value: 'Edit', selected: false },
+        { value: 'Update', selected: false }
+    ];
 
-    formAction = this.actions[0];
+    formAction = this.dropdownOptions[0].value;
 
     radioOptions: RadioOption[] = [];
 
     checkedOption: RadioOption;
 
     setFormAction(index) {
-        this.formAction = this.actions[index];
+        this.formAction = this.dropdownOptions[index].value;
     }
 
     goButtonEnabled() {
@@ -33,7 +37,7 @@ export class UpdatesFormParent {
         }
     }
 
-    onClickOption(event: {options: RadioOption[]}) {
+    onClickOption(event: { options: RadioOption[] }) {
         for (const option of event.options) {
             if (option.checked) {
                 this.checkedOption = option;
