@@ -4,7 +4,7 @@ import { Chart } from 'angular-highcharts';
 
 
 import { AnalyticsService } from '../services/analytics.service';
-import { Account, Category, Label } from '../model';
+import { Account, Category, Label, Expense } from '../model';
 import { Charts } from './charts.api';
 import { Utils } from '../util/utils';
 
@@ -22,7 +22,7 @@ export class ChartsComponent implements OnInit, OnChanges {
   @Input() label: Label;
   @Input() chartType: 'pieChart' | 'columnChart';
 
-  private periodOptions: Array<'All time' | number> = ['All time'];
+  private periodOptions: Array<'All time' | number>;
 
   constructor(private analytics: AnalyticsService, private router: Router) { }
 
@@ -57,7 +57,9 @@ export class ChartsComponent implements OnInit, OnChanges {
 
 
   private setPeriodOptions() {
-    Utils.getYearsSeries(this.account.expenses).reverse().forEach(year => this.periodOptions.push(year));
+    const expenses: Expense[] = this.label ? this.label.expenses : this.category ? this.category.expenses : this.account.expenses;
+    this.periodOptions = ['All time'];
+    Utils.getYearsSeries(expenses).reverse().forEach(year => this.periodOptions.push(year));
   }
 
 
