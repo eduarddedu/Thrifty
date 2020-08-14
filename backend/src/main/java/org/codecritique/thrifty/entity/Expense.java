@@ -56,8 +56,12 @@ public class Expense extends BaseEntity {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        if (category == null || category.equals(this.category))
+            return;
+        if (this.category != null)
+            this.category.getExpenses().remove(this);
         category.getExpenses().add(this);
+        this.category = category;
     }
 
     public LocalDate getCreatedOn() {
