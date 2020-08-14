@@ -48,9 +48,9 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             lengthChange: false,
             pageLength: 10,
             columns: [
-                { title: 'ID' },
+                { title: 'Id' },
                 { title: 'Date' },
-                { title: 'Description' },
+                { title: 'Details' },
                 { title: 'Amount' }
             ],
             data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]),
