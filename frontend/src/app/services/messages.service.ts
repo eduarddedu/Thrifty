@@ -110,7 +110,7 @@ export class MessageService {
             /* Delete warning
             */
             case Kind.CATEGORY_DELETE_WARN:
-            text = 'Deleting a category which is associated to an expense may break the app. Proceed?';
+            text = 'Deleting a category associated to one or more expenses is not recommended. Proceed?';
             alert = Alert.WARNING;
             break;
             case Kind.EXPENSE_DELETE_WARN:
