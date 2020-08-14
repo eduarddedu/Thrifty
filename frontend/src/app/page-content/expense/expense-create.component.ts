@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { combineLatest } from 'rxjs';
 
 import { RestService } from '../../services/rest.service';
 import { MessageService, Kind } from '../../services/messages.service';
-import { Expense, Account, Category, RadioOption } from '../../model';
+import { Expense, Account, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
 import { AnalyticsService } from '../../services/analytics.service';
 
@@ -16,23 +14,21 @@ import { AnalyticsService } from '../../services/analytics.service';
 export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit {
     pageTitle = 'Create Expense';
     submitFormButtonText = 'Save';
-    category: Category;
+    account: Account;
 
     constructor(
         protected fb: FormBuilder,
         private messages: MessageService,
-        private route: ActivatedRoute,
         private rest: RestService,
         private analytics: AnalyticsService) {
         super(fb);
     }
 
     ngOnInit() {
-        combineLatest(this.analytics.loadAccount(), this.route.queryParams).subscribe(v => {
-            const account = v[0];
-            this.category = account.categories.find(c => c.id === +v[1].categoryId);
-            this.setRadioOptionsLabel(account);
-            this.setRadioOptionsCategory(account);
+        this.analytics.loadAccount().subscribe(v => {
+            this.account = v;
+            this.setRadioOptionsLabel();
+            this.setRadioOptionsCategory();
             this.expenseForm.patchValue({ date: { jsdate: new Date() } });
             this.showForm = true;
         }, err => {
@@ -57,16 +53,16 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
     }
 
-    private setRadioOptionsLabel(account: Account) {
-        account.labels.forEach(label => this.radioOptionsLabel.push({
+    private setRadioOptionsLabel() {
+        this.account.labels.forEach(label => this.radioOptionsLabel.push({
             id: label.id,
             name: label.name,
             checked: false
         }));
     }
 
-    private setRadioOptionsCategory(account: Account) {
-        account.categories.forEach(category => {
+    private setRadioOptionsCategory() {
+        this.account.categories.forEach(category => {
             const option = {
                 id: category.id,
                 name: category.name,

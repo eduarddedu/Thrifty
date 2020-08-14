@@ -105,11 +105,11 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
 
     onClickNewExpense() {
-        this.router.navigate(['new/expense'], { queryParams: { categoryId: this.categoryId } });
+        this.router.navigate(['new/expense']);
     }
 
     onClickEditExpense() {
-        this.router.navigate(['edit/expense'], { queryParams: { expenseId: this.expenseId } });
+        this.router.navigate(['edit/expense'], { queryParams: { id: this.expenseId } });
     }
 
     onClickDeleteExpense() {

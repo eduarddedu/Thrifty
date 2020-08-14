@@ -32,7 +32,7 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
     ngOnInit() {
         combineLatest(this.analytics.loadAccount(), this.route.queryParams).subscribe(v => {
             const account = v[0];
-            this.expense = account.expenses.find(ex => ex.id === +v[1].expenseId);
+            this.expense = account.expenses.find(ex => ex.id === +v[1].id);
             this.setFormWithModelValues();
             this.setRadioOptionsLabel(account);
             this.selectedLabels = [].concat(this.expense.labels);
