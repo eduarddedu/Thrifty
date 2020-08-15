@@ -31,21 +31,14 @@ public class LabelServiceBean extends BaseService implements LabelService {
 
     @Override
     public void update(Label label) {
-        Label label1 = em.find(Label.class, label.getId());
-        if (label1 != null) {
-            em.getTransaction().begin();
-            label1.setName(label.getName());
-            em.getTransaction().commit();
-        }
+        super.update(label);
     }
 
     @Override
     public void remove(long id) {
         Label label = em.find(Label.class, id);
-
         if (label == null)
             return;
-
         em.getTransaction().begin();
         for (Expense expense : label.getExpenses())
             expense.removeLabel(label);

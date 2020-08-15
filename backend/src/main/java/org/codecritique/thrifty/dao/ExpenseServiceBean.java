@@ -30,21 +30,14 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void remove(long id) {
-        super.remove(Expense.class, id);
+        Expense expense = em.find(Expense.class, id);
+        if (expense != null)
+            super.remove(expense);
     }
 
     @Override
     public void update(Expense expense) {
-        Expense expense1 = em.find(Expense.class, expense.getId());
-        if (expense1 != null) {
-            em.getTransaction().begin();
-            expense1.setCreatedOn(expense.getCreatedOn());
-            expense1.setDescription(expense.getDescription());
-            expense1.setAmount(expense.getAmount());
-            expense1.setCategory(expense.getCategory());
-            expense1.setLabels(expense.getLabels());
-            em.getTransaction().commit();
-        }
+        super.update(expense);
     }
 
     private List<Expense> getExpensesSortedByDateDescending() {

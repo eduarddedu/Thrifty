@@ -24,9 +24,18 @@ public abstract class BaseService {
         em.getTransaction().commit();
     }
 
-    protected void remove(Class<? extends BaseEntity> clazz, long id) {
+    protected void update(BaseEntity entity) {
+        BaseEntity oldEntity = em.find(entity.getClass(), entity.getId());
+        if (oldEntity != null && !oldEntity.equals(entity)) {
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+        }
+    }
+
+    protected void remove(BaseEntity entity) {
         em.getTransaction().begin();
-        em.remove(em.find(clazz, id));
+        em.remove(entity);
         em.getTransaction().commit();
     }
 
