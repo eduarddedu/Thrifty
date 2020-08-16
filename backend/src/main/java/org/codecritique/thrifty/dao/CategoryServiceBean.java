@@ -1,11 +1,10 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.exception.WebException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import org.codecritique.thrifty.entity.Category;
 
 /**
  * @author Eduard Dedu
@@ -16,12 +15,24 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
 
     @Override
     public void store(Category o) {
-        super.persist(o);
+        try {
+            super.persist(o);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public Category get(long id) {
-        return em.find(Category.class, id);
+        try {
+            return (Category) super.find(Category.class, id);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
@@ -30,20 +41,35 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
     }
 
     private List<Category> getCategoriesSortedByName() {
-        String sql = "Select r from Category r Order by r.name ";
-        return em.createQuery(sql, Category.class).getResultList();
+        try {
+            String sql = "Select r from Category r Order by r.name ";
+            return em.createQuery(sql, Category.class).getResultList();
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public void update(Category category) {
-        super.update(category);
+        try {
+            super.update(category);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public void remove(long id) {
-        Category category = em.find(Category.class, id);
-        if (category != null && category.getExpenses().size() == 0) {
-            super.remove(category);
+        try {
+            super.remove(Category.class, id);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
         }
     }
 }

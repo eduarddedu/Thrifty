@@ -11,17 +11,26 @@ import javax.persistence.EntityManagerFactory;
 
 @Configuration
 public abstract class BaseService {
+    protected static EntityManagerFactory emf;
     protected EntityManager em;
 
-    BaseService() {
+    static {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        em = context.getBean(EntityManagerFactory.class).createEntityManager();
+        emf = context.getBean(EntityManagerFactory.class);
+    }
+
+    BaseService() {
+        em = emf.createEntityManager();
     }
 
     protected void persist(BaseEntity o) {
         em.getTransaction().begin();
         em.persist(o);
         em.getTransaction().commit();
+    }
+
+    protected BaseEntity find(Class<? extends BaseEntity> entityClass, long id) {
+        return em.find(entityClass, id);
     }
 
     protected void update(BaseEntity entity) {
@@ -33,10 +42,17 @@ public abstract class BaseService {
         }
     }
 
-    protected void remove(BaseEntity entity) {
+    protected void remove(Class<? extends BaseEntity> entityClass, long id) {
         em.getTransaction().begin();
-        em.remove(entity);
+        BaseEntity entity = em.find(entityClass, id);
+        if (entity != null)
+            em.remove(entity);
         em.getTransaction().commit();
+    }
+
+    @Override
+    protected void finalize() {
+        em.close();
     }
 
 }

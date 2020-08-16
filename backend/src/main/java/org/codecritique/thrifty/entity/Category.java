@@ -32,7 +32,15 @@ public class Category extends BaseEntity {
 
     @JsonIgnore
     public Set<Expense> getExpenses() {
-        return expenses;
+        return new HashSet<>(expenses);
+    }
+
+    public void addExpense(Expense expense) {
+        this.expenses.add(expense);
+    }
+
+    public void removeExpense(Expense expense) {
+        this.expenses.remove(expense);
     }
 
     public String getName() {

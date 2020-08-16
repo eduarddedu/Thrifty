@@ -1,8 +1,9 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -12,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ExpensesControllerTest extends BaseControllerTest {
 
-
     @Test
     void testCreateExpense() throws Exception {
         createExpense();
@@ -21,7 +21,7 @@ class ExpensesControllerTest extends BaseControllerTest {
     @Test
     void testGetExpenses() throws Exception {
         createExpense();
-        mockMvc.perform(get(EXPENSE_RESOURCE_PATH))
+        mockMvc.perform(get(Resource.EXPENSES.url))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -29,17 +29,23 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void testUpdateExpense() throws Exception {
+    void testUpdateExpenseAmount() throws Exception {
+        //setup
         Expense expense = createExpense();
-
         //exercise
         expense.setAmount(12.54);
-        mockMvc.perform(put(EXPENSE_RESOURCE_PATH).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(expense)))
-                .andExpect(status().isOk());
-
         //verify
-        mockMvc.perform(get(EXPENSE_RESOURCE_PATH + "/" + expense.getId())).andExpect(jsonPath("$.amount").value("12.54"));
+        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
+    }
+
+    @Test
+    void testUpdateExpenseCategory() throws Exception {
+        Expense expense = createExpense();
+        Category category = createCategory();
+        //exercise
+        expense.setCategory(category);
+        //verify
+        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));;
     }
 
     @Test
@@ -47,10 +53,9 @@ class ExpensesControllerTest extends BaseControllerTest {
         Expense expense = createExpense();
 
         //exercise
-        mockMvc.perform(delete(EXPENSE_RESOURCE_PATH + "/" + expense.getId()))
-                .andExpect(status().isOk());
+        deleteEntity(Resource.EXPENSES, expense.getId());
         //verify
-        mockMvc.perform(get(EXPENSE_RESOURCE_PATH + "/" + expense.getId()))
+        mockMvc.perform(get(Resource.EXPENSES.url + expense.getId()))
                 .andExpect(status().isNotFound());
     }
 }

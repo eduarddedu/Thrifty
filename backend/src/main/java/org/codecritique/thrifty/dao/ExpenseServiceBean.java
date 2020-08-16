@@ -1,10 +1,14 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.exception.WebException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import org.codecritique.thrifty.entity.Expense;
+
+import javax.persistence.EntityManager;
 
 /**
  * @author Eduard Dedu
@@ -15,12 +19,24 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void store(Expense expense) {
-        super.persist(expense);
+        try {
+            super.persist(expense);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public Expense get(long id) {
-        return em.find(Expense.class, id);
+        try {
+            return (Expense) super.find(Expense.class, id);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
@@ -30,18 +46,34 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void remove(long id) {
-        Expense expense = em.find(Expense.class, id);
-        if (expense != null)
-            super.remove(expense);
+        try {
+            super.remove(Expense.class, id);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public void update(Expense expense) {
-        super.update(expense);
+        try {
+            super.update(expense);
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 
     private List<Expense> getExpensesSortedByDateDescending() {
-        String sql = "SELECT r from Expense r ORDER BY r.createdOn DESC";
-        return em.createQuery(sql, Expense.class).getResultList();
+        try {
+            String sql = "SELECT r from Expense r ORDER BY r.createdOn DESC";
+            return em.createQuery(sql, Expense.class).getResultList();
+        } catch (Throwable th) {
+            WebException ex = new WebException(th);
+            th.printStackTrace();
+            throw ex;
+        }
     }
 }

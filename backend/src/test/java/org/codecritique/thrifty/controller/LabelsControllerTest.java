@@ -1,17 +1,17 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
-import static org.codecritique.thrifty.TestUtils.labelSupplier;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.codecritique.thrifty.TestUtil.nameSupplier;
 
 
 class LabelsControllerTest extends BaseControllerTest {
@@ -21,7 +21,7 @@ class LabelsControllerTest extends BaseControllerTest {
     @Test
     void testGetLabels() throws Exception {
         createLabel();
-        mockMvc.perform(get(LABEL_RESOURCE_PATH))
+        mockMvc.perform(get(Resource.LABELS.url))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -31,23 +31,39 @@ class LabelsControllerTest extends BaseControllerTest {
     @Test
     void testUpdateLabel() throws Exception {
         Label label = createLabel();
-
         //exercise
-        label.setName("Baz");
-        mockMvc.perform(put(LABEL_RESOURCE_PATH).contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(label)))
-                .andExpect(status().isOk());
+        label.setName(nameSupplier.get());
         //verify
-        mockMvc.perform(get(LABEL_RESOURCE_PATH + "/" + label.getId())).andExpect(jsonPath("$.name").value("Baz"));
+        assertEquals(label, updateEntity(label, Resource.LABELS));
     }
 
     @Test
-    void testDeleteLabel() throws Exception {
+    void testUpdateLabelPropagatesToRelatedExpenses() throws Exception {
+        //setup
+        Expense expense = createExpense();
+        assertTrue(expense.getLabels().isEmpty());
         Label label = createLabel();
-        mockMvc.perform(delete(LABEL_RESOURCE_PATH + "/" + label.getId()))
-                .andExpect(status().isOk());
+        //link entities
+        expense.addLabel(label);
+        updateEntity(expense, Resource.EXPENSES);
+
+        //exercise
+        label.setName(nameSupplier.get());
+        updateEntity(label, Resource.LABELS);
+
         //verify
-        mockMvc.perform(get(LABEL_RESOURCE_PATH + "/" + label.getId()))
+        Expense sameExpense = (Expense) getEntity(Resource.EXPENSES, expense.getId());
+        assertEquals(expense, sameExpense);
+    }
+
+
+    @Test
+    void testRemoveLabel() throws Exception {
+        Label label = createLabel();
+        //exercise
+        deleteEntity(Resource.LABELS, label.getId());
+        //verify
+        mockMvc.perform(get(Resource.LABELS.url + label.getId()))
                 .andExpect(status().isNotFound());
     }
 }

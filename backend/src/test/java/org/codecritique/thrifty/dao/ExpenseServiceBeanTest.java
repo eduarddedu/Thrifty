@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static org.codecritique.thrifty.TestUtils.*;
+import static org.codecritique.thrifty.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -26,11 +26,18 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testStoreExpense() {
-        Expense expense = expenseSupplier.get();
+
         Category category = categorySupplier.get();
         categoryService.store(category);
+        Expense expense = expenseSupplier.get();
         expense.setCategory(category);
+        Label label = labelSupplier.get();
+        labelService.store(label);
+        expense.addLabel(label);
         expenseService.store(expense);
+
+        assertTrue(category.getExpenses().contains(expense));
+        assertTrue(label.getExpenses().contains(expense));
     }
 
     @Test
@@ -145,9 +152,9 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
 
         //exercise
-        expense.setCreatedOn(randomDate.get());
+        expense.setCreatedOn(dateSupplier.get());
         expense.setAmount((double) Integer.MAX_VALUE);
-        expense.setDescription("Baz");
+        expense.setDescription(nameSupplier.get());
         expense.setCategory(category);
         expense.addLabel(label);
         expenseService.update(expense);

@@ -3,10 +3,7 @@ package org.codecritique.thrifty.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Eduard Dedu
@@ -59,9 +56,10 @@ public class Expense extends BaseEntity {
         if (category == null || category.equals(this.category))
             return;
         if (this.category != null)
-            this.category.getExpenses().remove(this);
-        category.getExpenses().add(this);
+            this.category.removeExpense(this);
+
         this.category = category;
+        this.category.addExpense(this);
     }
 
     public LocalDate getCreatedOn() {
@@ -90,7 +88,9 @@ public class Expense extends BaseEntity {
 
     public void setLabels(Collection<Label> labels) {
         this.labels.clear();
-        this.labels.addAll(labels);
+        for (Label label : labels) {
+            addLabel(label);
+        }
     }
 
     public Set<Label> getLabels() {
@@ -99,11 +99,11 @@ public class Expense extends BaseEntity {
 
     public void addLabel(Label label) {
         labels.add(label);
-        label.getExpenses().add(this);
+        label.addExpense(this);
     }
 
     public void removeLabel(Label label) {
-        label.getExpenses().remove(this);
+        label.removeExpense(this);
         labels.remove(label);
     }
 
@@ -114,13 +114,30 @@ public class Expense extends BaseEntity {
         else if (!(o instanceof Expense))
             return false;
         Expense other = (Expense) o;
-
         return Objects.equals(id, other.id)
                 && Objects.equals(amount, other.amount)
                 && Objects.equals(createdOn, other.createdOn)
                 && Objects.equals(description, other.description)
                 && Objects.equals(category, other.category)
-                && Objects.equals(labels, other.labels);
+                // && Objects.equals(labels, other.labels)
+                && equals(labels, other.labels);
+    }
+
+    /**
+     * [workaround] https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200
+     */
+    private boolean equals(Set<?> set1, Set<?> set2) {
+        if (set1 == null && set2 == null)
+            return true;
+        else if (set1 == null || set2 == null)
+            return false;
+        if (set1.size() != set2.size())
+            return false;
+        for (Object obj : set1) {
+            if (!set2.contains(obj))
+                return false;
+        }
+        return true;
     }
 
     @Override

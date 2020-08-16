@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-import static org.codecritique.thrifty.TestUtils.*;
+import static org.codecritique.thrifty.TestUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LabelServiceBeanTest extends BaseServiceBeanTest {
@@ -64,7 +64,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
 
-        label.setName(randomName.get());
+        label.setName(nameSupplier.get());
         labelService.update(label);
 
         //verify
@@ -74,12 +74,13 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         //verify the view from expense side is consistent
         assertEquals(1, expense.getLabels().size());
         assertTrue(expense.getLabels().contains(label));
-        assertTrue(expenseService.get(expense.getId()).getLabels().contains(label));
+        assertEquals(1, label.getExpenses().size());
+        assertTrue(label.getExpenses().contains(expense));
     }
 
     @Test
     void testRemoveLabel() {
-        Label label = new Label(randomName.get());
+        Label label = new Label(nameSupplier.get());
         labelService.store(label);
         assertNotNull(labelService.get(label.getId()));
         labelService.remove(label.getId());
