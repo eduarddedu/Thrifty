@@ -1,8 +1,12 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.TestUtil;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -46,6 +50,16 @@ class ExpensesControllerTest extends BaseControllerTest {
         expense.setCategory(category);
         //verify
         assertEquals(expense, updateEntity(expense, Resource.EXPENSES));;
+    }
+
+    @Test
+    void testUpdateExpenseCreatedOn() throws Exception {
+        //setup
+        Expense expense = createExpense();
+        //exercise
+        expense.setCreatedOn(TestUtil.dateSupplier.get());
+        //verify
+        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
     }
 
     @Test
