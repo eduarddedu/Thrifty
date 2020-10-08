@@ -1,16 +1,19 @@
 package org.codecritique.thrifty.controller;
 
+
 import org.codecritique.thrifty.dao.ExpenseServiceBean;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.exception.WebException;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
+
+
+
 
 /**
  * @author Eduard Dedu
@@ -26,28 +29,12 @@ public class ExpensesController extends BaseController {
         try {
             ExpenseServiceBean service = new ExpenseServiceBean();
             service.store(expense);
-            return ResponseEntity.created(toAbsoluteUri("/rest-api/expenses/" + expense.getId())).build();
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest().build();
+            URI uri = toAbsoluteUri("/rest-api/expenses/" + expense.getId());
+            return ResponseEntity.created(uri).build();
         } catch (Throwable th) {
-            WebException ex = new WebException(th);
-            ex.printStackTrace();;
-            throw ex;
-        }
-    }
-
-    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Expense> getExpense(@PathVariable long id) {
-        try {
-            ExpenseServiceBean service = new ExpenseServiceBean();
-            Expense expense = service.get(id);
-            if (expense != null)
-                return ResponseEntity.ok(expense);
-            return ResponseEntity.notFound().build();
-        } catch (Throwable th) {
-            WebException ex = new WebException(th);
-            ex.printStackTrace();
-            throw ex;
+            if (isConstraintViolationException(th))
+                return ResponseEntity.badRequest().build();
+            throw new WebException(th);
         }
     }
 
@@ -58,12 +45,23 @@ public class ExpensesController extends BaseController {
             ExpenseServiceBean service = new ExpenseServiceBean();
             service.update(expense);
             return ResponseEntity.ok().build();
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Throwable th) {
-            WebException ex = new WebException(th);
-            ex.printStackTrace();
-            throw ex;
+            if (isConstraintViolationException(th))
+                return ResponseEntity.badRequest().build();
+            throw new WebException(th);
+        }
+    }
+
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Expense> getExpense(@PathVariable long id) {
+        try {
+            ExpenseServiceBean service = new ExpenseServiceBean();
+            Expense expense = service.get(id);
+            if (expense == null)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(expense);
+        } catch (Throwable th) {
+            throw new WebException(th);
         }
     }
 
@@ -72,15 +70,12 @@ public class ExpensesController extends BaseController {
         try {
             ExpenseServiceBean service = new ExpenseServiceBean();
             Expense expense = service.get(id);
-            if (expense != null) {
-                service.remove(id);
-                return ResponseEntity.ok().build();
-            }
-            return ResponseEntity.notFound().build();
+            if (expense == null)
+                return ResponseEntity.notFound().build();
+            service.remove(id);
+            return ResponseEntity.ok().build();
         } catch (Throwable th) {
-            WebException ex = new WebException(th);
-            ex.printStackTrace();;
-            throw ex;
+            throw new WebException(th);
         }
     }
 
@@ -91,9 +86,7 @@ public class ExpensesController extends BaseController {
             ExpenseServiceBean service = new ExpenseServiceBean();
             return service.getExpenses();
         } catch (Throwable th) {
-            WebException ex = new WebException(th);
-            ex.printStackTrace();;
-            throw ex;
+            throw new WebException(th);
         }
     }
 

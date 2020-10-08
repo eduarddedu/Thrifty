@@ -4,5 +4,6 @@ public class WebException extends RuntimeException {
 
     public WebException(Throwable th) {
         super(th);
+        th.printStackTrace();
     }
 }

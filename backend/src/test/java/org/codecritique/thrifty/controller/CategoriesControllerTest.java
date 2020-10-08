@@ -1,18 +1,19 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.codecritique.thrifty.TestUtil.categorySupplier;
+import static org.codecritique.thrifty.TestUtil.nameSupplier;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.codecritique.thrifty.TestUtil.nameSupplier;
-import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
 
 class CategoriesControllerTest extends BaseControllerTest {
     @Autowired
@@ -21,6 +22,16 @@ class CategoriesControllerTest extends BaseControllerTest {
     @Test
     void testCreateCategory() throws Exception {
         createCategory();
+    }
+
+    @Test
+    void testCreateCategoryBadRequest() throws Exception {
+        Category category = categorySupplier.get();
+        category.setName(null);
+        String json = mapper.writeValueAsString(category);
+        mockMvc.perform(post(Resource.CATEGORIES.url)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

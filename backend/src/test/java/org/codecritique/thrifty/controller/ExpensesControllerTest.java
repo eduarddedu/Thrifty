@@ -1,15 +1,16 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.TestUtil;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.codecritique.thrifty.TestUtil.dateSupplier;
+import static org.codecritique.thrifty.TestUtil.expenseSupplier;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +21,16 @@ class ExpensesControllerTest extends BaseControllerTest {
     @Test
     void testCreateExpense() throws Exception {
         createExpense();
+    }
+
+    @Test
+    void testCreateExpenseBadRequest() throws Exception {
+        Expense expense = expenseSupplier.get();
+        assertNull(expense.getCategory());
+        String json = mapper.writeValueAsString(expense);
+         mockMvc.perform(post(Resource.EXPENSES.url)
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -57,7 +68,7 @@ class ExpensesControllerTest extends BaseControllerTest {
         //setup
         Expense expense = createExpense();
         //exercise
-        expense.setCreatedOn(TestUtil.dateSupplier.get());
+        expense.setCreatedOn(dateSupplier.get());
         //verify
         assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
     }
