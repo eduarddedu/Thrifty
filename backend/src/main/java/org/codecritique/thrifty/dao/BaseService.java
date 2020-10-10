@@ -2,14 +2,11 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.BaseEntity;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-
-@Configuration
 public abstract class BaseService {
     protected static EntityManagerFactory emf;
 
