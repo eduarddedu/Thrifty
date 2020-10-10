@@ -2,8 +2,8 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Category;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -14,34 +14,37 @@ import java.util.List;
 public class CategoryServiceBean extends BaseService implements CategoryService {
 
     @Override
+    @Transactional
     public void store(Category o) {
         super.persist(o);
     }
 
     @Override
+    @Transactional
     public Category get(long id) {
         return (Category) super.find(Category.class, id);
     }
 
     @Override
+    @Transactional
     public List<Category> getCategories() {
         return getCategoriesSortedByName();
     }
 
+    @Transactional
     private List<Category> getCategoriesSortedByName() {
-        EntityManager em = emf.createEntityManager();
         String sql = "Select r from Category r Order by r.name ";
-        List<Category> categories = em.createQuery(sql, Category.class).getResultList();
-        em.close();
-        return categories;
+        return em.createQuery(sql, Category.class).getResultList();
     }
 
     @Override
+    @Transactional
     public void update(Category category) {
         super.update(category);
     }
 
     @Override
+    @Transactional
     public void remove(long id) {
         super.remove(Category.class, id);
     }

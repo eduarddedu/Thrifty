@@ -4,15 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
-    <beans profile="default,dev">
-        <bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-            <property name="persistenceUnitName" value="THRIFTY_DEV"/>
-            <property name="persistenceXmlLocation" value="classpath:META-INF/persistence-dev.xml"/>
-            <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-        </bean>
-    </beans>
-
     <beans profile="prod">
         <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
             <property name="persistenceUnitName" value="THRIFTY_PRODUCTION"/>
