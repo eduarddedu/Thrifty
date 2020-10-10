@@ -29,9 +29,7 @@ public class Expense extends BaseEntity {
     @NotNull
     private Category category;
 
-    @ManyToMany(cascade = {
-            CascadeType.MERGE
-    })
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "Expense_Label",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))

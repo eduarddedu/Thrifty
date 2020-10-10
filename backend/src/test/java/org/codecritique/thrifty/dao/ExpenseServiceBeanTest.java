@@ -51,66 +51,74 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     }
 
     @Test
-    void testAddLabel() {
+    void testAddLabelToExpense() {
         //setup
-        Expense expense = expenseSupplier.get();
         Category category = categorySupplier.get();
         categoryService.store(category);
+
+        Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         expenseService.store(expense);
+
         Label label = labelSupplier.get();
         labelService.store(label);
 
         //exercise
         expense.addLabel(label);
+        expenseService.update(expense);
 
         //verify
         assertTrue(expense.getLabels().contains(label));
         assertTrue(label.getExpenses().contains(expense));
-        assertEquals(expense, expenseService.get(expense.getId()));
+        Expense clone = expenseService.get(expense.getId());
+        assertTrue(clone.getLabels().contains(label));
+        assertEquals(expense, clone);
     }
 
     @Test
     void testSetCategory() {
-        Expense expense = expenseSupplier.get();
-        Category c = categorySupplier.get();
-        categoryService.store(c);
-        expense.setCategory(c);
-        expenseService.store(expense);
-
         Category category = categorySupplier.get();
         categoryService.store(category);
+        Expense expense = expenseSupplier.get();
+        expense.setCategory(category);
+        expenseService.store(expense);
+
+        Category category2 = categorySupplier.get();
+        categoryService.store(category2);
 
         //exercise
-        expense.setCategory(category);
+        expense.setCategory(category2);
+        expenseService.update(expense);
 
         //verify
-        assertEquals(category, expense.getCategory());
+        assertEquals(expense.getCategory(), category2);
         assertEquals(expense, expenseService.get(expense.getId()));
     }
 
     @Test
     void testRemoveLabel() {
-        //setup
-        Label label1 = labelSupplier.get();
+        //setup // create entities
+        Label label = labelSupplier.get();
         Label label2 = labelSupplier.get();
-        labelService.store(label1);
+        labelService.store(label);
         labelService.store(label2);
 
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+
         Expense expense = expenseSupplier.get();
-        Category c = categorySupplier.get();
-        categoryService.store(c);
-        expense.setCategory(c);
-        expense.setLabels(Arrays.asList(label1, label2));
+        expense.setCategory(category);
+        expense.setLabels(Arrays.asList(label, label2));
         expenseService.store(expense);
 
         //exercise
-        expense.removeLabel(label1);
+        expense.removeLabel(label2);
+        expenseService.update(expense);
 
         //verify
+        assertFalse(expense.getLabels().contains(label2));
         assertEquals(expense, expenseService.get(expense.getId()));
-        assertTrue(labelService.getLabels().contains(label1));
-        assertFalse(expense.getLabels().contains(label1));
+        assertTrue(labelService.getLabels().contains(label2));
     }
 
     @Test

@@ -3,8 +3,11 @@ package org.codecritique.thrifty.controller;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,6 +20,20 @@ import static org.codecritique.thrifty.TestUtil.nameSupplier;
 class LabelsControllerTest extends BaseControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void testCreateLabel() throws Exception {
+        createLabel();
+    }
+
+    @Test
+    void testCreateLabelBadRequest() throws Exception {
+        Label label = createLabel();
+        Label clone = new Label(label.getName());
+        String json = mapper.writeValueAsString(clone);
+        mockMvc.perform(post(Resource.LABELS.url).contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().is4xxClientError());
+    }
 
     @Test
     void testGetLabels() throws Exception {

@@ -1,8 +1,5 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.exception.WebException;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;

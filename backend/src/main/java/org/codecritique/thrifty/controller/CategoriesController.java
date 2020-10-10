@@ -3,6 +3,7 @@ package org.codecritique.thrifty.controller;
 import org.codecritique.thrifty.dao.CategoryServiceBean;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.exception.WebException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest-api/categories")
 public class CategoriesController extends BaseController {
+    @Autowired
+    private CategoryServiceBean service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
         try {
-            CategoryServiceBean service = new CategoryServiceBean();
             service.store(category);
             URI uri = toAbsoluteUri("/rest-api/categories/" + category.getId());
             return ResponseEntity.created(uri).build();
@@ -37,7 +39,6 @@ public class CategoriesController extends BaseController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateCategory(@RequestBody Category category) {
         try {
-            CategoryServiceBean service = new CategoryServiceBean();
             service.update(category);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
@@ -51,7 +52,6 @@ public class CategoriesController extends BaseController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Category> getCategory(@PathVariable long id) {
         try {
-            CategoryServiceBean service = new CategoryServiceBean();
             Category category = service.get(id);
             if (category == null)
                 return ResponseEntity.notFound().build();
@@ -64,7 +64,6 @@ public class CategoriesController extends BaseController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Category> getCategoriesSortedByName() {
         try {
-            CategoryServiceBean service = new CategoryServiceBean();
             return service.getCategories();
         } catch (Throwable th) {
             throw new WebException(th);
@@ -74,7 +73,6 @@ public class CategoriesController extends BaseController {
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeCategory(@PathVariable long id) {
         try {
-            CategoryServiceBean service = new CategoryServiceBean();
             Category category = service.get(id);
             if (category == null)
                 return ResponseEntity.notFound().build();

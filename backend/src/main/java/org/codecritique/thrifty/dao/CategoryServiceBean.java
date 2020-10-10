@@ -3,6 +3,7 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Category;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -28,8 +29,11 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
     }
 
     private List<Category> getCategoriesSortedByName() {
+        EntityManager em = emf.createEntityManager();
         String sql = "Select r from Category r Order by r.name ";
-        return em.createQuery(sql, Category.class).getResultList();
+        List<Category> categories = em.createQuery(sql, Category.class).getResultList();
+        em.close();
+        return categories;
     }
 
     @Override

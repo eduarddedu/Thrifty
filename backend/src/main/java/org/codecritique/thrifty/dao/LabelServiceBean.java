@@ -3,6 +3,7 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Label;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -38,8 +39,11 @@ public class LabelServiceBean extends BaseService implements LabelService {
     }
 
     private List<Label> getLabelsSortedByName() {
+        EntityManager em = emf.createEntityManager();
         String sql = "SELECT r from Label r ORDER BY r.name ";
-        return em.createQuery(sql, Label.class).getResultList();
+        List<Label> labels = em.createQuery(sql, Label.class).getResultList();
+        em.close();
+        return labels;
     }
 
 }

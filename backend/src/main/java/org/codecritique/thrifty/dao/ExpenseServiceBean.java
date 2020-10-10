@@ -3,6 +3,7 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -38,7 +39,10 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
     }
 
     private List<Expense> getExpensesSortedByDateDescending() {
+        EntityManager em = emf.createEntityManager();
         String sql = "SELECT r from Expense r ORDER BY r.createdOn DESC";
-        return em.createQuery(sql, Expense.class).getResultList();
+        List<Expense> expenses = em.createQuery(sql, Expense.class).getResultList();
+        em.close();
+        return expenses;
     }
 }
