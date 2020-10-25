@@ -6,12 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Transactional
 public abstract class BaseService {
 
     @PersistenceContext
     protected EntityManager em;
 
-    @Transactional
     protected void persist(BaseEntity o) {
         em.persist(o);
     }
