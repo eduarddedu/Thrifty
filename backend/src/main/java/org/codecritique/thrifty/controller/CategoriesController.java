@@ -1,6 +1,6 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.CategoryServiceBean;
+import org.codecritique.thrifty.dao.CategoryService;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.exception.WebException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/rest-api/categories")
 public class CategoriesController extends BaseController {
     @Autowired
-    private CategoryServiceBean service;
+    private CategoryService service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {

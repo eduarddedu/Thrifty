@@ -1,6 +1,6 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.LabelServiceBean;
+import org.codecritique.thrifty.dao.LabelService;
 import org.codecritique.thrifty.entity.Label;
 import org.codecritique.thrifty.exception.WebException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/rest-api/labels")
 public class LabelsController extends BaseController {
     @Autowired
-    private LabelServiceBean service;
+    private LabelService service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createLabel(@RequestBody Label label) {

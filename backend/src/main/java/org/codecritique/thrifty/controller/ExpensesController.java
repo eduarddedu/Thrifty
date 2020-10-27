@@ -1,7 +1,7 @@
 package org.codecritique.thrifty.controller;
 
 
-import org.codecritique.thrifty.dao.ExpenseServiceBean;
+import org.codecritique.thrifty.dao.ExpenseService;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.exception.WebException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/rest-api/expenses")
 public class ExpensesController extends BaseController {
     @Autowired
-    private ExpenseServiceBean service;
+    private ExpenseService service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createExpense(@RequestBody Expense expense) {
