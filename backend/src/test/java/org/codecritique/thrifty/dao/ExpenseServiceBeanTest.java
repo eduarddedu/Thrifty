@@ -1,17 +1,18 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
-import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.Label;
 
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,9 +30,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testStoreExpense() {
-
-        Category category = categorySupplier.get();
-        categoryService.store(category);
+        Category category = createCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         Label label = labelSupplier.get();
@@ -46,9 +45,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testGetExpense() {
         Expense expense = expenseSupplier.get();
-        Category category = categorySupplier.get();
-        categoryService.store(category);
-        expense.setCategory(category);
+        expense.setCategory(createCategory());
         expenseService.store(expense);
         assertEquals(expense, expenseService.getExpense(expense.getId()));
     }
@@ -56,11 +53,9 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testAddLabelToExpense() {
         //setup
-        Category category = categorySupplier.get();
-        categoryService.store(category);
 
         Expense expense = expenseSupplier.get();
-        expense.setCategory(category);
+        expense.setCategory(createCategory());
         expenseService.store(expense);
 
         Label label = labelSupplier.get();
@@ -80,14 +75,12 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testSetCategory() {
-        Category category = categorySupplier.get();
-        categoryService.store(category);
+        Category category = createCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         expenseService.store(expense);
 
-        Category category2 = categorySupplier.get();
-        categoryService.store(category2);
+        Category category2 = createCategory();
 
         //exercise
         expense.setCategory(category2);
@@ -106,11 +99,8 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         labelService.store(label);
         labelService.store(label2);
 
-        Category category = categorySupplier.get();
-        categoryService.store(category);
-
         Expense expense = expenseSupplier.get();
-        expense.setCategory(category);
+        expense.setCategory(createCategory());
         expense.setLabels(Arrays.asList(label, label2));
         expenseService.store(expense);
 
@@ -127,9 +117,8 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testGetExpensesSortedByDateDescending() {
         int numEntities = 5;
+        Category category = createCategory();
         for (int i = 0; i < numEntities; i++) {
-            Category category = categorySupplier.get();
-            categoryService.store(category);
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
             expenseService.store(expense);
@@ -223,6 +212,33 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
         BigDecimal actualTotalAmount = expenseService.getExpensesTotalAmount();
         assertEquals(expectedTotalAmount, actualTotalAmount);
+    }
+
+    @Test
+    void setAmountMaxNumberOfDigits() {
+        BigDecimal amount = new BigDecimal("1234567.00");
+        Expense expense = expenseSupplier.get();
+        expense.setCategory(createCategory());
+        expense.setAmount(amount);
+        expenseService.store(expense);
+    }
+
+    @Test
+    void setAmountWithLargerThanMaxNumberOfIntegers() {
+        BigDecimal amount = new BigDecimal("12345678.00");
+        Expense expense = expenseSupplier.get();
+        expense.setCategory(createCategory());
+        expense.setAmount(amount);
+        assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
+    }
+
+    @Test
+    void setAmountWithLargerThanMaxNumberOfDecimals() {
+        BigDecimal amount = new BigDecimal("1234567.001");
+        Expense expense = expenseSupplier.get();
+        expense.setCategory(createCategory());
+        expense.setAmount(amount);
+        assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
     }
 
 }

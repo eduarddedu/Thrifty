@@ -1,6 +1,7 @@
 package org.codecritique.thrifty.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,9 +20,12 @@ import java.util.Set;
 public class Expense extends BaseEntity {
     @NotNull
     private LocalDate createdOn;
+
     @NotNull
     private String description;
+
     @NotNull
+    @Digits(integer = 7, fraction = 2, message = "Has maximum 7 integer and 2 fractional digits")
     private BigDecimal amount;
 
     @ManyToOne(cascade = {
