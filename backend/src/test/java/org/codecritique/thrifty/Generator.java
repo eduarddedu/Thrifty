@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class TestUtil {
+public class Generator {
     private static Random r = new Random();
 
-    public static Supplier<String> nameSupplier = () -> {
+    public static Supplier<String> stringSupplier = () -> {
         StringBuilder sb = new StringBuilder();
         final int size = 8;
         for (int i = 0; i < size; i++) {
@@ -23,15 +23,15 @@ public class TestUtil {
     public static Supplier<LocalDate> dateSupplier = () ->
             LocalDate.of(2000 + r.nextInt(100), 1 + r.nextInt(12), 1 + r.nextInt(28));
 
-    public static Supplier<Label> labelSupplier = () -> new Label(nameSupplier.get());
+    public static Supplier<Label> labelSupplier = () -> new Label(stringSupplier.get());
 
-    public static Supplier<Category> categorySupplier = () -> new Category(nameSupplier.get(), nameSupplier.get());
+    public static Supplier<Category> categorySupplier = () -> new Category(stringSupplier.get(), stringSupplier.get());
 
     public static Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
         expense.setCreatedOn(dateSupplier.get());
         expense.setAmount(0d);
-        expense.setDescription(nameSupplier.get());
+        expense.setDescription(stringSupplier.get());
         return expense;
     };
 }

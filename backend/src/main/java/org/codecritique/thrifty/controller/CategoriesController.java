@@ -39,7 +39,7 @@ public class CategoriesController extends BaseController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateCategory(@RequestBody Category category) {
         try {
-            service.update(category);
+            service.updateCategory(category);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             if (isConstraintViolationException(th))
@@ -52,7 +52,7 @@ public class CategoriesController extends BaseController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Category> getCategory(@PathVariable long id) {
         try {
-            Category category = service.get(id);
+            Category category = service.getCategory(id);
             if (category == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(category);
@@ -73,10 +73,10 @@ public class CategoriesController extends BaseController {
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeCategory(@PathVariable long id) {
         try {
-            Category category = service.get(id);
+            Category category = service.getCategory(id);
             if (category == null)
                 return ResponseEntity.notFound().build();
-            service.remove(id);
+            service.removeCategory(id);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             throw new WebException(th);

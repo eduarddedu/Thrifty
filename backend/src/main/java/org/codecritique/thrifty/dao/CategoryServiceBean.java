@@ -14,12 +14,12 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
 
     @Override
     public void store(Category o) {
-        super.persist(o);
+        em.persist(o);
     }
 
     @Override
-    public Category get(long id) {
-        return (Category) super.find(Category.class, id);
+    public Category getCategory(long id) {
+        return em.find(Category.class, id);
     }
 
     @Override
@@ -28,12 +28,12 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
     }
 
     @Override
-    public void update(Category category) {
+    public void updateCategory(Category category) {
         super.update(category);
     }
 
     @Override
-    public void remove(long id) {
+    public void removeCategory(long id) {
         super.remove(Category.class, id);
     }
 

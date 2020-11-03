@@ -3,6 +3,7 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -14,31 +15,49 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void store(Expense expense) {
-        super.persist(expense);
+        em.persist(expense);
     }
 
     @Override
-    public Expense get(long id) {
-        return (Expense) super.find(Expense.class, id);
+    public Expense getExpense(long id) {
+        return em.find(Expense.class, id);
     }
 
     @Override
     public List<Expense> getExpenses() {
-        return getExpensesSortedByDateDescending();
+        return em.createQuery("Select e from Expense e order by e.createdOn DESC", Expense.class)
+                .getResultList();
     }
 
     @Override
-    public void remove(long id) {
+    public List<Expense> getExpensesForPeriod(LocalDate startDate, LocalDate endDate) {
+        String sql = "Select e from Expense e where e.createdOn >= :startDate and e.createdOn <= :endDate " +
+                "order by e.createdOn DESC";
+        return em.createQuery(sql, Expense.class)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
+                .getResultList();
+    }
+
+    @Override
+    public List<Expense> getExpensesForYear(int year) {
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = LocalDate.of(year, 12, 31);
+        return getExpensesForPeriod(startDate, endDate);
+    }
+
+    @Override
+    public void removeExpense(long id) {
         super.remove(Expense.class, id);
     }
 
     @Override
-    public void update(Expense expense) {
+    public void updateExpense(Expense expense) {
         super.update(expense);
     }
 
-    private List<Expense> getExpensesSortedByDateDescending() {
-        String sql = "SELECT r from Expense r ORDER BY r.createdOn DESC";
-        return em.createQuery(sql, Expense.class).getResultList();
+    @Override
+    public double getExpensesTotalAmount() {
+        return (Double) em.createNativeQuery("Select SUM(AMOUNT) AS Total from Expense").getSingleResult();
     }
 }

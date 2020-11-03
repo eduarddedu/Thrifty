@@ -20,10 +20,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.codecritique.thrifty.TestUtil.*;
+import static org.codecritique.thrifty.Generator.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = org.codecritique.thrifty.Application.class)
 @ActiveProfiles("dev")
@@ -40,6 +41,7 @@ public abstract class BaseControllerTest {
         Resource(String path) {
             url = url + path + "/";
         }
+
         String url = "http://localhost:8080/rest-api/";
     }
 
@@ -53,19 +55,21 @@ public abstract class BaseControllerTest {
     protected Expense createExpense() throws Exception {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createCategory());
-        return (Expense) createEntity(expense, Resource.EXPENSES);
+        return (Expense) createEntity(expense);
     }
 
     protected Category createCategory() throws Exception {
-        return (Category) createEntity(categorySupplier.get(), Resource.CATEGORIES);
+        return (Category) createEntity(categorySupplier.get());
     }
 
     protected Label createLabel() throws Exception {
-       return (Label) createEntity(labelSupplier.get(), Resource.LABELS);
+        return (Label) createEntity(labelSupplier.get());
     }
 
-    protected BaseEntity createEntity(BaseEntity entity, Resource resource) throws Exception {
+    protected BaseEntity createEntity(BaseEntity entity) throws Exception {
         String json = mapper.writeValueAsString(entity);
+
+        Resource resource = entity instanceof Expense ? Resource.EXPENSES : entity instanceof Category ? Resource.CATEGORIES : Resource.LABELS;
 
         ResultActions actions = mockMvc.perform(post(resource.url)
                 .contentType(MediaType.APPLICATION_JSON).content(json))
@@ -110,11 +114,15 @@ public abstract class BaseControllerTest {
     }
 
     private Class<? extends BaseEntity> findEntityClassForResource(Resource resource) {
-        switch(resource) {
-            case EXPENSES: return Expense.class;
-            case CATEGORIES: return Category.class;
-            case LABELS: return Label.class;
-            default: throw new RuntimeException("No class for resource: " + resource);
+        switch (resource) {
+            case EXPENSES:
+                return Expense.class;
+            case CATEGORIES:
+                return Category.class;
+            case LABELS:
+                return Label.class;
+            default:
+                throw new RuntimeException("No class for resource: " + resource);
         }
     }
 

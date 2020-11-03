@@ -38,7 +38,7 @@ public class LabelsController extends BaseController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateLabel(@RequestBody Label label) {
         try {
-            service.update(label);
+            service.updateLabel(label);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             if (isConstraintViolationException(th))
@@ -51,10 +51,10 @@ public class LabelsController extends BaseController {
     public ResponseEntity<Resource> removeLabel(@PathVariable long id) {
 
         try {
-            Label label = service.get(id);
+            Label label = service.getLabel(id);
             if (label == null)
                 return ResponseEntity.notFound().build();
-            service.remove(id);
+            service.removeLabel(id);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             throw new WebException(th);
@@ -65,7 +65,7 @@ public class LabelsController extends BaseController {
     public ResponseEntity<Label> getLabel(@PathVariable long id) {
 
         try {
-            Label label = service.get(id);
+            Label label = service.getLabel(id);
             if (label == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(label);

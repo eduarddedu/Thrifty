@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 
@@ -42,7 +44,7 @@ public class ExpensesController extends BaseController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateExpense(@RequestBody Expense expense) {
         try {
-            service.update(expense);
+            service.updateExpense(expense);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             if (isConstraintViolationException(th))
@@ -54,7 +56,7 @@ public class ExpensesController extends BaseController {
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Expense> getExpense(@PathVariable long id) {
         try {
-            Expense expense = service.get(id);
+            Expense expense = service.getExpense(id);
             if (expense == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(expense);
@@ -66,10 +68,10 @@ public class ExpensesController extends BaseController {
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeExpense(@PathVariable long id) {
         try {
-            Expense expense = service.get(id);
+            Expense expense = service.getExpense(id);
             if (expense == null)
                 return ResponseEntity.notFound().build();
-            service.remove(id);
+            service.removeExpense(id);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
             throw new WebException(th);
@@ -81,6 +83,39 @@ public class ExpensesController extends BaseController {
     public List<Expense> getExpensesSortedByDate() {
         try {
             return service.getExpenses();
+        } catch (Throwable th) {
+            throw new WebException(th);
+        }
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE,
+            path = "forPeriod")
+    public ResponseEntity<Object> getExpensesForPeriod(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate) {
+        try {
+            List<Expense> expenses = service.getExpensesForPeriod(LocalDate.parse(startDate), LocalDate.parse(endDate));
+            return ResponseEntity.ok(expenses);
+        } catch (DateTimeParseException ex) {
+            return ResponseEntity.badRequest().build();
+        } catch (Throwable th) {
+            throw new WebException(th);
+        }
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE,
+            path = "forYear")
+    public ResponseEntity<Object> getExpensesForYear(@RequestParam("year") int year) {
+        try {
+            List<Expense> expenses = service.getExpensesForYear(year);
+            return ResponseEntity.ok(expenses);
+        } catch (Throwable th) {
+            throw new WebException(th);
+        }
+    }
+
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE, path = "sum")
+    public String getExpensesTotalAmount() {
+        try {
+            return "" + service.getExpensesTotalAmount();
         } catch (Throwable th) {
             throw new WebException(th);
         }

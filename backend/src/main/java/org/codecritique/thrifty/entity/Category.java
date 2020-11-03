@@ -2,9 +2,14 @@ package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Eduard Dedu
@@ -23,7 +28,8 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category")
     private Set<Expense> expenses = new HashSet<>();
 
-    public Category() { }
+    public Category() {
+    }
 
     public Category(String name, String description) {
         this.name = name;

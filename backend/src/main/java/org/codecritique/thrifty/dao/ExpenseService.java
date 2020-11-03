@@ -2,6 +2,7 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Expense;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -13,11 +14,17 @@ public interface ExpenseService {
 
     void store(Expense o);
 
-    Expense get(long id);
+    Expense getExpense(long id);
 
     List<Expense> getExpenses();
 
-    void remove(long id);
+    List<Expense> getExpensesForPeriod(LocalDate startDate, LocalDate endDate);
 
-    void update(Expense e);
+    List<Expense> getExpensesForYear(int year);
+
+    void removeExpense(long id);
+
+    void updateExpense(Expense e);
+
+    double getExpensesTotalAmount();
 }

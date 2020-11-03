@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
-import static org.codecritique.thrifty.TestUtil.*;
+import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -47,7 +49,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         categoryService.store(category);
         expense.setCategory(category);
         expenseService.store(expense);
-        assertEquals(expense, expenseService.get(expense.getId()));
+        assertEquals(expense, expenseService.getExpense(expense.getId()));
     }
 
     @Test
@@ -65,12 +67,12 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
         expense.addLabel(label);
-        expenseService.update(expense);
+        expenseService.updateExpense(expense);
 
         //verify
         assertTrue(expense.getLabels().contains(label));
         assertTrue(label.getExpenses().contains(expense));
-        Expense clone = expenseService.get(expense.getId());
+        Expense clone = expenseService.getExpense(expense.getId());
         assertTrue(clone.getLabels().contains(label));
         assertEquals(expense, clone);
     }
@@ -88,11 +90,11 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
         expense.setCategory(category2);
-        expenseService.update(expense);
+        expenseService.updateExpense(expense);
 
         //verify
         assertEquals(expense.getCategory(), category2);
-        assertEquals(expense, expenseService.get(expense.getId()));
+        assertEquals(expense, expenseService.getExpense(expense.getId()));
     }
 
     @Test
@@ -113,35 +115,50 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
         expense.removeLabel(label2);
-        expenseService.update(expense);
+        expenseService.updateExpense(expense);
 
         //verify
         assertFalse(expense.getLabels().contains(label2));
-        assertEquals(expense, expenseService.get(expense.getId()));
+        assertEquals(expense, expenseService.getExpense(expense.getId()));
         assertTrue(labelService.getLabels().contains(label2));
     }
 
     @Test
     void testGetExpensesSortedByDateDescending() {
-        int numEntities = 10;
-
+        int numEntities = 5;
         for (int i = 0; i < numEntities; i++) {
-            Category c = categorySupplier.get();
-            categoryService.store(c);
+            Category category = categorySupplier.get();
+            categoryService.store(category);
             Expense expense = expenseSupplier.get();
-            expense.setCategory(c);
+            expense.setCategory(category);
             expenseService.store(expense);
         }
-
-        Iterator<LocalDate> it = expenseService.getExpenses().
-                stream().map(Expense::getCreatedOn).iterator();
-
+        Iterator<LocalDate> it = expenseService.getExpenses().stream().map(Expense::getCreatedOn).iterator();
         while (it.hasNext()) {
             LocalDate date = it.next();
             if (it.hasNext()) {
                 assertTrue(date.compareTo(it.next()) >= 0);
             }
         }
+    }
+
+    @Test
+    void testGetExpensesForPeriod() {
+        LocalDate startDate = LocalDate.of(2020, 1, 1);
+        LocalDate endDate = LocalDate.of(2020, 12, 31);
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+        List<Expense> expensesBetweenDates = new ArrayList<>();
+        int numEntities = 5;
+        for (int i = 0; i < numEntities; i++) {
+            Expense expense = expenseSupplier.get();
+            expense.setCategory(category);
+            expense.setCreatedOn(dateSupplier.get().withYear(2020));
+            expensesBetweenDates.add(expense);
+            expenseService.store(expense);
+        }
+        List<Expense> responseExpenses = expenseService.getExpensesForPeriod(startDate, endDate);
+        assertTrue(responseExpenses.containsAll(expensesBetweenDates));
     }
 
     @Test
@@ -161,14 +178,14 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
         expense.setCreatedOn(dateSupplier.get());
-        expense.setAmount((double) Integer.MAX_VALUE);
-        expense.setDescription(nameSupplier.get());
+        expense.setAmount(133d);
+        expense.setDescription(stringSupplier.get());
         expense.setCategory(category);
         expense.addLabel(label);
-        expenseService.update(expense);
+        expenseService.updateExpense(expense);
 
         //verify
-        assertEquals(expense, expenseService.get(expense.getId()));
+        assertEquals(expense, expenseService.getExpense(expense.getId()));
     }
 
     @Test
@@ -185,11 +202,11 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         expenseService.store(expense);
 
         //exercise
-        expenseService.remove(expense.getId());
+        expenseService.removeExpense(expense.getId());
 
         //verify that:
         //- expense has been deleted
-        assertNull(expenseService.get(expense.getId()));
+        assertNull(expenseService.getExpense(expense.getId()));
 
         //- existing labels have not been deleted
         assertTrue(labelService.getLabels().contains(label));
@@ -197,6 +214,16 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         //- existing category has not been deleted
         assertTrue(categoryService.getCategories().contains(category));
 
+    }
+
+    @Test
+    void testGetExpensesTotalAmount() {
+        Expense expense = expenseSupplier.get();
+        Category category = categorySupplier.get();
+        categoryService.store(category);
+        expense.setCategory(category);
+        expenseService.store(expense);
+        assertTrue(expenseService.getExpensesTotalAmount() <= expense.getAmount());
     }
 
 }

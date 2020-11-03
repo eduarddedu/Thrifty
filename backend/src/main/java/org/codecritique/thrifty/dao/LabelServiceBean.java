@@ -14,12 +14,12 @@ public class LabelServiceBean extends BaseService implements LabelService {
 
     @Override
     public void store(Label label) {
-        super.persist(label);
+        em.persist(label);
     }
 
     @Override
-    public Label get(long id) {
-        return (Label) super.find(Label.class, id);
+    public Label getLabel(long id) {
+        return em.find(Label.class, id);
     }
 
     @Override
@@ -28,12 +28,12 @@ public class LabelServiceBean extends BaseService implements LabelService {
     }
 
     @Override
-    public void update(Label label) {
+    public void updateLabel(Label label) {
         super.update(label);
     }
 
     @Override
-    public void remove(long id) {
+    public void removeLabel(long id) {
         super.remove(Label.class, id);
     }
 

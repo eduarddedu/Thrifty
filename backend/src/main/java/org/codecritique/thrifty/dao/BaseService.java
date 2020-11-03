@@ -12,14 +12,6 @@ public abstract class BaseService {
     @PersistenceContext
     protected EntityManager em;
 
-    protected void persist(BaseEntity o) {
-        em.persist(o);
-    }
-
-    protected BaseEntity find(Class<? extends BaseEntity> entityClass, long id) {
-        return em.find(entityClass, id);
-    }
-
     protected void update(BaseEntity entity) {
         BaseEntity oldEntity = em.find(entity.getClass(), entity.getId());
         if (oldEntity != null && !oldEntity.equals(entity))

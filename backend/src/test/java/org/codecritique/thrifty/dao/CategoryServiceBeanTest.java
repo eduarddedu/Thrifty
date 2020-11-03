@@ -2,15 +2,13 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 
+import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.codecritique.thrifty.TestUtil.*;
 
 class CategoryServiceBeanTest extends BaseServiceBeanTest {
 
@@ -24,7 +22,7 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
     void testStoreCategory() {
         Category category = categorySupplier.get();
         categoryService.store(category);
-        assertEquals(category, categoryService.get(category.getId()));
+        assertEquals(category, categoryService.getCategory(category.getId()));
     }
 
     @Test
@@ -56,12 +54,12 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         expenseService.store(expense);
 
         //exercise
-        category.setName(nameSupplier.get());
-        category.setDescription(nameSupplier.get());
-        categoryService.update(category);
+        category.setName(stringSupplier.get());
+        category.setDescription(stringSupplier.get());
+        categoryService.updateCategory(category);
 
         //verify
-        assertEquals(category, categoryService.get(category.getId()));
+        assertEquals(category, categoryService.getCategory(category.getId()));
         assertEquals(category, expense.getCategory());
     }
 
@@ -72,9 +70,9 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         categoryService.store(category);
 
         //exercise
-        categoryService.remove(category.getId());
+        categoryService.removeCategory(category.getId());
 
         //verify
-        assertNull(categoryService.get(category.getId()));
+        assertNull(categoryService.getCategory(category.getId()));
     }
 }

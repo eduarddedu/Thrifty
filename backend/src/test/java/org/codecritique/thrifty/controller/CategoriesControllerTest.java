@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.codecritique.thrifty.TestUtil.categorySupplier;
-import static org.codecritique.thrifty.TestUtil.nameSupplier;
+import static org.codecritique.thrifty.Generator.categorySupplier;
+import static org.codecritique.thrifty.Generator.stringSupplier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,8 +48,8 @@ class CategoriesControllerTest extends BaseControllerTest {
     void testUpdateCategory() throws Exception {
         Category category = createCategory();
         //exercise
-        category.setName(nameSupplier.get());
-        category.setDescription(nameSupplier.get());
+        category.setName(stringSupplier.get());
+        category.setDescription(stringSupplier.get());
         //verify
         assertEquals(category, updateEntity(category, Resource.CATEGORIES));
     }
@@ -61,7 +61,7 @@ class CategoriesControllerTest extends BaseControllerTest {
         Category category = expense.getCategory();
 
         //exercise
-        category.setName(nameSupplier.get());
+        category.setName(stringSupplier.get());
         updateEntity(category, Resource.CATEGORIES);
 
         //verify

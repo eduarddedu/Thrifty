@@ -6,9 +6,9 @@ import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Iterator;
 
-import static org.codecritique.thrifty.TestUtil.*;
+import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LabelServiceBeanTest extends BaseServiceBeanTest {
@@ -26,7 +26,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     void testAddLabel() {
         Label label = labelSupplier.get();
         labelService.store(label);
-        assertEquals(label, labelService.get(label.getId()));
+        assertEquals(label, labelService.getLabel(label.getId()));
     }
 
     @Test
@@ -64,12 +64,12 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
 
-        label.setName(nameSupplier.get());
-        labelService.update(label);
+        label.setName(stringSupplier.get());
+        labelService.updateLabel(label);
 
         //verify
 
-        assertEquals(label, labelService.get(label.getId()));
+        assertEquals(label, labelService.getLabel(label.getId()));
 
         //verify the view from expense side is consistent
         assertEquals(1, expense.getLabels().size());
@@ -80,11 +80,11 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testRemoveLabel() {
-        Label label = new Label(nameSupplier.get());
+        Label label = new Label(stringSupplier.get());
         labelService.store(label);
-        assertNotNull(labelService.get(label.getId()));
-        labelService.remove(label.getId());
-        assertNull(labelService.get(label.getId()));
+        assertNotNull(labelService.getLabel(label.getId()));
+        labelService.removeLabel(label.getId());
+        assertNull(labelService.getLabel(label.getId()));
     }
 
 }

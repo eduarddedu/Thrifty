@@ -1,4 +1,5 @@
 package org.codecritique.thrifty.jackson.databind;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
  * @author Eduard Dedu
  */
 
-public class LocalDateDeserializer extends JsonDeserializer<LocalDate>  {
+public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
     @Override
     public LocalDate deserialize(JsonParser jp, DeserializationContext context) throws IOException {

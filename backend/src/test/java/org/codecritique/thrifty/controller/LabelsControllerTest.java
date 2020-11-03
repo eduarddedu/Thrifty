@@ -3,18 +3,18 @@ package org.codecritique.thrifty.controller;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.codecritique.thrifty.Generator.stringSupplier;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.codecritique.thrifty.TestUtil.nameSupplier;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 class LabelsControllerTest extends BaseControllerTest {
@@ -49,7 +49,7 @@ class LabelsControllerTest extends BaseControllerTest {
     void testUpdateLabel() throws Exception {
         Label label = createLabel();
         //exercise
-        label.setName(nameSupplier.get());
+        label.setName(stringSupplier.get());
         //verify
         assertEquals(label, updateEntity(label, Resource.LABELS));
     }
@@ -65,7 +65,7 @@ class LabelsControllerTest extends BaseControllerTest {
         updateEntity(expense, Resource.EXPENSES);
 
         //exercise
-        label.setName(nameSupplier.get());
+        label.setName(stringSupplier.get());
         updateEntity(label, Resource.LABELS);
 
         //verify
