@@ -4,6 +4,7 @@ import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -27,10 +28,14 @@ public class Generator {
 
     public static Supplier<Category> categorySupplier = () -> new Category(stringSupplier.get(), stringSupplier.get());
 
+    public static Supplier<BigDecimal> expenseAmountSupplier = () -> {
+        BigDecimal cents = new BigDecimal(String.format("%.2f", r.nextDouble()));
+        return cents.add(new BigDecimal(r.nextInt(100000)));
+    };
     public static Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
         expense.setCreatedOn(dateSupplier.get());
-        expense.setAmount(0d);
+        expense.setAmount(expenseAmountSupplier.get());
         expense.setDescription(stringSupplier.get());
         return expense;
     };

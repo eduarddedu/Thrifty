@@ -3,6 +3,7 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
     }
 
     @Override
-    public double getExpensesTotalAmount() {
-        return (Double) em.createNativeQuery("Select SUM(AMOUNT) AS Total from Expense").getSingleResult();
+    public BigDecimal getExpensesTotalAmount() {
+        return (BigDecimal) em.createNativeQuery("Select SUM(AMOUNT) AS Total from Expense").getSingleResult();
     }
 }

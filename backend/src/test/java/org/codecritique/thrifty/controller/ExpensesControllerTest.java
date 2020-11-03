@@ -6,11 +6,11 @@ import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.codecritique.thrifty.Generator.dateSupplier;
-import static org.codecritique.thrifty.Generator.expenseSupplier;
+import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -106,10 +106,11 @@ class ExpensesControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        Double actualTotalAmount = Double.parseDouble(totalAmountStr);
-        Double expectedTotalAmount = allExpenses.stream().mapToDouble(Expense::getAmount).sum();
+        BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
+        BigDecimal actualTotalAmount = new BigDecimal(totalAmountStr);
         assertEquals(expectedTotalAmount, actualTotalAmount);
-        assertTrue(totalAmountStr.matches("\\d+(\\.\\d(\\d)?)?")); // a number with two decimal digits at most
+        assertEquals(expectedTotalAmount, actualTotalAmount);
+        assertTrue(totalAmountStr.matches("\\d+(\\.\\d(\\d)?)?")); // a number with two decimal places
     }
 
     @Test
@@ -117,7 +118,7 @@ class ExpensesControllerTest extends BaseControllerTest {
         //setup
         Expense expense = createExpense();
         //exercise
-        expense.setAmount(12.54);
+        expense.setAmount(expenseAmountSupplier.get());
         //verify
         assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
     }

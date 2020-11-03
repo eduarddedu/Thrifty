@@ -2,6 +2,7 @@ package org.codecritique.thrifty.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ public class Expense extends BaseEntity {
     @NotNull
     private String description;
     @NotNull
-    private Double amount;
+    private BigDecimal amount;
 
     @ManyToOne(cascade = {
             CascadeType.MERGE
@@ -37,17 +38,6 @@ public class Expense extends BaseEntity {
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
-
-    public Expense() {
-    }
-
-    public Expense(LocalDate createdOn, String description, double amount, Category category, Collection<Label> labels) {
-        this.createdOn = createdOn;
-        this.description = description;
-        this.amount = amount;
-        this.category = category;
-        this.labels.addAll(labels);
-    }
 
     public Category getCategory() {
         return category;
@@ -79,11 +69,11 @@ public class Expense extends BaseEntity {
         this.description = description;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

@@ -2,6 +2,7 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Expense;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,5 +27,5 @@ public interface ExpenseService {
 
     void updateExpense(Expense e);
 
-    double getExpensesTotalAmount();
+    BigDecimal getExpensesTotalAmount();
 }

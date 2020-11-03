@@ -6,6 +6,7 @@ import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,7 +179,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
         //exercise
         expense.setCreatedOn(dateSupplier.get());
-        expense.setAmount(133d);
+        expense.setAmount(new BigDecimal("17.23"));
         expense.setDescription(stringSupplier.get());
         expense.setCategory(category);
         expense.addLabel(label);
@@ -218,12 +219,10 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testGetExpensesTotalAmount() {
-        Expense expense = expenseSupplier.get();
-        Category category = categorySupplier.get();
-        categoryService.store(category);
-        expense.setCategory(category);
-        expenseService.store(expense);
-        assertTrue(expenseService.getExpensesTotalAmount() <= expense.getAmount());
+        List<Expense> allExpenses = expenseService.getExpenses();
+        BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
+        BigDecimal actualTotalAmount = expenseService.getExpensesTotalAmount();
+        assertEquals(expectedTotalAmount, actualTotalAmount);
     }
 
 }
