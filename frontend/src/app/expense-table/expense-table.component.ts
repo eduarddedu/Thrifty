@@ -7,8 +7,9 @@ import { DataTableDirective } from 'angular-datatables';
 
 import { Expense } from '../model';
 import { RestService } from '../services/rest.service';
-import { MessageService } from '../services/messages.service';
+import { Kind, MessageService } from '../services/messages.service';
 import { Utils } from '../util/utils';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Component({
     selector: 'app-expense-table',
@@ -38,6 +39,12 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
     dtOptions;
 
     showModal = false;
+
+    modalMessage: Message;
+
+    notificationMessage: Message;
+
+    showNotification: Boolean = false;
 
     constructor(private router: Router, private rs: RestService, protected ms: MessageService) {
     }
@@ -113,6 +120,18 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     onClickDeleteExpense() {
-        this.clickDeleteExpense$.emit(this.expenseId);
+        this.modalMessage = this.ms.get(Kind.EXPENSE_DELETE_WARN);
+        this.showModal = true;
+    }
+
+    onConfirmDelete() {
+        this.showModal = false;
+        this.showNotification = true;
+        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
+        this.rs.deleteExpense(this.expenseId).subscribe(() => {
+            Utils.scrollPage();
+            this.notificationMessage = this.ms.get(Kind.EXPENSE_DELETE_OK);
+        });
+
     }
 }

@@ -2,7 +2,6 @@ export interface Account {
     expenses?: Expense[];
     categories?: Category[];
     labels?: Label[];
-    other?: Category;
     balance?: number;
     dateRange?: DateRange;
 }

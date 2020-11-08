@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,8 +19,6 @@ export class LabelDetailsComponent implements OnInit {
 
   activeSince: Date;
 
-  selectedExpenseId: number;
-
   showNotification = false;
 
   showModal = false;
@@ -33,8 +30,6 @@ export class LabelDetailsComponent implements OnInit {
   dataReady = false;
 
   viewType = 'label';
-
-  deleteActionConcernsLabel = true;
 
   constructor(
     private rest: RestService,
@@ -58,7 +53,7 @@ export class LabelDetailsComponent implements OnInit {
   private init(account: Account) {
     this.label = account.labels.find(label => label.id === this.labelId);
     this.setActiveSince();
-    this.resetNotification();
+    this.showNotification = false;
     Utils.scrollPage();
     this.dataReady = true;
   }
@@ -74,49 +69,27 @@ export class LabelDetailsComponent implements OnInit {
     return Utils.localDateToJsDate(expense.createdOn);
   }
 
-  private resetNotification() {
-    this.showNotification = false;
+  onClickEditLabel() {
+    this.router.navigate(['edit/label'], { queryParams: { id: this.labelId } });
   }
 
-  onConfirmDelete() {
+  onClickDeleteLabel() {
+    this.showModal = true;
+    this.modalMessage = this.messages.get(Kind.LABEL_DELETE_WARN);
+  }
+
+  onConfirmDeleteLabel() {
     this.dataReady = false;
     this.showModal = false;
     this.showNotification = true;
     this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-    let action: Observable<any>, successMessage: Message;
-    if (this.deleteActionConcernsLabel) {
-      action = this.rest.deleteLabel(this.labelId);
-      successMessage = this.ms.get(Kind.LABEL_DELETE_OK);
-    } else {
-      action = this.rest.deleteExpense(this.selectedExpenseId);
-      successMessage = this.ms.get(Kind.EXPENSE_DELETE_OK);
-    }
-    action.subscribe(() => {
-      this.notificationMessage = successMessage;
+    this.rest.deleteLabel(this.labelId).subscribe(() => {
+      this.notificationMessage = this.ms.get(Kind.LABEL_DELETE_OK);
       Utils.scrollPage();
     }, err => {
       this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR);
       Utils.scrollPage();
     });
   }
-
-  onClickDeleteLabel() {
-    this.modalMessage = this.messages.get(Kind.LABEL_DELETE_WARN);
-    this.deleteActionConcernsLabel = true;
-    this.showModal = true;
-  }
-
-  onClickDeleteExpense(id: number) {
-    this.selectedExpenseId = id;
-    this.modalMessage = this.ms.get(Kind.EXPENSE_DELETE_WARN);
-    this.showModal = true;
-    this.deleteActionConcernsLabel = false;
-  }
-
-  onClickEditLabel() {
-    this.router.navigate(['edit/label'], { queryParams: { id: this.labelId } });
-  }
-
-
 
 }
