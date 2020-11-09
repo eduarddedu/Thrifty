@@ -3,7 +3,6 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 
@@ -11,12 +10,6 @@ import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryServiceBeanTest extends BaseServiceBeanTest {
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ExpenseService expenseService;
 
     @Test
     void testStoreCategory() {
@@ -75,4 +68,5 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
         //verify
         assertNull(categoryService.getCategory(category.getId()));
     }
+
 }

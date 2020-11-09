@@ -3,13 +3,10 @@ package org.codecritique.thrifty.controller;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.codecritique.thrifty.Generator.stringSupplier;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -18,8 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 class LabelsControllerTest extends BaseControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     void testCreateLabel() throws Exception {
@@ -82,5 +77,25 @@ class LabelsControllerTest extends BaseControllerTest {
         //verify
         mockMvc.perform(get(Resource.LABELS.url + label.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testRemoveLabelLinkedToExpense() throws Exception {
+        //setup
+        Expense expense = createExpense();
+        assertTrue(expense.getLabels().isEmpty());
+        Label label = createLabel();
+        //link entities
+        expense.addLabel(label);
+        updateEntity(expense, Resource.EXPENSES);
+
+        //exercise
+        deleteEntity(Resource.LABELS, label.getId());
+        //verify
+        mockMvc.perform(get(Resource.LABELS.url + label.getId()))
+                .andExpect(status().isNotFound());
+        Expense updated = (Expense) getEntity(Resource.EXPENSES, expense.getId());
+        assertFalse(updated.getLabels().contains(label));
+
     }
 }

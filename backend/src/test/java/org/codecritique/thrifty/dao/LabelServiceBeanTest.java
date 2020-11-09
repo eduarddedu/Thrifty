@@ -1,31 +1,20 @@
 package org.codecritique.thrifty.dao;
 
-import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Generator.labelSupplier;
+import static org.codecritique.thrifty.Generator.stringSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LabelServiceBeanTest extends BaseServiceBeanTest {
 
-    @Autowired
-    private LabelServiceBean labelService;
-
-    @Autowired
-    private ExpenseServiceBean expenseService;
-
-    @Autowired
-    private CategoryServiceBean categoryService;
-
     @Test
     void testAddLabel() {
-        Label label = labelSupplier.get();
-        labelService.store(label);
+        Label label = createLabel();
         assertEquals(label, labelService.getLabel(label.getId()));
     }
 
@@ -40,9 +29,9 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
                 .stream().map(Label::getName).iterator();
 
         while (it.hasNext()) {
-            String name = it.next();
+            String labelName = it.next();
             if (it.hasNext()) {
-                assertTrue(name.compareTo(it.next()) <= 0);
+                assertTrue(labelName.compareTo(it.next()) <= 0);
             }
         }
     }
@@ -51,16 +40,9 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     void testUpdateLabel() {
         //setup
 
-        Label label = labelSupplier.get();
-        labelService.store(label);
-
-        Category category = categorySupplier.get();
-        categoryService.store(category);
-
-        Expense expense = expenseSupplier.get();
-        expense.setCategory(category);
+        Label label = createLabel();
+        Expense expense = createExpense();
         expense.addLabel(label);
-        expenseService.store(expense);
 
         //exercise
 
@@ -80,11 +62,27 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testRemoveLabel() {
-        Label label = new Label(stringSupplier.get());
-        labelService.store(label);
+        Label label = createLabel();
         assertNotNull(labelService.getLabel(label.getId()));
         labelService.removeLabel(label.getId());
         assertNull(labelService.getLabel(label.getId()));
+    }
+
+    @Test
+    void testRemoveLabelLinkedToExpense() {
+        // setup
+        Expense expense = createExpense();
+        Label label = createLabel();
+        expense.addLabel(label);
+        expenseService.updateExpense(expense);
+
+        // exercise
+        labelService.removeLabel(label.getId());
+
+        // verify
+        assertNull(labelService.getLabel(label.getId()));
+        //assertFalse(expense.getLabels().contains(label)); // fails
+        assertFalse(expenseService.getExpense(expense.getId()).getLabels().contains(label));
     }
 
 }

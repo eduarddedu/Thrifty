@@ -34,7 +34,9 @@ public class CategoryServiceBean extends BaseService implements CategoryService 
 
     @Override
     public void removeCategory(long id) {
-        super.remove(Category.class, id);
+        Category category = em.find(Category.class, id);
+        if (category != null)
+            em.remove(category);
     }
 
     private List<Category> getCategoriesSortedByName() {

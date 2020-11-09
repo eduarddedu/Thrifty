@@ -1,7 +1,10 @@
 package org.codecritique.thrifty.dao;
 
+import org.codecritique.thrifty.entity.Category;
+import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,23 +13,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
-import org.codecritique.thrifty.entity.Label;
-
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class ExpenseServiceBeanTest extends BaseServiceBeanTest {
-    @Autowired
-    private ExpenseService expenseService;
-
-    @Autowired
-    private LabelService labelService;
-
-    @Autowired
-    private CategoryService categoryService;
 
     @Test
     void testStoreExpense() {

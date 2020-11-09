@@ -49,7 +49,9 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
 
     @Override
     public void removeExpense(long id) {
-        super.remove(Expense.class, id);
+        Expense expense = em.find(Expense.class, id);
+        if (expense != null)
+            em.remove(expense);
     }
 
     @Override

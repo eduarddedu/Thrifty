@@ -34,7 +34,11 @@ public class LabelServiceBean extends BaseService implements LabelService {
 
     @Override
     public void removeLabel(long id) {
-        super.remove(Label.class, id);
+        Label label = em.find(Label.class, id);
+        if (label != null) {
+            label.getExpenses().forEach(e -> e.removeLabel(label));
+            em.remove(label);
+        }
     }
 
     private List<Label> getLabelsSortedByName() {

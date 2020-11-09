@@ -3,9 +3,7 @@ package org.codecritique.thrifty.controller;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.codecritique.thrifty.Generator.categorySupplier;
 import static org.codecritique.thrifty.Generator.stringSupplier;
@@ -16,8 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CategoriesControllerTest extends BaseControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
     @Test
     void testCreateCategory() throws Exception {

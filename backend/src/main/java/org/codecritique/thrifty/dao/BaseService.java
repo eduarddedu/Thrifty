@@ -18,10 +18,4 @@ public abstract class BaseService {
             em.merge(entity);
     }
 
-    protected void remove(Class<? extends BaseEntity> entityClass, long id) {
-        BaseEntity entity = em.find(entityClass, id);
-        if (entity != null)
-            em.remove(entity);
-    }
-
 }

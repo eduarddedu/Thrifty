@@ -57,6 +57,8 @@ public class LabelsController extends BaseController {
             service.removeLabel(id);
             return ResponseEntity.ok().build();
         } catch (Throwable th) {
+            if (isConstraintViolationException(th))
+                return ResponseEntity.badRequest().build();
             throw new WebException(th);
         }
     }
