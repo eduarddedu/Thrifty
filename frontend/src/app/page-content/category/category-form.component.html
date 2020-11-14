@@ -1,44 +1,35 @@
-<div class="container-fluid">
-    <br>
-    <div class="row">
-        <div class="col-lg-12">
-            <div *ngIf="showNotification">
-                <app-notification [message]="notificationMessage"></app-notification>
+<div class="row" *ngIf="showForm">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="text-muted"> {{pageTitle}}</h3>
             </div>
-        </div>
-    </div>
-    <div class="row" *ngIf="showForm">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="text-muted"> {{pageTitle}}</h3>
-                </div>
-                <div class="panel-body">
-                    <form [formGroup]="categoryForm" novalidate (ngSubmit)="onSubmit()" autocomplete="off">
-                        <div class="form-group col-lg-6">
-                            <label for="categoryName">Name</label>
-                            <input type="text" class="form-control" id="categoryName" name="name" formControlName="name"
-                                placeholder="Name">
-                            <p *ngIf="name.dirty && name.errors && name.errors.maxlength" class="alert alert-danger">
-                                Max 25
-                                characters</p>
-                            <p *ngIf="name.dirty && name.errors && name.errors.forbiddenNames" class="alert alert-danger">
-                                {{name.errors.forbiddenNames}}</p>
-                        </div>
-                        <div class="form-group col-lg-6">
-                            <label for="description">Description</label>
-                            <textarea class="form-control" rows="1" name="description" formControlName="description"
-                                placeholder="Description">
+            <div class="panel-body">
+                <form [formGroup]="categoryForm" novalidate (ngSubmit)="onSubmit()" autocomplete="off">
+                    <div class="form-group col-lg-6">
+                        <label for="categoryName">Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="name" formControlName="name"
+                            placeholder="Name">
+                        <p *ngIf="name.dirty && name.errors && name.errors.maxlength" class="alert alert-danger">
+                            Max 25
+                            characters</p>
+                        <p *ngIf="name.dirty && name.errors && name.errors.forbiddenNames" class="alert alert-danger">
+                            {{name.errors.forbiddenNames}}</p>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" rows="1" name="description" formControlName="description"
+                            placeholder="Description">
                                             </textarea>
-                            <p *ngIf="description.dirty && description.errors && description.errors.maxlength" class="alert alert-danger">
-                                Max 100 characters
-                            </p>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" [disabled]="categoryForm.invalid" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
+                        <p *ngIf="description.dirty && description.errors && description.errors.maxlength"
+                            class="alert alert-danger">
+                            Max 100 characters
+                        </p>
+                    </div>
+                    <div class="col-lg-12">
+                        <button type="submit" [disabled]="categoryForm.invalid" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

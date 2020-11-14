@@ -1,7 +1,6 @@
 import { Validators, FormGroup, AbstractControl, FormBuilder } from '@angular/forms';
 
 import { Label } from '../../model';
-import { Message } from '../../services/messages.service';
 import * as MyValidators  from '../../validators/validators';
 
 export class LabelFormParent {
@@ -11,10 +10,6 @@ export class LabelFormParent {
     forbiddenNames: string[];
 
     showForm = false;
-
-    showNotification = false;
-
-    notificationMessage: Message;
 
     constructor(protected fb: FormBuilder) {}
 

@@ -22,16 +22,9 @@
 		<li>
 			<a href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i> Create<span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level">
-				<li><a [routerLink]="['/new/expense']" [queryParams]="{categoryId: -1}"> New expense</a></li>
+				<li><a [routerLink]="['/new/expense']"> New expense</a></li>
 				<li><a [routerLink]="['/new/category']"> New category</a></li>
 				<li><a [routerLink]="['/new/label']"> New label</a></li>
-			</ul>
-		</li>
-		<li>
-			<a href="#"><i class="fa fa-edit fa-fw" aria-hidden="true"></i> Update<span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
-				<li><a [routerLink]="['/update/labels']"> Edit labels</a></li>
-				<li><a [routerLink]="['/update/categories']"> Edit categories</a></li>
 			</ul>
 		</li>
 	</ul>

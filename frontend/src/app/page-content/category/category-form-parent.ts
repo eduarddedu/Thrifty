@@ -1,7 +1,6 @@
  import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Message } from '../../services/messages.service';
 import { Category, RadioOption } from '../../model';
 import * as MyValidators from '../../validators/validators';
 
@@ -12,10 +11,6 @@ export class CategoryFormParent {
     showForm = false;
 
     forbiddenNames: string[];
-
-    showNotification = false;
-
-    notificationMessage: Message;
 
     radioOptions: RadioOption[] = [];
 

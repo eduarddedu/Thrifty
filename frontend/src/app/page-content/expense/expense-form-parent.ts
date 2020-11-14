@@ -1,7 +1,6 @@
 import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
 import { INgxMyDpOptions } from 'ngx-mydatepicker';
 
-import { Message } from '../../services/messages.service';
 import { Category, Label, RadioOption } from '../../model';
 import * as MyValidators from '../../validators/validators';
 import { Utils } from '../../util/utils';
@@ -17,10 +16,6 @@ export class ExpenseFormParent {
         dateFormat: 'dd-mm-yyyy',
         showTodayBtn: false
     };
-
-    showNotification = false;
-
-    notificationMessage: Message;
 
     radioOptionsLabel: RadioOption[] = [];
 

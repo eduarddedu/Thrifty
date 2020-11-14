@@ -6,10 +6,9 @@ import { Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 
 import { Expense } from '../model';
-import { RestService } from '../services/rest.service';
-import { Kind, MessageService } from '../services/messages.service';
+import { Kind, AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { DeleteEntityModalService } from '../services/modal.service';
 
 @Component({
     selector: 'app-expense-table',
@@ -38,15 +37,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     dtOptions;
 
-    showModal = false;
-
-    modalMessage: Message;
-
-    notificationMessage: Message;
-
-    showNotification: Boolean = false;
-
-    constructor(private router: Router, private rs: RestService, protected ms: MessageService) {
+    constructor(private router: Router, private ms: DeleteEntityModalService) {
     }
 
     ngOnInit() {
@@ -116,22 +107,15 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
     }
 
     onClickEditExpense() {
-        this.router.navigate(['edit/expense'], { queryParams: { id: this.expenseId } });
+        this.router.navigate(['edit/expense', this.expenseId]);
     }
 
     onClickDeleteExpense() {
-        this.modalMessage = this.ms.get(Kind.EXPENSE_DELETE_WARN);
-        this.showModal = true;
+        this.ms.pushMessage(AppMessage.of(Kind.EXPENSE_DELETE_WARN));
+        this.ms.onConfirmDelete(this.onConfirmDeleteExpense.bind(this));
     }
 
-    onConfirmDelete() {
-        this.showModal = false;
-        this.showNotification = true;
-        this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-        this.rs.deleteExpense(this.expenseId).subscribe(() => {
-            Utils.scrollPage();
-            this.notificationMessage = this.ms.get(Kind.EXPENSE_DELETE_OK);
-        });
-
+    onConfirmDeleteExpense() {
+        this.router.navigate(['delete/expense', this.expenseId]);
     }
 }

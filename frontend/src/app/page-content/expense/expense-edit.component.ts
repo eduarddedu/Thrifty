@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { combineLatest } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { RestService } from '../../services/rest.service';
-import { MessageService, Kind } from '../../services/messages.service';
+import { NotificationService } from '../../services/notification.service';
+import { Kind, AppMessage } from '../../model/app-message';
 import { Expense, Account, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
 import { Utils } from '../../util/utils';
@@ -17,12 +18,13 @@ import { AnalyticsService } from '../../services/analytics.service';
 export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
     pageTitle = 'Update Expense';
     submitFormButtonText = 'Update';
+    expenseId: number;
     expense: Expense;
 
 
     constructor(
         protected fb: FormBuilder,
-        private messages: MessageService,
+        private ns: NotificationService,
         private route: ActivatedRoute,
         private rest: RestService,
         private analytics: AnalyticsService) {
@@ -30,24 +32,24 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
     }
 
     ngOnInit() {
-        combineLatest(this.analytics.loadAccount(), this.route.queryParams).subscribe(v => {
-            const account = v[0];
-            this.expense = account.expenses.find(ex => ex.id === +v[1].id);
+        this.route.paramMap.pipe(switchMap(params => {
+            this.expenseId = +params.get('id');
+            return this.analytics.loadAccount();
+        })).subscribe((account: Account) => {
+            this.expense = account.expenses.find(ex => ex.id === this.expenseId);
             this.setFormWithModelValues();
             this.setRadioOptionsLabel(account);
             this.selectedLabels = [].concat(this.expense.labels);
             this.setRadioOptionsCategory(account);
             this.showForm = true;
         }, err => {
-            this.showNotification = true;
-            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
+            this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
     }
 
     onSubmit() {
         this.showForm = false;
-        this.showNotification = true;
-        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
+        this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         const expense: Expense = Object.assign(this.readFormData(), {
             id: this.expense.id,
             labels: this.selectedLabels,
@@ -55,10 +57,10 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
         });
         this.rest.updateExpense(expense).subscribe(
             () => {
-                this.notificationMessage = this.messages.get(Kind.EXPENSE_EDIT_OK);
+                this.ns.push(AppMessage.of(Kind.EXPENSE_EDIT_OK));
                 this.analytics.reload();
             },
-            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
+            err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
     private setFormWithModelValues() {

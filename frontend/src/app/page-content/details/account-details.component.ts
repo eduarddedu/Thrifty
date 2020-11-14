@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Account } from '../../model';
-import { MessageService, Kind, Message } from '../../services/messages.service';
+import { NotificationService } from '../../services/notification.service';
+import { Kind, AppMessage } from '../../model/app-message';
 import { Utils } from '../../util/utils';
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
-    templateUrl: './details.component.html'
+    templateUrl: './z-details.component.html'
 })
 export class AccountDetailsComponent implements OnInit {
 
@@ -16,23 +17,14 @@ export class AccountDetailsComponent implements OnInit {
 
     activeSince: Date;
 
-    showNotification = false;
-
-    showModal = false;
-
-    notificationMessage: Message;
-
-    modalMessage: Message;
-
     dataReady = false;
 
-    constructor(private ms: MessageService, private analytics: AnalyticsService) {
+    constructor(private ns: NotificationService, private analytics: AnalyticsService) {
     }
 
     ngOnInit() {
         this.analytics.loadAccount().subscribe(this.init.bind(this), err => {
-            this.notificationMessage = this.ms.get(Kind.WEB_SERVICE_OFFLINE);
-            this.showNotification = true;
+            this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
     }
 

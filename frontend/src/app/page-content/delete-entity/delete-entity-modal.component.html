@@ -2,8 +2,8 @@
     <bs-modal-header [showDismiss]="true">
         <h4 class="modal-title">Confirm delete</h4>
     </bs-modal-header>
-    <bs-modal-body *ngIf="message">
-        {{ message.text }}
+    <bs-modal-body *ngIf="text">
+        {{ text }}
     </bs-modal-body>
     <bs-modal-footer>
     	<button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Cancel</button>

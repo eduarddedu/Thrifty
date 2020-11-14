@@ -1,87 +1,79 @@
-<div class="container-fluid">
-    <div class="row">
-        <br>
-        <div class="col-lg-12">
-            <div *ngIf="showNotification">
-                <app-notification [message]="notificationMessage"></app-notification>
+<div class="row" *ngIf="showForm">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="text-muted"> {{pageTitle}}</h3>
             </div>
-        </div>
-    </div>
-    <div class="row" *ngIf="showForm">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="text-muted"> {{pageTitle}}</h3>
-                </div>
-                <div class="panel-body">
-                    <form [formGroup]="expenseForm" novalidate (ngSubmit)="onSubmit()">
-                        <div class="col-lg-6">
-                            <div class="row">
-                                <div class="col-lg-12" id="dateInput">
-                                    <div class="form-group">
-                                        <label for="date">Date</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Expense date"
-                                                ngx-mydatepicker name="date" formControlName="date" [options]="datepickerOptions"
-                                                #dp="ngx-mydatepicker">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" (click)="dp.toggleCalendar()">
-                                                    <i class="fa fa-calendar fa-fw"></i>
-                                                </button>
-                                            </span>
-                                        </div>
+            <div class="panel-body">
+                <form [formGroup]="expenseForm" novalidate (ngSubmit)="onSubmit()">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-12" id="dateInput">
+                                <div class="form-group">
+                                    <label for="date">Date</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Expense date"
+                                            ngx-mydatepicker name="date" formControlName="date"
+                                            [options]="datepickerOptions" #dp="ngx-mydatepicker">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" (click)="dp.toggleCalendar()">
+                                                <i class="fa fa-calendar fa-fw"></i>
+                                            </button>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12" id="amountInput">
-                                    <div class="form-group">
-                                        <label for="amount">Amount</label>
-                                        <input type="text" class="form-control" id="expenseValue" name="amount"
-                                            formControlName="amount" placeholder="0.00" autocomplete="off">
-                                        <p *ngIf="amount.dirty && amount.touched && amount.errors && amount.errors.forbiddenValue"
-                                            class="alert alert-danger"> {{amount.errors.forbiddenValue}}
-                                        </p>
-                                        <p *ngIf="amount.dirty && amount.errors && amount.errors.nan" class="alert alert-danger">
-                                            {{amount.errors.nan}}
-                                        </p>
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12" id="amountInput">
+                                <div class="form-group">
+                                    <label for="amount">Amount</label>
+                                    <input type="text" class="form-control" id="expenseValue" name="amount"
+                                        formControlName="amount" placeholder="0.00" autocomplete="off">
+                                    <p *ngIf="amount.dirty && amount.touched && amount.errors && amount.errors.forbiddenValue"
+                                        class="alert alert-danger"> {{amount.errors.forbiddenValue}}
+                                    </p>
+                                    <p *ngIf="amount.dirty && amount.errors && amount.errors.nan"
+                                        class="alert alert-danger">
+                                        {{amount.errors.nan}}
+                                    </p>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row" id="descriptionInput">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="description">Details</label>
-                                        <textarea class="form-control" rows="1" name="description" formControlName="description"
-                                            placeholder="Details">
+                        <div class="row" id="descriptionInput">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="description">Details</label>
+                                    <textarea class="form-control" rows="1" name="description"
+                                        formControlName="description" placeholder="Details">
                                                 </textarea>
-                                        <p *ngIf="description.dirty && description.errors && description.errors.maxlength"
-                                            class="alert alert-danger">
-                                            Max 100 characters
-                                        </p>
-                                    </div>
+                                    <p *ngIf="description.dirty && description.errors && description.errors.maxlength"
+                                        class="alert alert-danger">
+                                        Max 100 characters
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6" id="labels">
-                            <p>
-                                <label>Category</label>
-                                <app-radio-selector [options]="radioOptionsCategory" [singleSelectMode]="true" 
+                    </div>
+                    <div class="col-lg-6" id="labels">
+                        <p>
+                            <label>Category</label>
+                            <app-radio-selector [options]="radioOptionsCategory" [singleSelectMode]="true"
                                 (click$)="onClickCategoryOption($event)"></app-radio-selector>
-                            </p>
-                            <p>
-                                <label>Labels</label>
-                                <app-radio-selector [options]="radioOptionsLabel" (click$)="onClickLabelOption($event)"></app-radio-selector>
-                            </p>
-                        </div>
-                        <div class="col-lg-12">
-                            <button type="submit" [disabled]="expenseForm.invalid" class="btn btn-primary">
-                                {{submitFormButtonText}}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                        </p>
+                        <p>
+                            <label>Labels</label>
+                            <app-radio-selector [options]="radioOptionsLabel" (click$)="onClickLabelOption($event)">
+                            </app-radio-selector>
+                        </p>
+                    </div>
+                    <div class="col-lg-12">
+                        <button type="submit" [disabled]="expenseForm.invalid" class="btn btn-primary">
+                            {{submitFormButtonText}}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

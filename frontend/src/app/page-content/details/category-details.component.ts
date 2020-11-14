@@ -2,14 +2,15 @@ import { switchMap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category, Account, Expense } from '../../model';
-import { RestService } from '../../services/rest.service';
-import { MessageService, Kind, Message } from '../../services/messages.service';
-import { Utils } from '../../util/utils';
+import { Kind, AppMessage } from '../../model/app-message';
+import { NotificationService } from '../../services/notification.service';
 import { AnalyticsService } from '../../services/analytics.service';
+import { DeleteEntityModalService } from '../../services/modal.service';
+import { Utils } from '../../util/utils';
 
 
 @Component({
-    templateUrl: './details.component.html',
+    templateUrl: './z-details.component.html',
     styles: [`button {margin-bottom: 7px}`]
 })
 export class CategoryDetailsComponent implements OnInit {
@@ -22,20 +23,12 @@ export class CategoryDetailsComponent implements OnInit {
 
     activeSince: Date;
 
-    showNotification = false;
-
-    showModal = false;
-
-    notificationMessage: Message;
-
-    modalMessage: Message;
-
     dataReady = false;
 
     constructor(
-        private rest: RestService,
         private analytics: AnalyticsService,
-        private messages: MessageService,
+        private ns: NotificationService,
+        private ms: DeleteEntityModalService,
         private route: ActivatedRoute,
         private router: Router) {
     }
@@ -45,21 +38,14 @@ export class CategoryDetailsComponent implements OnInit {
             this.categoryId = +params.get('id');
             return this.analytics.loadAccount();
         })).subscribe(this.init.bind(this), err => {
-            this.showNotification = true;
-            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
+            this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
     }
 
     private init(account: Account) {
         this.category = account.categories.find(c => c.id === this.categoryId);
         this.setActiveSince();
-        this.resetNotification();
-        Utils.scrollPage();
         this.dataReady = true;
-    }
-
-    private resetNotification() {
-        this.showNotification = false;
     }
 
     private setActiveSince() {
@@ -74,26 +60,16 @@ export class CategoryDetailsComponent implements OnInit {
     }
 
     onClickEditCategory() {
-        this.router.navigate(['edit/category'], { queryParams: { id: this.categoryId } });
+        this.router.navigate(['edit/category', this.categoryId]);
     }
 
     onClickDeleteCategory() {
-        this.showModal = true;
-        this.modalMessage = this.messages.get(Kind.CATEGORY_DELETE_WARN);
+        this.ms.pushMessage(AppMessage.of(Kind.CATEGORY_DELETE_WARN));
+        this.ms.onConfirmDelete(this.onConfirmDeleteCategory.bind(this));
     }
 
     onConfirmDeleteCategory() {
-        this.dataReady = false;
-        this.showModal = false;
-        this.showNotification = true;
-        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
-        this.rest.deleteCategory(this.category.id).subscribe(() => {
-            this.notificationMessage = this.messages.get(Kind.CATEGORY_DELETE_OK);
-            Utils.scrollPage();
-        }, err => {
-            this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR);
-            Utils.scrollPage();
-        });
+        this.router.navigate(['delete/category', this.categoryId]);
     }
 
 }

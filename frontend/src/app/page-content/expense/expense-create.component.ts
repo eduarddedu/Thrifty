@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { RestService } from '../../services/rest.service';
-import { MessageService, Kind } from '../../services/messages.service';
+import { NotificationService } from '../../services/notification.service';
+import { Kind, AppMessage } from '../../model/app-message';
 import { Expense, Account, RadioOption } from '../../model';
 import { ExpenseFormParent } from './expense-form-parent';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -18,7 +19,7 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
 
     constructor(
         protected fb: FormBuilder,
-        private messages: MessageService,
+        private ns: NotificationService,
         private rest: RestService,
         private analytics: AnalyticsService) {
         super(fb);
@@ -32,25 +33,23 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             this.expenseForm.patchValue({ date: { jsdate: new Date() } });
             this.showForm = true;
         }, err => {
-            this.showNotification = true;
-            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
+            this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
     }
 
     onSubmit() {
         this.showForm = false;
-        this.showNotification = true;
-        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
+        this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         const expense: Expense = Object.assign(this.readFormData(), {
             labels: this.selectedLabels,
             category: this.selectedCategory
         });
         this.rest.createExpense(expense).subscribe(
             () => {
-                this.notificationMessage = this.messages.get(Kind.EXPENSE_CREATE_OK);
+                this.ns.push(AppMessage.of(Kind.EXPENSE_CREATE_OK));
                 this.analytics.reload();
             },
-            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
+            err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
     private setRadioOptionsLabel() {

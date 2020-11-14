@@ -22,21 +22,21 @@ import { CategoryCreateComponent } from './page-content/category/category-create
 import { CategoryEditComponent } from './page-content/category/category-edit.component';
 import { LabelCreateComponent } from './page-content/label/label-create.component';
 import { LabelEditComponent } from './page-content/label/label-edit.component';
-import { LabelUpdatesComponent } from './page-content/updates/label-updates.component';
-import { CategoryUpdatesComponent } from './page-content/updates/category-updates.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { DropdownSelectorComponent } from './dropdown-selector/dropdown-selector.component';
 import { RadioSelectorComponent } from './radio-selector/radio-selector.component';
 import { NotificationComponent } from './notification/notification.component';
-import { ModalComponent } from './modal/modal.component';
 import { RestService } from './services/rest.service';
-import { MessageService } from './services/messages.service';
+import { NotificationService } from './services/notification.service';
+import { DeleteEntityModalService } from './services/modal.service';
 import { AnalyticsService } from './services/analytics.service';
 import { BaseUriInterceptor } from './http/baseuri.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
 import { ChartsComponent } from './charts-component/charts-component.component';
 import { LabelDetailsComponent } from './page-content/details/label-details.component';
+import { DeleteEntityComponent } from './page-content/delete-entity/delete-entity.component';
+import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
 
 
 
@@ -50,7 +50,7 @@ import { LabelDetailsComponent } from './page-content/details/label-details.comp
         ExpenseEditComponent,
         ExpenseCreateComponent,
         ExpenseTableComponent,
-        ModalComponent,
+        DeleteEntityModalComponent,
         DropdownSelectorComponent,
         RadioSelectorComponent,
         CategoryEditComponent,
@@ -58,12 +58,11 @@ import { LabelDetailsComponent } from './page-content/details/label-details.comp
         NotificationComponent,
         PageNotFoundComponent,
         CategoryCreateComponent,
-        LabelUpdatesComponent,
         LabelCreateComponent,
-        CategoryUpdatesComponent,
         LabelEditComponent,
         ChartsComponent,
         LabelDetailsComponent,
+        DeleteEntityComponent
     ],
     imports: [
         BrowserModule,
@@ -77,7 +76,8 @@ import { LabelDetailsComponent } from './page-content/details/label-details.comp
     ],
     providers: [
         RestService,
-        MessageService,
+        NotificationService,
+        DeleteEntityModalService,
         AnalyticsService,
         { provide: HTTP_INTERCEPTORS, useClass: BaseUriInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

@@ -1,3 +1,4 @@
+<app-delete-entity-modal></app-delete-entity-modal>
 <div id="container">
     <div id="sidebar-wrapper">
         <div id="sidebar" class="navbar-default sidebar" role="navigation">
@@ -17,7 +18,15 @@
     </div>
 
     <div id="page">
-        <router-outlet (activate)="onActivateRoute()"></router-outlet>
+        <div class="container-fluid">
+            <br>
+            <div class="row">
+                <div class="col-lg-12">
+                    <app-notification></app-notification>
+                </div>
+            </div>
+            <router-outlet (activate)="onActivateRoute()"></router-outlet>
+        </div>
         <div id="footer">
             <span>ⓒ 2018 codecritique.org</span>
         </div>

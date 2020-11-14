@@ -1,5 +1,7 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
+import { NotificationService } from '../services/notification.service';
+import { AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
 
 @Component({
@@ -7,9 +9,17 @@ import { Utils } from '../util/utils';
     styleUrls: ['./page.component.css']
 })
 
-export class PageComponent {
+export class PageComponent implements OnInit {
+    private message: AppMessage;
+
+    constructor(private ns: NotificationService) {}
+
+    ngOnInit() {
+        this.ns.subscribe((message: AppMessage) => this.message = message);
+    }
 
     onActivateRoute() {
         Utils.scrollPage();
+        this.ns.push(null);
     }
 }

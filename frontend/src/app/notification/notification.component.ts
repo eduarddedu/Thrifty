@@ -1,17 +1,26 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Message, Alert } from '../services/messages.service';
+import { AppMessage, Alert } from '../model/app-message';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
     selector: 'app-notification',
     template: `
-        <div *ngIf="message" [class]="bootstrapClasses">
-            {{ message.text }}
+        <div *ngIf="message" >
+            <p [class]="bootstrapClasses">{{ message.text }}</p>
         </div>`
 })
-export class NotificationComponent {
+export class NotificationComponent implements OnInit {
 
-    @Input() message: Message;
+    message: AppMessage;
+
+    constructor(private ns: NotificationService) {}
+
+    ngOnInit() {
+        this.ns.subscribe(((message: AppMessage) => {
+            this.message = message;
+        }));
+    }
 
     get bootstrapClasses() {
         let classes = 'alert ';

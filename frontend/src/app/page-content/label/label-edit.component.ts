@@ -5,7 +5,8 @@ import { switchMap } from 'rxjs/operators';
 
 import { Label } from '../../model';
 import { LabelFormParent } from './label-form-parent';
-import { MessageService, Kind } from '../../services/messages.service';
+import { NotificationService } from '../../services/notification.service';
+import { Kind, AppMessage } from '../../model/app-message';
 import { RestService } from '../../services/rest.service';
 import { Account } from '../../model';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -17,44 +18,42 @@ export class LabelEditComponent extends LabelFormParent implements OnInit {
 
     pageTitle = 'Update Label';
 
-    id: number;
+    labelId: number;
 
     model: Label;
 
     constructor(protected fb: FormBuilder,
         private route: ActivatedRoute,
         private rest: RestService,
-        private messages: MessageService,
+        private ns: NotificationService,
         private analytics: AnalyticsService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.route.queryParams.pipe(switchMap(params => {
-            this.id = +params.id;
+        this.route.paramMap.pipe(switchMap(params => {
+            this.labelId = +params.get('id');
             return this.analytics.loadAccount();
         })).subscribe((account: Account) => {
-            this.model = account.labels.find(label => this.id === label.id);
-            this.forbiddenNames = account.labels.filter(label => this.id !== label.id).map(l => l.name);
+            this.model = account.labels.find(label => this.labelId === label.id);
+            this.forbiddenNames = account.labels.filter(label => this.labelId !== label.id).map(l => l.name);
             this.createForm();
             this.labelForm.patchValue({ name: this.model.name });
             this.showForm = true;
         }, err => {
-            this.showNotification = true;
-            this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
+            this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
     }
 
     onSubmit() {
         this.showForm = false;
-        const newLabel = Object.assign({ id: this.id }, this.readFormData());
-        this.showNotification = true;
-        this.notificationMessage = this.messages.get(Kind.IN_PROGRESS);
+        const newLabel = Object.assign({ id: this.labelId }, this.readFormData());
+        this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         this.rest.updateLabel(newLabel).subscribe(() => {
-            this.notificationMessage = this.messages.get(Kind.LABEL_EDIT_OK);
+            this.ns.push(AppMessage.of(Kind.LABEL_EDIT_OK));
             this.analytics.reload();
         },
-            err => this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR));
+            err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
 }

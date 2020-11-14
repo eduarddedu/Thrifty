@@ -1,15 +1,17 @@
 import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Expense, Account, Label } from '../../model';
-import { RestService } from '../../services/rest.service';
-import { MessageService, Kind, Message } from '../../services/messages.service';
+import { NotificationService } from '../../services/notification.service';
+import { Kind, AppMessage } from '../../model/app-message';
 import { Utils } from '../../util/utils';
 import { AnalyticsService } from '../../services/analytics.service';
+import { DeleteEntityModalService } from '../../services/modal.service';
 
 @Component({
-  templateUrl: './details.component.html'
+  templateUrl: './z-details.component.html'
 })
 export class LabelDetailsComponent implements OnInit {
 
@@ -19,25 +21,18 @@ export class LabelDetailsComponent implements OnInit {
 
   activeSince: Date;
 
-  showNotification = false;
-
-  showModal = false;
-
-  notificationMessage: Message;
-
-  modalMessage: Message;
-
   dataReady = false;
 
   viewType = 'label';
 
+  subscription: Subscription;
+
   constructor(
-    private rest: RestService,
     private analytics: AnalyticsService,
-    private messages: MessageService,
+    private ns: NotificationService,
+    private ms: DeleteEntityModalService,
     private route: ActivatedRoute,
-    private router: Router,
-    private ms: MessageService) {
+    private router: Router) {
   }
 
   ngOnInit(): void {
@@ -45,16 +40,13 @@ export class LabelDetailsComponent implements OnInit {
       this.labelId = +params.get('id');
       return this.analytics.loadAccount();
     })).subscribe(this.init.bind(this), err => {
-      this.showNotification = true;
-      this.notificationMessage = this.messages.get(Kind.WEB_SERVICE_OFFLINE);
+      this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
     });
   }
 
   private init(account: Account) {
     this.label = account.labels.find(label => label.id === this.labelId);
     this.setActiveSince();
-    this.showNotification = false;
-    Utils.scrollPage();
     this.dataReady = true;
   }
 
@@ -70,26 +62,16 @@ export class LabelDetailsComponent implements OnInit {
   }
 
   onClickEditLabel() {
-    this.router.navigate(['edit/label'], { queryParams: { id: this.labelId } });
+    this.router.navigate(['edit/label', this.labelId]);
   }
 
   onClickDeleteLabel() {
-    this.showModal = true;
-    this.modalMessage = this.messages.get(Kind.LABEL_DELETE_WARN);
+    this.ms.pushMessage(AppMessage.of(Kind.LABEL_DELETE_WARN));
+    this.ms.onConfirmDelete(this.onConfirmDeleteLabel.bind(this));
   }
 
   onConfirmDeleteLabel() {
-    this.dataReady = false;
-    this.showModal = false;
-    this.showNotification = true;
-    this.notificationMessage = this.ms.get(Kind.IN_PROGRESS);
-    this.rest.deleteLabel(this.labelId).subscribe(() => {
-      this.notificationMessage = this.ms.get(Kind.LABEL_DELETE_OK);
-      Utils.scrollPage();
-    }, err => {
-      this.notificationMessage = this.messages.get(Kind.UNEXPECTED_ERROR);
-      Utils.scrollPage();
-    });
+    this.router.navigate(['delete/label', this.labelId]);
   }
 
 }
