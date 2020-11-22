@@ -50,7 +50,7 @@ export class AppMessage {
                 this.alert = Alert.ERROR;
                 break;
             case Kind.WEB_SERVICE_OFFLINE:
-                this.text = 'A server-side problem has occured. Please retry later.';
+                this.text = 'Server connection failed. Please come back later.';
                 this.alert = Alert.ERROR;
                 break;
             /* Create request
