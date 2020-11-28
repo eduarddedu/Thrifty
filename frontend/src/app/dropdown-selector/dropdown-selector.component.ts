@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   selector: 'app-dropdown-selector',
   template: `
   <select (change)="onSelectOption($event.target.selectedIndex)">
-    <option *ngFor="let option of options" selected="option.selected">
+    <option *ngFor="let option of options" [selected]="option.selected">
       {{ option.value }}
     </option>
   </select>`,

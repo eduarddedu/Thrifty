@@ -5,7 +5,7 @@ import {
 import { Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
 
-import { Expense } from '../model';
+import { Category, Label, Account } from '../model';
 import { Kind, AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
 import { DeleteEntityModalService } from '../services/modal.service';
@@ -24,9 +24,7 @@ import { DeleteEntityModalService } from '../services/modal.service';
 
 export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
-    @Input() expenses: Expense[];
-
-    @Input() categoryId: number;
+    @Input() entity: Account | Category | Label;
 
     @Output() clickDeleteExpense$: EventEmitter<any> = new EventEmitter();
 
@@ -51,7 +49,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 { title: 'Details' },
                 { title: 'Amount' }
             ],
-            data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]),
+            data: this.entity.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount / 100]),
             select: 'single',
             rowCallback: (row: Node, data: any[] | Object, index: number) => {
                 $('td', row).unbind('click');
@@ -79,8 +77,8 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.clear();
-            for (const e of this.expenses) {
-                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount]);
+            for (const e of this.entity.expenses) {
+                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, (e.amount / 100).toFixed(2)]);
             }
             dtInstance.draw();
             this.disableTextSelectionOnTableElements();

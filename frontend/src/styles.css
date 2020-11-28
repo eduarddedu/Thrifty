@@ -6,6 +6,7 @@ body {
   height: 100%;
   margin: 0;
 }
+
 div {
   box-sizing: border-box;
 }
@@ -65,6 +66,20 @@ div {
     left: 250px;
     width: calc(100% - 250px);
   }
+}
+
+.view-details-table {
+  width: 100%;
+  font-weight: 300;
+  color: rgb(109, 88, 88);
+}
+
+.edit-lnk:hover {
+  cursor: pointer;
+}
+
+.view-details-table tr {
+  height: 32px;
 }
 
 .navbar-top-links {

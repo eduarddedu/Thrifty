@@ -13,11 +13,11 @@ import { ChartModule } from 'angular-highcharts';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { AppComponent } from './app.component';
 import { PageComponent } from './page/page.component';
-import { AccountDetailsComponent } from './page-content/details/account-details.component';
-import { CategoryDetailsComponent } from './page-content/details/category-details.component';
+import { AccountDetailsComponent } from './page-content/view/account-details/account-details.component';
+import { CategoryDetailsComponent } from './page-content/view/category-details/category-details.component';
+import { LabelDetailsComponent } from './page-content/view/label-details/label-details.component';
 import { ExpenseEditComponent } from './page-content/expense/expense-edit.component';
 import { ExpenseCreateComponent } from './page-content/expense/expense-create.component';
-import { PageNotFoundComponent } from './page-content/page-not-found/page-not-found.component';
 import { CategoryCreateComponent } from './page-content/category/category-create.component';
 import { CategoryEditComponent } from './page-content/category/category-edit.component';
 import { LabelCreateComponent } from './page-content/label/label-create.component';
@@ -33,8 +33,6 @@ import { DeleteEntityModalService } from './services/modal.service';
 import { AnalyticsService } from './services/analytics.service';
 import { BaseUriInterceptor } from './http/baseuri.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
-import { ChartsComponent } from './charts-component/charts-component.component';
-import { LabelDetailsComponent } from './page-content/details/label-details.component';
 import { DeleteEntityComponent } from './page-content/delete-entity/delete-entity.component';
 import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
 
@@ -56,13 +54,11 @@ import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-
         CategoryEditComponent,
         SidebarComponent,
         NotificationComponent,
-        PageNotFoundComponent,
         CategoryCreateComponent,
         LabelCreateComponent,
         LabelEditComponent,
-        ChartsComponent,
         LabelDetailsComponent,
-        DeleteEntityComponent
+        DeleteEntityComponent,
     ],
     imports: [
         BrowserModule,

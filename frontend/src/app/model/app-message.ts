@@ -109,7 +109,7 @@ export class AppMessage {
                 this.alert = Alert.WARNING;
                 break;
             case Kind.LABEL_DELETE_WARN:
-                this.text = 'The label will be removed from any expenses. Continue?';
+                this.text = 'The label will be deleted. Continue?';
                 this.alert = Alert.WARNING;
 
         }

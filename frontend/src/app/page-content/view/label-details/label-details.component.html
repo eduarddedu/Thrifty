@@ -1,0 +1,82 @@
+<div *ngIf="dataReady">
+    <div id="label-details-panel" class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default text-muted">
+                <div class="panel-heading">
+                    <h3 class="text-muted">{{label.name}}</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="view-details-table">
+                        <tr>
+                            <td>Total spending </td>
+                            <td style="text-align:right;font-weight: bold;">{{ totalSpentStr }}</td>
+                        </tr>
+                        <tr>
+                            <td>Details </td>
+                            <td style="text-align:right;">{{label.name}}
+                                <span class="edit-lnk" (click)="onClickEditLabel()">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default text-muted">
+                <div class="panel-heading">
+                    <h3 style="visibility:hidden;">Invisible</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="view-details-table">
+                        <tr><td>Size</td><td style="text-align:right;">{{label.expenses.length}} <small>{{percentage}}%</small></td></tr>
+                        <tr>
+                            <td>Show analytics for </td>
+                            <td style="text-align:right;">
+                                <app-dropdown-selector [options]="selectorOptions"
+                                    (selectEvent)="onSelectPeriod($event)">
+                                </app-dropdown-selector>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="charts">
+        <div class="col-lg-6" id="pieChart">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="text-muted"> Share</h4>
+                </div>
+                <div [chart]="pieChart" class="panel-body"></div>
+            </div>
+        </div>
+
+        <div class="col-lg-6" id="columnChart">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <h4 class="text-muted pull-left">Spending trends</h4>
+                </div>
+                <div [chart]="columnChart" class="panel-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="expense-table">
+        <div class="col-lg-12">
+            <app-expense-table [entity]="label"></app-expense-table>
+        </div>
+    </div>
+
+    <div class="row" id="edit-delete-label-buttons">
+        <div class="col-lg-12">
+            <button type="button" role="navigation" class="btn btn-danger btn-block" (click)="onClickDeleteLabel()">
+                Delete label <i class="glyphicon glyphicon-trash"></i>
+            </button>
+        </div>
+    </div>
+
+</div>

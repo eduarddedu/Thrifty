@@ -2,9 +2,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { PageComponent } from '../page/page.component';
-import { AccountDetailsComponent } from '../page-content/details/account-details.component';
-import { CategoryDetailsComponent } from '../page-content/details/category-details.component';
-import { LabelDetailsComponent } from '../page-content/details/label-details.component';
+import { AccountDetailsComponent } from '../page-content/view/account-details/account-details.component';
+import { CategoryDetailsComponent } from '../page-content/view/category-details/category-details.component';
+import { LabelDetailsComponent } from '../page-content/view/label-details/label-details.component';
 import { CategoryEditComponent } from '../page-content/category/category-edit.component';
 import { CategoryCreateComponent } from '../page-content/category/category-create.component';
 import { ExpenseEditComponent } from '../page-content/expense/expense-edit.component';
@@ -12,27 +12,27 @@ import { ExpenseCreateComponent } from '../page-content/expense/expense-create.c
 import { LabelCreateComponent } from '../page-content/label/label-create.component';
 import { LabelEditComponent } from '../page-content/label/label-edit.component';
 import { DeleteEntityComponent } from '../page-content/delete-entity/delete-entity.component';
-import { PageNotFoundComponent } from '../page-content/page-not-found/page-not-found.component';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'account', pathMatch: 'full',
+        redirectTo: 'view/account',
+        pathMatch: 'full'
     },
     {
         path: '',
         component: PageComponent,
         children: [
             {
-                path: 'account',
+                path: 'view/account',
                 component: AccountDetailsComponent
             },
             {
-                path: 'category/:id',
+                path: 'view/category/:id',
                 component: CategoryDetailsComponent
             },
             {
-                path: 'label/:id',
+                path: 'view/label/:id',
                 component: LabelDetailsComponent
             },
             {
@@ -76,7 +76,7 @@ const routes: Routes = [
             },
             {
                 path: '**',
-                component: PageNotFoundComponent,
+                redirectTo: '', pathMatch: 'full'
             }]
     }
 

@@ -10,7 +10,7 @@ import { Utils } from '../util/utils';
 })
 
 export class PageComponent implements OnInit {
-    private message: AppMessage;
+    message: AppMessage;
 
     constructor(private ns: NotificationService) {}
 

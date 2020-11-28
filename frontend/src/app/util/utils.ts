@@ -43,10 +43,8 @@ export class Utils {
         document.getElementById('page').scrollTop = 0;
     }
 
-
-    static addExpenseAmounts(expenses: Expense[] = []): number {
-        const integerSum: number = this.sum(expenses.map(e => e.amount * 100));
-        return integerSum / 100;
+    static sumExpenses(expense: Expense[]) {
+        return this.sum(expense.map(e => e.amount));
     }
 
     static sum(series: Array<number> = []): number {

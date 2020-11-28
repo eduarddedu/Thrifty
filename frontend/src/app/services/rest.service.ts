@@ -37,8 +37,7 @@ export class RestService {
     }
 
     public updateExpense(expense: Expense): Observable<any> {
-        return this.http.put(`expenses`, JSON.stringify(expense))
-        ;
+        return this.http.put(`expenses`, JSON.stringify(expense));
     }
 
     public deleteExpense(id: number): Observable<any> {

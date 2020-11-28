@@ -1,9 +1,11 @@
 export interface Account {
-    expenses?: Expense[];
-    categories?: Category[];
-    labels?: Label[];
-    balance?: number;
-    dateRange?: DateRange;
+    expenses: Expense[];
+    categories: Category[];
+    labels: Label[];
+    balance: number;
+    dateRange: DateRange;
+    mapYearBalance: Map<number, number>;
+    yearsSeries: number[];
 }
 
 export interface Category {
@@ -14,6 +16,8 @@ export interface Category {
     expenses?: Expense[];
     labels?: Label[];
     dateRange?: DateRange;
+    mapYearBalance?: Map<number, number>;
+    yearsSeries?: number[];
 }
 
 export interface Label {
@@ -22,6 +26,8 @@ export interface Label {
     expenses?: Expense[];
     categories?: Category[];
     balance?: number;
+    mapYearBalance?: Map<number, number>;
+    yearsSeries?: number[];
 }
 
 export interface Expense {
@@ -44,7 +50,7 @@ export interface DateRange {
     endDate: LocalDate;
 }
 
-export interface CheckLabel  {
+export interface CheckLabel {
     id: number;
     name: string;
     checked: boolean;
@@ -55,3 +61,6 @@ export interface RadioOption {
     name: string;
     checked: boolean;
 }
+
+export type RefPeriod = number | 'All time';
+
