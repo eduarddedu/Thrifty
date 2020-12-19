@@ -21,7 +21,6 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     category: Category;
     categoryId: number;
     dataReady = false;
-    activeSince: Date;
     pieChart: Chart;
     columnChart: Chart;
     selectorOptions: { value: RefPeriod, selected: boolean }[] = [];
@@ -47,16 +46,8 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     init(account: Account) {
         this.account = account;
         this.category = account.categories.find(c => c.id === this.categoryId);
-        this.setActiveSince();
         this.setSelectOptionsAndCharts();
         this.dataReady = true;
-    }
-
-    setActiveSince() {
-        const i = this.category.expenses.length - 1;
-        if (i >= 0) {
-            this.activeSince = Utils.localDateToJsDate(this.category.expenses[i].createdOn);
-        }
     }
 
     setSelectOptionsAndCharts() {

@@ -35,6 +35,7 @@ import { BaseUriInterceptor } from './http/baseuri.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
 import { DeleteEntityComponent } from './page-content/delete-entity/delete-entity.component';
 import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 
 
@@ -59,6 +60,7 @@ import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-
         LabelEditComponent,
         LabelDetailsComponent,
         DeleteEntityComponent,
+        SpinnerComponent,
     ],
     imports: [
         BrowserModule,

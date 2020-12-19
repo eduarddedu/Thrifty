@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Chart } from 'angular-highcharts';
 
-import { Account } from '../../../model';
+import { Account, RefPeriod } from '../../../model';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
 import { NotificationService } from '../../../services/notification.service';
@@ -11,7 +11,7 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { PeriodSelector } from '../period-selector';
 
-type RefPeriod = number | 'All time';
+
 
 @Component({
     templateUrl: './account-details.component.html'
@@ -19,7 +19,6 @@ type RefPeriod = number | 'All time';
 export class AccountDetailsComponent extends PeriodSelector implements OnInit {
 
     account: Account;
-    activeSince: Date;
     pieChart: Chart;
     columnChart: Chart;
     dataReady = false;
@@ -42,7 +41,6 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
     init(account: Account) {
         this.account = account;
         if (this.account.expenses.length > 0) {
-            this.activeSince = Utils.localDateToJsDate(this.account.dateRange.startDate);
             this.setSelectOptions(this.account.yearsSeries);
             this.setCharts(this.account.dateRange.endDate.year);
         }
@@ -70,5 +68,11 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
 
     get totalSpentStr() {
         return (Math.abs(this.account.balance) / 100).toFixed(2) + ' lei';
+    }
+
+    get activeSince() {
+        if (this.account && this.account.expenses.length > 0) {
+            return Utils.localDateToJsDate(this.account.dateRange.startDate);
+        }
     }
 }

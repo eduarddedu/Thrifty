@@ -22,7 +22,6 @@ export class LabelDetailsComponent extends PeriodSelector implements OnInit {
   account: Account;
   labelId: number;
   label: Label;
-  activeSince: Date;
   dataReady = false;
   pieChart: Chart;
   columnChart: Chart;
@@ -49,16 +48,8 @@ export class LabelDetailsComponent extends PeriodSelector implements OnInit {
   private init(account: Account) {
     this.account = account;
     this.label = account.labels.find(label => label.id === this.labelId);
-    this.setActiveSince();
     this.setSelectOptionsAndCharts();
     this.dataReady = true;
-  }
-
-  private setActiveSince() {
-    const i = this.label.expenses.length - 1;
-    if (i >= 0) {
-      this.activeSince = this.extractDate(this.label.expenses[i]);
-    }
   }
 
   setSelectOptionsAndCharts() {

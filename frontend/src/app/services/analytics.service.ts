@@ -56,10 +56,12 @@ export class AnalyticsService {
 
     private getYearsSeries(dateRange: DateRange): number[] {
         const years = [];
-        let startYear = dateRange.startDate.year;
-        const endYear = dateRange.endDate.year;
-        while (startYear <= endYear) {
-            years.push(startYear++);
+        if (dateRange.startDate) {
+            let startYear = dateRange.startDate.year;
+            const endYear = dateRange.endDate.year;
+            while (startYear <= endYear) {
+                years.push(startYear++);
+            }
         }
         return years;
     }
