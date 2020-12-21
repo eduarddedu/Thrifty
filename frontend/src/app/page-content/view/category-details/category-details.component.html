@@ -1,21 +1,22 @@
 <app-spinner *ngIf="!dataReady"></app-spinner>
-<div *ngIf="dataReady">
-    <div id="category-details-panel" class="row">
+<div *ngIf="dataReady" id="category-details">
+    <div class="row">
         <div class="col-lg-6">
-            <div class="panel panel-default text-muted">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="text-muted">{{category.name}}</h3>
+                    <h3>{{category.name}}</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="view-details-table">
+                    <table>
                         <tr>
                             <td>Total spending </td>
-                            <td style="text-align:right;font-weight: bold;">{{ totalSpentStr }}</td>
+                            <td style="text-align:right"><b>{{ totalSpentStr }}</b></td>
                         </tr>
                         <tr>
                             <td>Details </td>
-                            <td style="text-align:right;">{{category.description}}
-                                <span class="edit-lnk" (click)="onClickEditCategory()">
+                            <td style="text-align:right">
+                                {{category.description}}
+                                <span (click)="onClickEditCategory()">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </span>
                             </td>
@@ -25,16 +26,20 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="panel panel-default text-muted">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 style="visibility:hidden;">Invisible</h3>
+                    <h3 style="visibility:hidden">Invisible</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="view-details-table">
-                        <tr><td>Size</td><td style="text-align:right;">{{category.expenses.length}} <small>{{percentage}}%</small></td></tr>
+                    <table>
+                        <tr>
+                            <td>Size</td>
+                            <td style="text-align:right">{{category.expenses.length}} <small>{{percentage}}%</small>
+                            </td>
+                        </tr>
                         <tr>
                             <td>Show analytics for </td>
-                            <td style="text-align:right;">
+                            <td style="text-align:right">
                                 <app-dropdown-selector [options]="selectorOptions"
                                     (selectEvent)="onSelectPeriod($event)">
                                 </app-dropdown-selector>
@@ -52,7 +57,7 @@
                 <div class="panel-heading">
                     <h4 class="text-muted"> Share</h4>
                 </div>
-                <div [chart]="pieChart" class="panel-body"></div>
+                <div [chart]="pieChart" class="panel-body chart-wrapper"></div>
             </div>
         </div>
 
@@ -61,7 +66,7 @@
                 <div class="panel-heading clearfix">
                     <h4 class="text-muted pull-left">Trends</h4>
                 </div>
-                <div [chart]="columnChart" class="panel-body"></div>
+                <div [chart]="columnChart" class="panel-body chart-wrapper"></div>
             </div>
         </div>
     </div>

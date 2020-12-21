@@ -1,13 +1,18 @@
 .spinner-container {
-    height: calc(100vh - 65px); /* 50px = footer height + 15px = footer padding */
+    height: 200px;
     display: flex;
     flex-flow: column;
     justify-content: center;
     align-items: center;
 }
 
+@media (min-width: 768px) {
+    .spinner-container {
+        height: 95vh;
+    }
+}
+
 .lds-spinner {
-    color: official;
     display: inline-block;
     position: relative;
     width: 80px;
