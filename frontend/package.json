@@ -30,7 +30,7 @@
     "datatables.net-select": "^1.2.5",
     "datatables.net-select-dt": "^1.2.5",
     "font-awesome": "^4.7.0",
-    "highcharts": "^6.1.0",
+    "highcharts": "^7.2.2",
     "jquery": "^3.3.1",
     "ng2-bs3-modal": "^0.15.0",
     "ngx-mydatepicker": "^2.4.5",
