@@ -22,6 +22,12 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
     pieChart: Chart;
     columnChart: Chart;
     dataReady = false;
+    refPeriod: RefPeriod;
+    size: number;
+    spent: string;
+    sizePercentage: string;
+    spentPercentage: string;
+    since: Date;
 
     constructor(
         private route: ActivatedRoute,
@@ -42,37 +48,67 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
         this.account = account;
         if (this.account.expenses.length > 0) {
             this.setSelectOptions(this.account.yearsSeries);
-            this.setCharts(this.account.dateRange.endDate.year);
+            this.refPeriod = this.selectorOptions.filter(o => o.selected)[0].value;
+            this.setCharts();
+            this.setSize();
+            this.setSpent();
+            this.setSince();
         }
         this.dataReady = true;
     }
 
-    setCharts(refPeriod: RefPeriod) {
+    setCharts() {
         let navigate = function (entity: string, id: number) {
             this.router.navigate(['view', entity, id]);
         };
         navigate = navigate.bind({ router: this.router });
-        if (typeof refPeriod === 'number') {
-            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, refPeriod, navigate);
-            this.columnChart = Charts.getAccountSpendingPerMonthColumnChart(this.account, refPeriod);
-        } else {
+        if (this.refPeriod === 'All time') {
             this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, null, navigate);
             this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
+        } else {
+            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, this.refPeriod, navigate);
+            this.columnChart = Charts.getAccountSpendingPerMonthColumnChart(this.account, this.refPeriod);
+        }
+    }
+
+    setSize() {
+        if (this.refPeriod === 'All time') {
+            this.size = this.account.expenses.length;
+            this.sizePercentage = '100%';
+        } else {
+            this.size = this.account.expenses
+                .filter(e => e.createdOn.year === this.refPeriod).length;
+            this.sizePercentage = Utils.getPercentageString(this.account.expenses.length, this.size);
+        }
+    }
+
+    setSpent() {
+        let spent: number;
+        if (this.refPeriod === 'All time') {
+            spent = this.account.balance || 0;
+            this.spentPercentage = '100%';
+        } else {
+            spent = this.account.mapYearBalance.get(this.refPeriod) || 0;
+            this.spentPercentage = Utils.getPercentageString(this.account.balance, spent);
+        }
+        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
+    }
+
+    setSince() {
+        if (this.account && this.account.expenses.length > 0) {
+            if (this.refPeriod === 'All time') {
+                this.since = Utils.localDateToJsDate(this.account.dateRange.startDate);
+            } else {
+                this.since = Utils.localDateToJsDate({ year: this.refPeriod, month: 1, day: 1 });
+            }
         }
     }
 
     onSelectPeriod(index: number) {
-        const refPeriod = this.selectorOptions[index].value;
-        this.setCharts(refPeriod);
-    }
-
-    get totalSpentStr() {
-        return (Math.abs(this.account.balance) / 100).toFixed(2) + ' lei';
-    }
-
-    get activeSince() {
-        if (this.account && this.account.expenses.length > 0) {
-            return Utils.localDateToJsDate(this.account.dateRange.startDate);
-        }
+        this.refPeriod = this.selectorOptions[index].value;
+        this.setSize();
+        this.setCharts();
+        this.setSpent();
+        this.setSince();
     }
 }

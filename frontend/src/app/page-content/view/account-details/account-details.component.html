@@ -10,12 +10,12 @@
                     <table>
                         <tr>
                             <td>Spent </td>
-                            <td style="text-align:right"><b>{{ totalSpentStr }}</b></td>
+                            <td style="text-align:right"><b>{{ spent }}</b> <small>{{spentPercentage}}</small></td>
                         </tr>
                         <tr>
                             <td>Since </td>
-                            <td style="text-align:right" *ngIf="activeSince">{{ activeSince | date }}</td>
-                            <td style="text-align:right" *ngIf="!activeSince">unavailable</td>
+                            <td style="text-align:right" *ngIf="since">{{ since | date }}</td>
+                            <td style="text-align:right" *ngIf="!since">unavailable</td>
                         </tr>
                     </table>
                 </div>
@@ -30,10 +30,10 @@
                     <table>
                         <tr>
                             <td>Size</td>
-                            <td style="text-align:right">{{account.expenses.length}} <small>100%</small></td>
+                            <td style="text-align:right">{{size}} <small>{{sizePercentage}}</small></td>
                         </tr>
                         <tr>
-                            <td>Show analytics for </td>
+                            <td>Time span</td>
                             <td style="text-align:right;">
                                 <app-dropdown-selector [options]="selectorOptions"
                                     (selectEvent)="onSelectPeriod($event)">

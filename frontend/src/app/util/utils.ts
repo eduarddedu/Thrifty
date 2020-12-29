@@ -58,4 +58,11 @@ export class Utils {
         return uniqueYears;
     }
 
+    static getPercentageString(base: number, qty: number): string {
+        if (base === 0) {
+            return '0%';
+        }
+        return (qty * 100 / base).toFixed(2) + '%';
+    }
+
 }
