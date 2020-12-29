@@ -7,14 +7,14 @@
                     <h3>Category</h3>
                 </div>
                 <div class="panel-body">
-                    <table>
+                    <table class="details">
                         <tr>
                             <td>Spent </td>
-                            <td style="text-align:right"><b>{{ totalSpentStr }}</b></td>
+                            <td><b>{{ totalSpentStr }}</b></td>
                         </tr>
                         <tr>
                             <td>Details </td>
-                            <td style="text-align:right">
+                            <td>
                                 {{category.description}}
                                 <span (click)="onClickEditCategory()">
                                     <i class="glyphicon glyphicon-edit"></i>
@@ -31,15 +31,15 @@
                     <h3>{{category.name}}</h3>
                 </div>
                 <div class="panel-body">
-                    <table>
+                    <table class="details">
                         <tr>
                             <td>Size</td>
-                            <td style="text-align:right">{{category.expenses.length}} <small>{{percentage}}%</small>
+                            <td>{{category.expenses.length}} <small>{{percentage}}%</small>
                             </td>
                         </tr>
                         <tr>
-                            <td>Show analytics for </td>
-                            <td style="text-align:right">
+                            <td>Time span</td>
+                            <td>
                                 <app-dropdown-selector [options]="selectorOptions"
                                     (selectEvent)="onSelectPeriod($event)">
                                 </app-dropdown-selector>

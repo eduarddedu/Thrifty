@@ -7,14 +7,14 @@
                     <h3>Label</h3>
                 </div>
                 <div class="panel-body view-details">
-                    <table>
+                    <table class="details">
                         <tr>
-                            <td>Spent </td>
-                            <td style="text-align:right"><b>{{ totalSpentStr }}</b></td>
+                            <td>Spent</td>
+                            <td><b>{{ totalSpentStr }}</b></td>
                         </tr>
                         <tr>
                             <td>Details </td>
-                            <td style="text-align:right">{{label.name}}
+                            <td>{{label.name}}
                                 <span (click)="onClickEditLabel()">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </span>
@@ -30,12 +30,14 @@
                     <h3>{{label.name}}</h3>
                 </div>
                 <div class="panel-body">
-                    <table>
-                        <tr><td>Size</td>
-                        <td style="text-align:right">{{label.expenses.length}} <small>{{percentage}}%</small></td></tr>
+                    <table class="details">
                         <tr>
-                            <td>Show analytics for </td>
-                            <td style="text-align:right">
+                            <td>Size</td>
+                            <td>{{label.expenses.length}} <small>{{percentage}}%</small></td>
+                        </tr>
+                        <tr>
+                            <td>Time span</td>
+                            <td>
                                 <app-dropdown-selector [options]="selectorOptions"
                                     (selectEvent)="onSelectPeriod($event)">
                                 </app-dropdown-selector>
@@ -51,7 +53,7 @@
         <div class="col-lg-6" id="pieChart">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4> Share</h4>
+                    <h4>Share</h4>
                 </div>
                 <div [chart]="pieChart" class="panel-body chart-wrapper"></div>
             </div>
@@ -60,7 +62,7 @@
         <div class="col-lg-6" id="columnChart">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h4 class="pull-left">Spending trends</h4>
+                    <h4 class="pull-left">Trends</h4>
                 </div>
                 <div [chart]="columnChart" class="panel-body chart-wrapper"></div>
             </div>

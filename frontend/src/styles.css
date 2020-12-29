@@ -28,28 +28,24 @@ div {
   padding: 1em 0;
 }
 
-.th-view table {
+table.details  {
   width: 100%;
 }
 
-.th-view table tr {
+table.details tr {
   height: 32px;
 }
 
-.th-view td span:hover {
+table.details td:nth-child(even) {
+  text-align: right;
+}
+
+table.details td span:hover {
   cursor: pointer;
 }
 
 .chart-wrapper {
   height: 350px;
-}
-
-.chart-wrapper table tr {
-  height: auto;
-}
-
-#expense-table table {
-  color: initial;
 }
 
 @media (min-width: 768px) {

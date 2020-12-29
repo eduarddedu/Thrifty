@@ -7,15 +7,15 @@
                     <h3>My account</h3>
                 </div>
                 <div class="panel-body">
-                    <table>
+                    <table class="details">
                         <tr>
                             <td>Spent </td>
-                            <td style="text-align:right"><b>{{ spent }}</b> <small>{{spentPercentage}}</small></td>
+                            <td><b>{{ spent }}</b> <small>{{spentPercentage}}</small></td>
                         </tr>
                         <tr>
                             <td>Since </td>
-                            <td style="text-align:right" *ngIf="since">{{ since | date }}</td>
-                            <td style="text-align:right" *ngIf="!since">unavailable</td>
+                            <td *ngIf="since">{{ since | date }}</td>
+                            <td *ngIf="!since">unavailable</td>
                         </tr>
                     </table>
                 </div>
@@ -27,14 +27,14 @@
                     <h3 style="visibility:hidden">Invisible</h3>
                 </div>
                 <div class="panel-body">
-                    <table>
+                    <table class="details">
                         <tr>
                             <td>Size</td>
-                            <td style="text-align:right">{{size}} <small>{{sizePercentage}}</small></td>
+                            <td>{{size}} <small>{{sizePercentage}}</small></td>
                         </tr>
                         <tr>
                             <td>Time span</td>
-                            <td style="text-align:right;">
+                            <td>
                                 <app-dropdown-selector [options]="selectorOptions"
                                     (selectEvent)="onSelectPeriod($event)">
                                 </app-dropdown-selector>
@@ -59,8 +59,8 @@
 
         <div class="col-lg-6" id="columnChart">
             <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <h4 class="pull-left">Trends</h4>
+                <div class="panel-heading">
+                    <h4>Trends</h4>
                 </div>
                 <div [chart]="columnChart" class="panel-body chart-wrapper"></div>
             </div>
