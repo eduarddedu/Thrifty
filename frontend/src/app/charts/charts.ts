@@ -106,7 +106,7 @@ const getCategorySpendingByLabelDataPoints = function (category: Category, year?
     if (expensesWithoutLabel.length > 0) {
         const balance = Math.abs(Utils.sumExpenses(expensesWithoutLabel)) / 100;
         points.push({
-            name: 'Other',
+            name: 'Unlabeled',
             y: balance,
             events: null
         });
