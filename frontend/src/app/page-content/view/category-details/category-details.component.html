@@ -10,7 +10,7 @@
                     <table class="details">
                         <tr>
                             <td>Spent </td>
-                            <td><b>{{ totalSpentStr }}</b></td>
+                            <td><b>{{ spent }}</b><small>{{spentPercentage}}</small></td>
                         </tr>
                         <tr>
                             <td>Details </td>
@@ -34,7 +34,7 @@
                     <table class="details">
                         <tr>
                             <td>Size</td>
-                            <td>{{category.expenses.length}} <small>{{percentage}}%</small>
+                            <td>{{size}} <small>{{sizePercentage}}</small>
                             </td>
                         </tr>
                         <tr>

@@ -17,7 +17,6 @@ import { PeriodSelector } from '../period-selector';
     templateUrl: './account-details.component.html'
 })
 export class AccountDetailsComponent extends PeriodSelector implements OnInit {
-
     account: Account;
     pieChart: Chart;
     columnChart: Chart;
@@ -48,13 +47,21 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
         this.account = account;
         if (this.account.expenses.length > 0) {
             this.setSelectOptions(this.account.yearsSeries);
-            this.refPeriod = this.selectorOptions.filter(o => o.selected)[0].value;
+            this.refPeriod = this.selectorOptions.find(o => o.selected).value;
             this.setCharts();
             this.setSize();
             this.setSpent();
             this.setSince();
         }
         this.dataReady = true;
+    }
+
+    onSelectPeriod(index: number) {
+        this.refPeriod = this.selectorOptions[index].value;
+        this.setSize();
+        this.setCharts();
+        this.setSpent();
+        this.setSince();
     }
 
     setCharts() {
@@ -76,9 +83,8 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
             this.size = this.account.expenses.length;
             this.sizePercentage = '100%';
         } else {
-            this.size = this.account.expenses
-                .filter(e => e.createdOn.year === this.refPeriod).length;
-            this.sizePercentage = Utils.getPercentageString(this.account.expenses.length, this.size);
+            this.size = this.account.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+            this.sizePercentage = Utils.percent(this.account.expenses.length, this.size);
         }
     }
 
@@ -89,7 +95,7 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
             this.spentPercentage = '100%';
         } else {
             spent = this.account.mapYearBalance.get(this.refPeriod) || 0;
-            this.spentPercentage = Utils.getPercentageString(this.account.balance, spent);
+            this.spentPercentage = Utils.percent(this.account.balance, spent);
         }
         this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
     }
@@ -102,13 +108,5 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
                 this.since = Utils.localDateToJsDate({ year: this.refPeriod, month: 1, day: 1 });
             }
         }
-    }
-
-    onSelectPeriod(index: number) {
-        this.refPeriod = this.selectorOptions[index].value;
-        this.setSize();
-        this.setCharts();
-        this.setSpent();
-        this.setSince();
     }
 }

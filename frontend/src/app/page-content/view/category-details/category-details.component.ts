@@ -24,6 +24,12 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     pieChart: Chart;
     columnChart: Chart;
     selectorOptions: { value: RefPeriod, selected: boolean }[] = [];
+    refPeriod: RefPeriod;
+    size: number;
+    spent: string;
+    sizePercentage: string;
+    spentPercentage: string;
+    since: Date;
 
     constructor(
         private analytics: AnalyticsService,
@@ -46,34 +52,57 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     init(account: Account) {
         this.account = account;
         this.category = account.categories.find(c => c.id === this.categoryId);
-        this.setSelectOptionsAndCharts();
+        this.setSelectOptions(this.category.yearsSeries);
+        this.refPeriod = this.selectorOptions.find(o => o.selected).value;
+        this.setCharts();
+        this.setSpent();
+        this.setSize();
         this.dataReady = true;
     }
 
-    setSelectOptionsAndCharts() {
-        const years = this.category.yearsSeries;
-        this.setSelectOptions(years);
-        const period: RefPeriod = years.length > 0 ? years[years.length - 1] : 'All time';
-        this.setCharts(period);
+    onSelectPeriod(index: number) {
+        this.refPeriod = this.selectorOptions[index].value;
+        this.setSpent();
+        this.setSize();
+        this.setCharts();
     }
 
-    setCharts(refPeriod: RefPeriod) {
+    setSize() {
+        if (this.refPeriod === 'All time') {
+            this.size = this.category.expenses.length;
+            this.sizePercentage = Utils.percent(this.account.expenses.length, this.size);
+        } else {
+            this.size = this.category.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+            const base = this.account.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+            this.sizePercentage = Utils.percent(base, this.size);
+        }
+    }
+
+    setSpent() {
+        let spent: number;
+        if (this.refPeriod === 'All time') {
+            spent = this.category.balance;
+            this.spentPercentage = Utils.percent(this.account.balance, spent);
+        } else {
+            spent = this.category.mapYearBalance.get(this.refPeriod);
+            const base = this.account.mapYearBalance.get(this.refPeriod);
+            this.spentPercentage = Utils.percent(base, spent);
+        }
+        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
+    }
+
+    setCharts() {
         let navigate = function (entity: string, id: number) {
             this.router.navigate(['view', entity, id]);
         };
         navigate = navigate.bind({ router: this.router });
-        if (typeof refPeriod === 'number') {
-            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, refPeriod, navigate);
-            this.columnChart = Charts.getCategorySpendingPerMonthColumnChart(this.category, refPeriod);
-        } else {
+        if (this.refPeriod === 'All time') {
             this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, null, navigate);
             this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.category);
+        } else {
+            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, this.refPeriod, navigate);
+            this.columnChart = Charts.getCategorySpendingPerMonthColumnChart(this.category, this.refPeriod);
         }
-    }
-
-    onSelectPeriod(index: number) {
-        const refPeriod = this.selectorOptions[index].value;
-        this.setCharts(refPeriod);
     }
 
     onClickEditCategory() {
@@ -87,19 +116,6 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
 
     onConfirmDeleteCategory() {
         this.router.navigate(['delete/category', this.categoryId]);
-    }
-
-    get totalSpentStr() {
-        return (Math.abs(this.category.balance) / 100).toFixed(2) + ' lei';
-    }
-
-    get percentage() {
-        const base = this.account.expenses.length;
-        if (base === 0) {
-            return 0;
-        }
-        const fr = this.category.expenses.length;
-        return (fr * 100 / base).toFixed(2);
     }
 
 }
