@@ -10,12 +10,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
-import { PeriodSelector } from '../period-selector';
+import { Timespan } from '../timespan';
 
 @Component({
     templateUrl: './category-details.component.html'
 })
-export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
+export class CategoryDetailsComponent extends Timespan implements OnInit {
 
     account: Account;
     category: Category;
@@ -23,7 +23,7 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     dataReady = false;
     pieChart: Chart;
     columnChart: Chart;
-    selectorOptions: { value: RefPeriod, selected: boolean }[] = [];
+    options: { value: RefPeriod, selected: boolean }[] = [];
     refPeriod: RefPeriod;
     size: number;
     spent: string;
@@ -52,8 +52,8 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     init(account: Account) {
         this.account = account;
         this.category = account.categories.find(c => c.id === this.categoryId);
-        this.setSelectOptions(this.category.yearsSeries);
-        this.refPeriod = this.selectorOptions.find(o => o.selected).value;
+        this.setOptions(this.category.yearsSeries);
+        this.refPeriod = this.options.find(o => o.selected).value;
         this.setCharts();
         this.setSpent();
         this.setSize();
@@ -61,7 +61,7 @@ export class CategoryDetailsComponent extends PeriodSelector implements OnInit {
     }
 
     onSelectPeriod(index: number) {
-        this.refPeriod = this.selectorOptions[index].value;
+        this.refPeriod = this.options[index].value;
         this.setSpent();
         this.setSize();
         this.setCharts();

@@ -9,14 +9,14 @@ import { Charts } from '../../../charts/charts';
 import { NotificationService } from '../../../services/notification.service';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { PeriodSelector } from '../period-selector';
+import { Timespan } from '../timespan';
 
 
 
 @Component({
     templateUrl: './account-details.component.html'
 })
-export class AccountDetailsComponent extends PeriodSelector implements OnInit {
+export class AccountDetailsComponent extends Timespan implements OnInit {
     account: Account;
     pieChart: Chart;
     columnChart: Chart;
@@ -46,8 +46,8 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
     init(account: Account) {
         this.account = account;
         if (this.account.expenses.length > 0) {
-            this.setSelectOptions(this.account.yearsSeries);
-            this.refPeriod = this.selectorOptions.find(o => o.selected).value;
+            this.setOptions(this.account.yearsSeries);
+            this.refPeriod = this.options.find(o => o.selected).value;
             this.setCharts();
             this.setSize();
             this.setSpent();
@@ -57,7 +57,7 @@ export class AccountDetailsComponent extends PeriodSelector implements OnInit {
     }
 
     onSelectPeriod(index: number) {
-        this.refPeriod = this.selectorOptions[index].value;
+        this.refPeriod = this.options[index].value;
         this.setSize();
         this.setCharts();
         this.setSpent();

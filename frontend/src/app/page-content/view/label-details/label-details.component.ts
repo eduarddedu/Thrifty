@@ -10,18 +10,18 @@ import { Utils } from '../../../util/utils';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Charts } from '../../../charts/charts';
-import { PeriodSelector } from '../period-selector';
+import { Timespan } from '../timespan';
 
 @Component({
   templateUrl: './label-details.component.html'
 })
-export class LabelDetailsComponent extends PeriodSelector implements OnInit {
+export class LabelDetailsComponent extends Timespan implements OnInit {
   account: Account;
   labelId: number;
   label: Label;
   pieChart: Chart;
   columnChart: Chart;
-  selectorOptions: { value: RefPeriod, selected: boolean }[] = [];
+  options: { value: RefPeriod, selected: boolean }[] = [];
   dataReady = false;
   refPeriod: RefPeriod;
   size: number;
@@ -51,8 +51,8 @@ export class LabelDetailsComponent extends PeriodSelector implements OnInit {
   private init(account: Account) {
     this.account = account;
     this.label = account.labels.find(label => label.id === this.labelId);
-    this.setSelectOptions(this.label.yearsSeries);
-    this.refPeriod = this.selectorOptions.find(o => o.selected).value;
+    this.setOptions(this.label.yearsSeries);
+    this.refPeriod = this.options.find(o => o.selected).value;
     this.setCharts();
     this.setSize();
     this.setSpent();
@@ -60,7 +60,7 @@ export class LabelDetailsComponent extends PeriodSelector implements OnInit {
   }
 
   onSelectPeriod(index: number) {
-    this.refPeriod = this.selectorOptions[index].value;
+    this.refPeriod = this.options[index].value;
     this.setCharts();
     this.setSize();
     this.setSpent();
