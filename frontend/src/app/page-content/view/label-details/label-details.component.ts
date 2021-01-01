@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chart } from 'angular-highcharts';
 
-import { Expense, Account, Label, RefPeriod } from '../../../model';
+import { Account, Label, RefPeriod } from '../../../model';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { Utils } from '../../../util/utils';
@@ -21,7 +21,6 @@ export class LabelDetailsComponent extends Timespan implements OnInit {
   label: Label;
   pieChart: Chart;
   columnChart: Chart;
-  options: { value: RefPeriod, selected: boolean }[] = [];
   dataReady = false;
   refPeriod: RefPeriod;
   size: number;

@@ -23,7 +23,6 @@ export class CategoryDetailsComponent extends Timespan implements OnInit {
     dataReady = false;
     pieChart: Chart;
     columnChart: Chart;
-    options: { value: RefPeriod, selected: boolean }[] = [];
     refPeriod: RefPeriod;
     size: number;
     spent: string;

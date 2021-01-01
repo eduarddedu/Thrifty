@@ -24,7 +24,7 @@ export class AnalyticsService {
             return forkJoin(this.rest.getExpenses(), this.rest.getCategories(), this.rest.getLabels())
                 .pipe(
                     switchMap(data => {
-                        this.account = this.buildAccount(data[0], data[1], data[2]);
+                        this.setAccount(data[0], data[1], data[2]);
                         Utils.deepFreeze(this.account);
                         this.subject.next(this.account);
                         return of(this.account);
@@ -37,21 +37,20 @@ export class AnalyticsService {
         this.loadAccount().subscribe(() => console.log('Reload account...'));
     }
 
-    private buildAccount(expenses: Expense[], categories: Category[], labels: Label[]): Account {
-        const account: Account = <Account>{};
+    private setAccount(expenses: Expense[], categories: Category[], labels: Label[]) {
+        this.account = <Account>{};
         try {
             expenses.forEach(e => e.amount *= 100);
-            account.expenses = expenses;
-            account.labels = this.getEnrichedLabels(expenses, labels);
-            account.categories = this.getEnrichedCategories(expenses, categories, account.labels);
-            account.dateRange = this.getDateRange(expenses);
-            account.balance = Utils.sumExpenses(expenses);
-            account.mapYearBalance = this.getAccountMapYearBalance(expenses);
-            account.yearsSeries = this.getYearsSeries(account.dateRange);
+            this.account.expenses = expenses;
+            this.account.dateRange = this.getDateRange(expenses);
+            this.account.yearsSeries = this.getYearsSeries(this.account.dateRange);
+            this.account.labels = this.getEnrichedLabels(expenses, labels);
+            this.account.categories = this.getEnrichedCategories(expenses, categories, this.account.labels);
+            this.account.balance = Utils.sumExpenses(expenses);
+            this.account.mapYearBalance = this.getAccountMapYearBalance(expenses);
         } catch (error) {
             console.log('Error building account: ', error);
         }
-        return account;
     }
 
     private getYearsSeries(dateRange: DateRange): number[] {
