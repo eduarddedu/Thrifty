@@ -1,12 +1,12 @@
-import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { INgxMyDpOptions } from 'ngx-mydatepicker';
 
-import { Category, Label, RadioOption } from '../../model';
+import { Label, RadioOption } from '../../model';
 import * as MyValidators from '../../validators/validators';
 import { Utils } from '../../util/utils';
 
 
-export class ExpenseFormParent {
+export class ExpenseForm {
 
     expenseForm: FormGroup;
 
@@ -19,22 +19,19 @@ export class ExpenseFormParent {
 
     radioOptionsLabel: RadioOption[] = [];
 
-    radioOptionsCategory: RadioOption[] = [];
-
     selectedLabels: Label[] = [];
-
-    selectedCategory: Category;
 
     constructor(protected fb: FormBuilder) {
         this.expenseForm = this.fb.group({
-            date: [null, Validators.required],
+            createdOn: [{ jsdate: new Date() }, Validators.required],
             description: [null, [Validators.required, Validators.maxLength(100)]],
-            amount: [null, [Validators.required, MyValidators.forbiddenNumber(0), MyValidators.isNegativeNumber()]]
+            amount: [null, [Validators.required, MyValidators.forbiddenNumber(0), MyValidators.isNegativeNumber()]],
+            category: [null, Validators.required]
         });
     }
 
     protected get date(): AbstractControl {
-        return this.expenseForm.get('date');
+        return this.expenseForm.get('createdOn');
     }
 
     protected get description(): AbstractControl  {
@@ -53,21 +50,17 @@ export class ExpenseFormParent {
         };
     }
 
-    protected onClickLabelOption(selector) {
-        this.selectedLabels = <Label[]> this.filterChecked(selector.options);
-    }
-
-    protected onClickCategoryOption(event: any) {
-        for (const option of event.options) {
-            if (option.checked) {
-                this.selectedCategory = Object.assign({id: option.id, name: option.name, description: option.description});
-            }
-        }
+    protected onClickLabelOption(selector: any) {
+        this.selectedLabels = this.filterChecked(selector.options);
     }
 
     protected filterChecked(options: RadioOption[]) {
-        const clone = objects => objects.map(o => Object.assign({}, o));
-        return clone(options).filter(o => o.checked && delete o.checked);
+        return options.filter(o => o.checked).map(o => {
+            const option: any = Object.assign({}, o);
+            delete option.checked;
+            return option;
+        });
+
     }
 
 }

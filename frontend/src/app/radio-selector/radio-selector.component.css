@@ -1,22 +1,26 @@
-.app-radio-label {
+label {
 	display: inline-block;
 	margin: 2px;
 	color: white;
-	background-color: rgba(0, 80, 80, 0.5);
 	font-weight: 400;
 	line-height: 2;
-	border-radius: 8px;
-	padding: 2px 6px;
+	border-radius: 4px;
+	padding: 1px 4px 1px 6px;
 }
 
-.app-radio-label:hover {
+label.unchecked {
+	background-color: rgba(0, 80, 80, 0.5);
+}
+
+label.checked {
+   background-color: rgba(0, 80, 80, 0.7);
+}
+
+label:hover {
 	cursor: pointer;
 }
 
-.app-radio-label span {
+label span {
 	user-select: none;
-}
-
-.checked {
-   background-color: rgba(0, 80, 80, 0.7);
+	margin: 0 3px;
 }

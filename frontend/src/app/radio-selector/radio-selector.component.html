@@ -1,8 +1,7 @@
 <div>
-    <label *ngFor="let option of options"
-           [ngClass]="{'app-radio-label' : true, 'checked' : option.checked}"
-           (click)="onClickOption(option)">
-        <span style="margin: 0 3px;">{{option.name}}</span>
-        <i [ngClass]="{'fa' : true, 'fa-check-circle' : option.checked, 'fa-circle' : !option.checked}"></i>
-    </label>
-  </div>
+  <label *ngFor="let option of options" [ngClass]="{'checked' : option.checked, 'unchecked' : !option.checked}"
+    (click)="onClickOption(option)">
+    <span>{{option.name}}</span>
+    <i [ngClass]="{'fa' : true, 'fa-check-circle' : option.checked, 'fa-circle' : !option.checked}"></i>
+  </label>
+</div>

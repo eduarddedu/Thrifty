@@ -17,11 +17,12 @@ export enum Kind {
     LABEL_DELETE_OK,
     CATEGORY_EDIT_OK,
     EXPENSE_EDIT_OK,
-    LABEL_EDIT_OK
+    LABEL_EDIT_OK,
+    MUST_CREATE_CATEGORY
 }
 
 export class AppMessage {
-    private static map: Map<Kind, AppMessage> = (function() {
+    private static map: Map<Kind, AppMessage> = (function () {
         const map: Map<Kind, AppMessage> = new Map();
         const kinds: Kind[] = Object.keys(Kind).map(key => Kind[key]);
         kinds.forEach(kind => map.set(kind, new AppMessage(kind)));
@@ -67,7 +68,10 @@ export class AppMessage {
                 this.text = 'Label created.';
                 this.alert = Alert.SUCCESS;
                 break;
-
+            case Kind.MUST_CREATE_CATEGORY:
+                this.text = 'An expense needs a category. Please create a category first.';
+                this.alert = Alert.INFO;
+                break;
             /* Edit request
             */
             case Kind.CATEGORY_EDIT_OK:

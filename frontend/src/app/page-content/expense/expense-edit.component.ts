@@ -6,21 +6,21 @@ import { switchMap } from 'rxjs/operators';
 import { RestService } from '../../services/rest.service';
 import { NotificationService } from '../../services/notification.service';
 import { Kind, AppMessage } from '../../model/app-message';
-import { Expense, Account, RadioOption } from '../../model';
-import { ExpenseFormParent } from './expense-form-parent';
+import { Expense, Account, Category, RadioOption } from '../../model';
+import { ExpenseForm } from './expense-form';
 import { Utils } from '../../util/utils';
 import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
+    styleUrls: ['./select.css']
 })
-
-export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
+export class ExpenseEditComponent extends ExpenseForm implements OnInit {
     pageTitle = 'Update Expense';
     submitFormButtonText = 'Update';
     expenseId: number;
     expense: Expense;
-
+    account: Account;
 
     constructor(
         protected fb: FormBuilder,
@@ -36,11 +36,11 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             this.expenseId = +params.get('id');
             return this.analytics.loadAccount();
         })).subscribe((account: Account) => {
+            this.account = account;
             this.expense = account.expenses.find(ex => ex.id === this.expenseId);
-            this.setFormWithModelValues();
-            this.setRadioOptionsLabel(account);
+            this.fillForm();
+            this.setLabelOptions();
             this.selectedLabels = [].concat(this.expense.labels);
-            this.setRadioOptionsCategory(account);
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
@@ -53,7 +53,11 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
         const expense: Expense = Object.assign(this.readFormData(), {
             id: this.expense.id,
             labels: this.selectedLabels,
-            category: this.selectedCategory
+            category: {
+                id: this.selectedCategory.id,
+                name: this.selectedCategory.name,
+                description: this.selectedCategory.description
+            }
         });
         this.rest.updateExpense(expense).subscribe(
             () => {
@@ -63,42 +67,28 @@ export class ExpenseEditComponent extends ExpenseFormParent implements OnInit {
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
-    private setFormWithModelValues() {
+    private fillForm() {
         this.expenseForm.patchValue({
             date: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
             description: this.expense.description,
-            amount: (this.expense.amount / 100).toFixed(2)
+            amount: (this.expense.amount / 100).toFixed(2),
+            category: this.expense.category.name
         });
     }
 
-    private setRadioOptionsLabel(account: Account) {
+    private get selectedCategory(): Category {
+        return this.account.categories.find(c => c.name === this.expenseForm.get('category').value);
+    }
+
+    private onSelectCategory(event: any) {
+        this.expenseForm.patchValue({ category: event.target.value });
+    }
+
+    private setLabelOptions() {
         const map: Map<number, RadioOption> = new Map();
-        account.labels.forEach(label => map.set(label.id, {
-            id: label.id,
-            name: label.name,
-            checked: false
-        }));
-        this.expense.labels.forEach(label => map.set(label.id, {
-            id: label.id,
-            name: label.name,
-            checked: true
-        }));
+        this.account.labels.forEach(l => map.set(l.id, <RadioOption>Object.assign({checked: false}, l)));
+        this.expense.labels.forEach(l => map.get(l.id).checked = true);
         this.radioOptionsLabel = Array.from(map.values());
-    }
-
-    private setRadioOptionsCategory(account: Account) {
-        account.categories.forEach(category => {
-            const option = {
-                id: category.id,
-                name: category.name,
-                description: category.description,
-                checked: category.id === this.expense.category.id ? true : false
-            };
-            this.radioOptionsCategory.push(<RadioOption>option);
-            if (option.checked) {
-                this.selectedCategory = { id: category.id, name: category.name, description: category.description };
-            }
-        });
     }
 }
 

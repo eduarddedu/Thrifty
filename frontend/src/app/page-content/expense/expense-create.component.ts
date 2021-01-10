@@ -4,15 +4,16 @@ import { FormBuilder } from '@angular/forms';
 import { RestService } from '../../services/rest.service';
 import { NotificationService } from '../../services/notification.service';
 import { Kind, AppMessage } from '../../model/app-message';
-import { Expense, Account, RadioOption } from '../../model';
-import { ExpenseFormParent } from './expense-form-parent';
+import { Expense, Account, Category } from '../../model';
+import { ExpenseForm } from './expense-form';
 import { AnalyticsService } from '../../services/analytics.service';
 
 
 @Component({
     templateUrl: './expense-form.component.html',
+    styleUrls: ['./select.css']
 })
-export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit {
+export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
     pageTitle = 'Create Expense';
     submitFormButtonText = 'Save';
     account: Account;
@@ -28,10 +29,13 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
     ngOnInit() {
         this.analytics.loadAccount().subscribe(v => {
             this.account = v;
-            this.setRadioOptionsLabel();
-            this.setRadioOptionsCategory();
-            this.expenseForm.patchValue({ date: { jsdate: new Date() } });
-            this.showForm = true;
+            if (this.account.categories.length === 0) {
+                this.ns.push(AppMessage.of(Kind.MUST_CREATE_CATEGORY));
+            } else {
+                this.setLabelOptions();
+                this.setDefaultCategoryOption();
+                this.showForm = true;
+            }
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
@@ -42,7 +46,11 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         const expense: Expense = Object.assign(this.readFormData(), {
             labels: this.selectedLabels,
-            category: this.selectedCategory
+            category: {
+                id: this.selectedCategory.id,
+                name: this.selectedCategory.name,
+                description: this.selectedCategory.description
+            }
         });
         this.rest.createExpense(expense).subscribe(
             () => {
@@ -52,23 +60,28 @@ export class ExpenseCreateComponent extends ExpenseFormParent implements OnInit 
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
-    private setRadioOptionsLabel() {
+    private setDefaultCategoryOption() {
+        this.expenseForm.patchValue({ category: this.findLargestCategory().name });
+    }
+
+    private findLargestCategory(): Category {
+        return this.account.categories.slice().sort((a, b) => a.expenses.length - b.expenses.length)
+            .reverse()[0];
+    }
+
+    private get selectedCategory(): Category {
+        return this.account.categories.find(c => c.name === this.expenseForm.get('category').value);
+    }
+
+    private onSelectCategory(event: any) {
+        this.expenseForm.patchValue({ category: event.target.value });
+    }
+
+    private setLabelOptions() {
         this.account.labels.forEach(label => this.radioOptionsLabel.push({
             id: label.id,
             name: label.name,
             checked: false
         }));
-    }
-
-    private setRadioOptionsCategory() {
-        this.account.categories.forEach(category => {
-            const option = {
-                id: category.id,
-                name: category.name,
-                description: category.description,
-                checked: false
-            };
-            this.radioOptionsCategory.push(<RadioOption>option);
-        });
     }
 }
