@@ -4,16 +4,22 @@
     </div>
 
     <div class="panel-body">
-    	<div id="expense-buttons" style="margin-left: -3px">
-          <button class="btn btn-primary btn-outline"
-                  (click)="onClickNewExpense()">New</button>
-          <button class="btn btn-danger btn-outline"
-                  [disabled]="!expenseId"
-                  (click)="onClickEditExpense()">Edit</button>
-          <button class="btn btn-danger btn-outline"
-                  [disabled]="!expenseId"
-                  (click)="onClickDeleteExpense()">Delete</button>
+        <div class="row" id="controls">
+            <div id="buttons" class="col-lg-6">
+                <button class="btn btn-primary btn-outline"
+                        (click)="onClickNewExpense()">New</button>
+                <button class="btn btn-danger btn-outline"
+                        [disabled]="!expenseId"
+                        (click)="onClickEditExpense()">Edit</button>
+                <button class="btn btn-danger btn-outline"
+                        [disabled]="!expenseId"
+                        (click)="onClickDeleteExpense()">Delete</button>
+              </div>
+            <div id="search-box" class="col-lg-6">
+                <input #sb type="search" placeholder="Search expenses" aria-label="Search expenses" (input)="search(sb.value)">
+            </div>
         </div>
+    	
 
         <table id="expenseTable" datatable [dtOptions]="dtOptions" width="100%"
                class="table table-striped table-hover">

@@ -69,7 +69,7 @@ export class AppMessage {
                 this.alert = Alert.SUCCESS;
                 break;
             case Kind.MUST_CREATE_CATEGORY:
-                this.text = 'An expense needs a category. Please create a category first.';
+                this.text = 'Please create a category first.';
                 this.alert = Alert.INFO;
                 break;
             /* Edit request

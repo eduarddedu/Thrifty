@@ -1,11 +1,13 @@
 import {
     Component, OnInit, AfterViewInit,
-    Input, Output, ViewChild, OnChanges, EventEmitter
+    Input, ViewChild, OnChanges,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Category, Label, Account } from '../model';
+import { Category, Label, Account, Expense } from '../model';
 import { Kind, AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
 import { DeleteEntityModalService } from '../services/modal.service';
@@ -13,7 +15,7 @@ import { DeleteEntityModalService } from '../services/modal.service';
 @Component({
     selector: 'app-expense-table',
     templateUrl: './expense-table.component.html',
-    styles: ['button { margin-left: 3px }']
+    styleUrls: ['./expense-table.component.css']
 })
 
 
@@ -26,7 +28,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() entity: Account | Category | Label;
 
-    @Output() clickDeleteExpense$: EventEmitter<any> = new EventEmitter();
+    expenses: Expense[];
 
     expenseId: number;
 
@@ -35,12 +37,15 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     dtOptions;
 
+    searchTerms: Subject<String> = new Subject();
+
     constructor(private router: Router, private ms: DeleteEntityModalService) {
     }
 
     ngOnInit() {
+        this.expenses = this.entity.expenses.slice();
         this.dtOptions = {
-            searching: true,
+            searching: false,
             lengthChange: false,
             pageLength: 10,
             columns: [
@@ -49,23 +54,23 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 { title: 'Details' },
                 { title: 'Amount' }
             ],
-            data: this.entity.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount / 100]),
+            data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount / 100]),
             select: 'single',
             rowCallback: (row: Node, data: any[] | Object, index: number) => {
                 $('td', row).unbind('click');
                 $('td', row).bind('click', () => {
-                    this.onRowSelected(data);
+                    this.onRowSelected(data[0]);
                 });
                 return row;
             },
             order: [['1', 'desc']]
         };
+        this.filterExpenses();
     }
 
     ngAfterViewInit() {
         this.redrawTable();
     }
-
 
     ngOnChanges() {
         this.redrawTable();
@@ -77,26 +82,17 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.clear();
-            for (const e of this.entity.expenses) {
+            for (const e of this.expenses) {
                 dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, (e.amount / 100).toFixed(2)]);
             }
             dtInstance.draw();
-            this.disableTextSelectionOnTableElements();
+            this.disableUserSelectOnTableCells();
             this.expenseId = null;
         });
     }
 
-    disableTextSelectionOnTableElements() {
-        $('td').css('-webkit-user-select', 'none');
-        $('td').css('-webkit-touch-callout', 'none');
-        $('td').css('-khtml-user-select', 'none');
-        $('td').css('-moz-user-select', 'none');
-        $('td').css('user-select', 'none');
-    }
-
-
-    onRowSelected(data) {
-        this.expenseId = data[0];
+    onRowSelected(id: number) {
+        this.expenseId = id;
     }
 
 
@@ -115,5 +111,25 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     onConfirmDeleteExpense() {
         this.router.navigate(['delete/expense', this.expenseId]);
+    }
+
+    search(value: string) {
+        this.searchTerms.next(value);
+    }
+
+    filterExpenses() {
+        this.searchTerms.pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((term: string) => {
+            this.expenses = this.entity.expenses.filter(e => e.description.toLowerCase().includes(term.toLowerCase()));
+            this.redrawTable();
+        });
+    }
+
+    disableUserSelectOnTableCells() {
+        $('td').css('-webkit-user-select', 'none');
+        $('td').css('-webkit-touch-callout', 'none');
+        $('td').css('-khtml-user-select', 'none');
+        $('td').css('-moz-user-select', 'none');
+        $('td').css('user-select', 'none');
     }
 }
