@@ -10,13 +10,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
-import { Timespan } from '../timespan';
+import { Report } from '../report';
 
 @Component({
     templateUrl: './category-details.component.html'
 })
-export class CategoryDetailsComponent extends Timespan implements OnInit {
-
+export class CategoryDetailsComponent extends Report implements OnInit {
     account: Account;
     category: Category;
     categoryId: number;
@@ -51,7 +50,7 @@ export class CategoryDetailsComponent extends Timespan implements OnInit {
     init(account: Account) {
         this.account = account;
         this.category = account.categories.find(c => c.id === this.categoryId);
-        this.setOptions(this.category.yearsSeries);
+        this.setPeriodOptions(this.category.yearsSeries);
         this.refPeriod = this.options.find(o => o.selected).value;
         this.setCharts();
         this.setSpent();
@@ -87,7 +86,7 @@ export class CategoryDetailsComponent extends Timespan implements OnInit {
             const base = this.account.mapYearBalance.get(this.refPeriod);
             this.spentPercentage = Utils.percent(base, spent);
         }
-        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
+        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
     }
 
     setCharts() {
@@ -115,6 +114,10 @@ export class CategoryDetailsComponent extends Timespan implements OnInit {
 
     onConfirmDeleteCategory() {
         this.router.navigate(['delete/category', this.categoryId]);
+    }
+
+    get hasExpenses() {
+        return this.category && this.category.expenses.length > 0;
     }
 
 }

@@ -10,12 +10,12 @@ import { Utils } from '../../../util/utils';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Charts } from '../../../charts/charts';
-import { Timespan } from '../timespan';
+import { Report } from '../report';
 
 @Component({
   templateUrl: './label-details.component.html'
 })
-export class LabelDetailsComponent extends Timespan implements OnInit {
+export class LabelDetailsComponent extends Report implements OnInit {
   account: Account;
   labelId: number;
   label: Label;
@@ -50,7 +50,7 @@ export class LabelDetailsComponent extends Timespan implements OnInit {
   private init(account: Account) {
     this.account = account;
     this.label = account.labels.find(label => label.id === this.labelId);
-    this.setOptions(this.label.yearsSeries);
+    this.setPeriodOptions(this.label.yearsSeries);
     this.refPeriod = this.options.find(o => o.selected).value;
     this.setCharts();
     this.setSize();
@@ -75,7 +75,7 @@ export class LabelDetailsComponent extends Timespan implements OnInit {
       const base = this.account.mapYearBalance.get(this.refPeriod) || 0;
       this.spentPercentage = Utils.percent(base, spent);
     }
-    this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
+    this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
   }
 
   setSize() {
@@ -114,6 +114,10 @@ export class LabelDetailsComponent extends Timespan implements OnInit {
 
   onConfirmDeleteLabel() {
     this.router.navigate(['delete/label', this.labelId]);
+  }
+
+  get hasExpenses() {
+    return this.label && this.label.expenses.length > 0;
   }
 
 }

@@ -1,9 +1,9 @@
 import { RefPeriod } from '../../model';
 
-export class Timespan {
-    options: { value: RefPeriod, selected: boolean }[];
+export class Report {
+    protected options: { value: RefPeriod, selected: boolean }[];
 
-    setOptions(yearsSeries: number[] = []) {
+    setPeriodOptions(yearsSeries: number[] = []) {
         this.options = [
             {
                 value: 'All time',
@@ -25,4 +25,5 @@ export class Timespan {
             this.options[0].selected = true;
         }
     }
+
 }

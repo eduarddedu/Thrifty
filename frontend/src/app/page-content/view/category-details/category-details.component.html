@@ -1,61 +1,62 @@
 <app-spinner *ngIf="!dataReady"></app-spinner>
 <div *ngIf="dataReady" id="category-details">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3>{{category.name}}<small> (category)</small></h3>
                 </div>
                 <div class="panel-body">
-                    <table class="details">
-                        <tr>
-                            <td>Spent </td>
-                            <td><b>{{ spent }}</b><small>{{spentPercentage}}</small></td>
-                        </tr>
-                        <tr>
-                            <td>Details </td>
-                            <td>
-                                {{category.description}}
-                                <span (click)="onClickEditCategory()">
-                                    <i class="glyphicon glyphicon-edit"></i>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 style="visibility:hidden">Invisible</h3>
-                </div>
-                <div class="panel-body">
-                    <table class="details">
-                        <tr>
-                            <td>Size</td>
-                            <td>{{size}} <small>{{sizePercentage}}</small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Period</td>
-                            <td>
-                                <app-dropdown-selector [options]="options"
-                                    (selectEvent)="onSelectPeriod($event)">
-                                </app-dropdown-selector>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="row" *ngIf="hasExpenses">
+                        <div class="col-lg-6">
+                            <table class="details">
+                                <tr>
+                                    <td>Spent</td>
+                                    <td><b>{{spent}}</b> lei <small>({{spentPercentage}})</small></td>
+                                </tr>
+                                <tr>
+                                    <td>Expenses</td>
+                                    <td>{{size}} <small>({{sizePercentage}})</small></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <table class="details">
+                                <tr>
+                                    <td>Details</td>
+                                    <td>
+                                        <div class="description">
+                                            <div class="description-inner">
+                                                {{category.description}}
+                                            </div>
+                                            <span (click)="onClickEditCategory()">
+                                                <i class="glyphicon glyphicon-edit"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Period</td>
+                                    <td>
+                                        <app-dropdown-selector [options]="options"
+                                            (selectEvent)="onSelectPeriod($event)">
+                                        </app-dropdown-selector>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p *ngIf="!hasExpenses">No expenses</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row" id="charts">
+    <div class="row" id="charts" *ngIf="hasExpenses">
         <div class="col-lg-6" id="pieChart">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="text-muted"> Share</h4>
+                    <h4>Share</h4>
                 </div>
                 <div [chart]="pieChart" class="panel-body chart-wrapper"></div>
             </div>
@@ -64,14 +65,14 @@
         <div class="col-lg-6" id="columnChart">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <h4 class="text-muted pull-left">Trends</h4>
+                    <h4>Trends</h4>
                 </div>
                 <div [chart]="columnChart" class="panel-body chart-wrapper"></div>
             </div>
         </div>
     </div>
 
-    <div class="row" id="expense-table">
+    <div class="row" id="expense-table" *ngIf="hasExpenses">
         <div class="col-lg-12">
             <app-expense-table [entity]="category"></app-expense-table>
         </div>
@@ -79,7 +80,8 @@
 
     <div class="row" id="delete-category-button">
         <div class="col-lg-12">
-            <button type="button" role="navigation" class="btn btn-danger btn-block" (click)="onClickDeleteCategory()">
+            <button type="button" role="navigation" class="btn btn-danger btn-block" (click)="onClickDeleteCategory()"
+                [disabled]="hasExpenses">
                 Delete category <i class="glyphicon glyphicon-trash"></i>
             </button>
         </div>

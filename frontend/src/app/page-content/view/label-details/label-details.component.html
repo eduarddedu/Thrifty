@@ -1,55 +1,58 @@
 <app-spinner *ngIf="!dataReady"></app-spinner>
 <div *ngIf="dataReady" id="label-details">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3>{{label.name}} <small>(label)</small></h3>
                 </div>
-                <div class="panel-body view-details">
-                    <table class="details">
-                        <tr>
-                            <td>Spent</td>
-                            <td><b>{{spent}}</b><small>{{spentPercentage}}</small></td>
-                        </tr>
-                        <tr>
-                            <td>Details </td>
-                            <td>{{label.name}}
-                                <span (click)="onClickEditLabel()">
-                                    <i class="glyphicon glyphicon-edit"></i>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3  style="visibility:hidden">Padding</h3>
-                </div>
                 <div class="panel-body">
-                    <table class="details">
-                        <tr>
-                            <td>Size</td>
-                            <td>{{size}} <small>{{sizePercentage}}</small></td>
-                        </tr>
-                        <tr>
-                            <td>Period</td>
-                            <td>
-                                <app-dropdown-selector [options]="options"
-                                    (selectEvent)="onSelectPeriod($event)">
-                                </app-dropdown-selector>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="row" *ngIf="hasExpenses">
+                        <div class="col-lg-6">
+                            <table class="details">
+                                <tr>
+                                    <td>Spent</td>
+                                    <td><b>{{spent}}</b> lei <small>({{spentPercentage}})</small></td>
+                                </tr>
+                                <tr>
+                                    <td>Expenses</td>
+                                    <td>{{size}}<small>({{sizePercentage}})</small></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <table class="details">
+                                <tr>
+                                    <td>Details</td>
+                                    <td>
+                                        <div class="description">
+                                            <div class="description-inner">
+                                                {{label.name}}
+                                            </div>
+                                            <span (click)="onClickEditLabel()">
+                                                <i class="glyphicon glyphicon-edit"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Period</td>
+                                    <td>
+                                        <app-dropdown-selector [options]="options"
+                                            (selectEvent)="onSelectPeriod($event)">
+                                        </app-dropdown-selector>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p *ngIf="!hasExpenses">No expenses</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row" id="charts">
+    <div class="row" id="charts" *ngIf="hasExpenses">
         <div class="col-lg-6" id="pieChart">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -59,23 +62,23 @@
             </div>
         </div>
 
-        <div class="col-lg-6" id="columnChart">
+        <div class="col-lg-6" id="columnChart" *ngIf="hasExpenses">
             <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <h4 class="pull-left">Trends</h4>
+                <div class="panel-heading">
+                    <h4>Trends</h4>
                 </div>
                 <div [chart]="columnChart" class="panel-body chart-wrapper"></div>
             </div>
         </div>
     </div>
 
-    <div class="row" id="expense-table">
+    <div class="row" id="expense-table" *ngIf="hasExpenses">
         <div class="col-lg-12">
             <app-expense-table [entity]="label"></app-expense-table>
         </div>
     </div>
 
-    <div class="row" id="edit-delete-label-buttons">
+    <div class="row" id="delete-label-button">
         <div class="col-lg-12">
             <button type="button" role="navigation" class="btn btn-danger btn-block" (click)="onClickDeleteLabel()">
                 Delete label <i class="glyphicon glyphicon-trash"></i>

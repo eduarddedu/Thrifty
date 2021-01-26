@@ -105,15 +105,15 @@ export class AppMessage {
             /* Delete warning
             */
             case Kind.CATEGORY_DELETE_WARN:
-                this.text = 'Deleting a category associated to one or more expenses is not recommended. Continue?';
+                this.text = 'Category will be deleted. Continue?';
                 this.alert = Alert.WARNING;
                 break;
             case Kind.EXPENSE_DELETE_WARN:
-                this.text = 'The expense will be deleted. Continue?';
+                this.text = 'Expense will be deleted. Continue?';
                 this.alert = Alert.WARNING;
                 break;
             case Kind.LABEL_DELETE_WARN:
-                this.text = 'The label will be deleted. Continue?';
+                this.text = 'Label will be deleted. Continue?';
                 this.alert = Alert.WARNING;
 
         }

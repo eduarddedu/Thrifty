@@ -3,20 +3,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Chart } from 'angular-highcharts';
 
-import { Account, RefPeriod } from '../../../model';
+import { Account, RefPeriod, Expense } from '../../../model';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
 import { NotificationService } from '../../../services/notification.service';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { Timespan } from '../timespan';
+import { Report as Report } from '../report';
 
 
 
 @Component({
     templateUrl: './account-details.component.html'
 })
-export class AccountDetailsComponent extends Timespan implements OnInit {
+export class AccountDetailsComponent extends Report implements OnInit {
     account: Account;
     pieChart: Chart;
     columnChart: Chart;
@@ -46,7 +46,7 @@ export class AccountDetailsComponent extends Timespan implements OnInit {
     init(account: Account) {
         this.account = account;
         if (this.account.expenses.length > 0) {
-            this.setOptions(this.account.yearsSeries);
+            this.setPeriodOptions(this.account.yearsSeries);
             this.refPeriod = this.options.find(o => o.selected).value;
             this.setCharts();
             this.setSize();
@@ -97,7 +97,7 @@ export class AccountDetailsComponent extends Timespan implements OnInit {
             spent = this.account.mapYearBalance.get(this.refPeriod) || 0;
             this.spentPercentage = Utils.percent(this.account.balance, spent);
         }
-        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2) + ' lei ';
+        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
     }
 
     setSince() {
@@ -105,8 +105,14 @@ export class AccountDetailsComponent extends Timespan implements OnInit {
             if (this.refPeriod === 'All time') {
                 this.since = Utils.localDateToJsDate(this.account.dateRange.startDate);
             } else {
-                this.since = Utils.localDateToJsDate({ year: this.refPeriod, month: 1, day: 1 });
+                const oldestExpenseInYear: Expense =
+                    this.account.expenses.slice().reverse().find(e => e.createdOn.year === this.refPeriod);
+                this.since = Utils.localDateToJsDate(oldestExpenseInYear.createdOn);
             }
         }
+    }
+
+    get hasExpenses() {
+        return this.account && this.account.expenses.length > 0;
     }
 }

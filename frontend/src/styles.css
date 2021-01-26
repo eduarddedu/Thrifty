@@ -28,7 +28,7 @@ div {
   padding: 1em 0;
 }
 
-table.details  {
+table.details {
   width: 100%;
 }
 
@@ -36,11 +36,34 @@ table.details tr {
   height: 32px;
 }
 
+table.details td {
+  display: inline-block;
+  width: 40%;
+  font-size: 1em;
+  height: 1em;
+}
+
 table.details td:nth-child(even) {
+  width: 60%;
   text-align: right;
 }
 
-table.details td span:hover {
+table.details td div.description {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+table.details td div.description div.description-inner {
+  overflow: hidden;
+  width: calc(100% - 14px);
+  margin-right: 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: inherit;
+}
+
+table.details td div.description span:hover {
   cursor: pointer;
 }
 

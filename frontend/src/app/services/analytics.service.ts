@@ -43,7 +43,7 @@ export class AnalyticsService {
             expenses.forEach(e => e.amount *= 100);
             this.account.expenses = expenses;
             this.account.dateRange = this.getDateRange(expenses);
-            this.account.yearsSeries = this.getYearsSeries(this.account.dateRange);
+            this.account.yearsSeries = this.getAccountYearsSeries();
             this.account.labels = this.getEnrichedLabels(expenses, labels);
             this.account.categories = this.getEnrichedCategories(expenses, categories, this.account.labels);
             this.account.balance = Utils.sumExpenses(expenses);
@@ -53,24 +53,27 @@ export class AnalyticsService {
         }
     }
 
-    private getYearsSeries(dateRange: DateRange): number[] {
-        const years = [];
-        if (dateRange.startDate) {
-            let startYear = dateRange.startDate.year;
-            const endYear = dateRange.endDate.year;
-            while (startYear <= endYear) {
-                years.push(startYear++);
-            }
+    private getDateRange(expenses: Expense[]): DateRange {
+        const dateRange = <DateRange>{};
+        if (expenses.length >= 1) {
+            dateRange.startDate = expenses[expenses.length - 1].createdOn;
+            dateRange.endDate = expenses[0].createdOn;
         }
-        return years;
+        return dateRange;
+    }
+
+    private getAccountYearsSeries(): number[] {
+        const years: Set<number> = new Set();
+        this.account.expenses.map(e => e.createdOn.year).forEach(y => years.add(y));
+        return Array.from(years);
     }
 
     private getAccountMapYearBalance(expenses: Expense[]): Map<number, number> {
         const mapYearBalance = new Map();
-        expenses.forEach(ex => {
-            let yearBalance = mapYearBalance.get(ex.createdOn.year) || 0;
-            yearBalance += ex.amount;
-            mapYearBalance.set(ex.createdOn.year, yearBalance);
+        expenses.forEach(e => {
+            let yearBalance = mapYearBalance.get(e.createdOn.year) || 0;
+            yearBalance += e.amount;
+            mapYearBalance.set(e.createdOn.year, yearBalance);
         });
         return mapYearBalance;
     }
@@ -135,16 +138,6 @@ export class AnalyticsService {
             }
         }
         return Array.from(map.values());
-    }
-    private getDateRange(expenses: Expense[]): DateRange {
-        const dateRange = <DateRange>{};
-        if (expenses.length > 1) {
-            dateRange.startDate = expenses[expenses.length - 1].createdOn;
-            dateRange.endDate = expenses[0].createdOn;
-        } else if (expenses.length === 1) {
-            dateRange.startDate = dateRange.endDate = expenses[0].createdOn;
-        }
-        return dateRange;
     }
 
 }
