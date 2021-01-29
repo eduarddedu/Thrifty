@@ -38,18 +38,18 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         lengthChange: false,
         pageLength: 10,
         columns: [
-            { title: 'Id', render: e => e.id, visible: false },
-            { title: 'Date', render: e => Utils.localDateToIsoDate(e.createdOn) },
-            { title: 'Details', render: e => e.description },
-            { title: 'Amount', render: e => (e.amount / 100).toFixed(2) },
-            { title: 'Category', render: e => e.category.name, visible: screen.availWidth > 768 }
+            { title: 'Id', visible: false },
+            { title: 'Date', render: createdOn => Utils.localDateToIsoDate(createdOn) },
+            { title: 'Details' },
+            { title: 'Amount', render: amount => (amount / 100).toFixed(2) },
+            { title: 'Category', visible: screen.availWidth > 768 }
         ],
         select: 'single',
         data: null,
         rowCallback: (row: Node, data: any[] | Object, index: number) => {
             $('td', row).off('click');
             $('td', row).on('click', () => {
-                this.onRowSelected(data[index].id);
+                this.onRowSelected(data[0]);
             });
             return row;
         },
@@ -87,7 +87,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.clear();
                 for (const e of expenses) {
-                    dtInstance.row.add([e, e, e, e, e]);
+                    dtInstance.row.add([e.id, e.createdOn, e.description, e.amount, e.category.name]);
                 }
                 dtInstance.draw();
                 this.disableUserSelect();
