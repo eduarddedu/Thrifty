@@ -12,18 +12,18 @@ import { Kind, AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
 import { DeleteEntityModalService } from '../services/modal.service';
 
+/*
+ * https://datatables.net/
+ * https://l-lin.github.io/angular-datatables
+ */
+
+type DataTablesExtendedSettings = DataTables.Settings & { select: string };
+
 @Component({
     selector: 'app-expense-table',
     templateUrl: './expense-table.component.html',
     styleUrls: ['./expense-table.component.css']
 })
-
-
-/* Docs:
- * https://datatables.net/
- * https://l-lin.github.io/angular-datatables
- */
-
 export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() data: Expense[];
@@ -33,26 +33,27 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
     @ViewChild(DataTableDirective)
     datatableElement: DataTableDirective;
 
-    dtOptions = {
+    dtOptions: DataTablesExtendedSettings = {
         searching: false,
         lengthChange: false,
         pageLength: 10,
         columns: [
-            { title: 'Id' },
-            { title: 'Date' },
-            { title: 'Details' },
-            { title: 'Amount' }
+            { title: 'Id', render: e => e.id, visible: false },
+            { title: 'Date', render: e => Utils.localDateToIsoDate(e.createdOn) },
+            { title: 'Details', render: e => e.description },
+            { title: 'Amount', render: e => (e.amount / 100).toFixed(2) },
+            { title: 'Category', render: e => e.category.name }
         ],
-        data: [],
         select: 'single',
+        data: null,
         rowCallback: (row: Node, data: any[] | Object, index: number) => {
-            $('td', row).unbind('click');
-            $('td', row).bind('click', () => {
-                this.onRowSelected(data[0]);
+            $('td', row).off('click');
+            $('td', row).on('click', () => {
+                this.onRowSelected(data[index].id);
             });
             return row;
         },
-        order: [['1', 'desc']]
+        order: [['1', 'desc']],
     };
 
     searchTerms: Subject<String> = new Subject();
@@ -86,17 +87,13 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.clear();
                 for (const e of expenses) {
-                    dtInstance.row.add(this.toRowDataObject(e));
+                    dtInstance.row.add([e, e, e, e, e]);
                 }
                 dtInstance.draw();
                 this.disableUserSelect();
                 this.expenseId = null;
             });
         }
-    }
-
-    toRowDataObject(e: Expense) {
-        return [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, (e.amount / 100).toFixed(2)];
     }
 
     onRowSelected(id: number) {
