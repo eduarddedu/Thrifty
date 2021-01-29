@@ -7,7 +7,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { Category, Label, Account, Expense } from '../model';
+import { Expense } from '../model';
 import { Kind, AppMessage } from '../model/app-message';
 import { Utils } from '../util/utils';
 import { DeleteEntityModalService } from '../services/modal.service';
@@ -26,75 +26,82 @@ import { DeleteEntityModalService } from '../services/modal.service';
 
 export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
-    @Input() entity: Account | Category | Label;
-
-    expenses: Expense[];
+    @Input() data: Expense[];
 
     expenseId: number;
 
     @ViewChild(DataTableDirective)
     datatableElement: DataTableDirective;
 
-    dtOptions;
+    dtOptions = {
+        searching: false,
+        lengthChange: false,
+        pageLength: 10,
+        columns: [
+            { title: 'Id' },
+            { title: 'Date' },
+            { title: 'Details' },
+            { title: 'Amount' }
+        ],
+        data: [],
+        select: 'single',
+        rowCallback: (row: Node, data: any[] | Object, index: number) => {
+            $('td', row).unbind('click');
+            $('td', row).bind('click', () => {
+                this.onRowSelected(data[0]);
+            });
+            return row;
+        },
+        order: [['1', 'desc']]
+    };
 
     searchTerms: Subject<String> = new Subject();
 
-    constructor(private router: Router, private ms: DeleteEntityModalService) {
-    }
+    constructor(private router: Router, private ms: DeleteEntityModalService) { }
 
     ngOnInit() {
-        this.expenses = this.entity.expenses.slice();
-        this.dtOptions = {
-            searching: false,
-            lengthChange: false,
-            pageLength: 10,
-            columns: [
-                { title: 'Id' },
-                { title: 'Date' },
-                { title: 'Details' },
-                { title: 'Amount' }
-            ],
-            data: this.expenses.map(e => [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, e.amount / 100]),
-            select: 'single',
-            rowCallback: (row: Node, data: any[] | Object, index: number) => {
-                $('td', row).unbind('click');
-                $('td', row).bind('click', () => {
-                    this.onRowSelected(data[0]);
-                });
-                return row;
-            },
-            order: [['1', 'desc']]
-        };
-        this.filterExpenses();
+        this.redrawTable(this.data);
+        this.searchTerms.pipe(debounceTime(200), distinctUntilChanged())
+            .subscribe((term: string) => {
+                let expenses: Expense[];
+                if (term.length === 0) {
+                    expenses = this.data;
+                } else {
+                    expenses = this.data.filter(e => e.description.toLowerCase().includes(term.toLowerCase()));
+                }
+                this.redrawTable(expenses);
+            });
     }
 
     ngAfterViewInit() {
-        this.redrawTable();
+        this.redrawTable(this.data);
     }
 
     ngOnChanges() {
-        this.redrawTable();
+        this.redrawTable(this.data);
     }
 
-    redrawTable() {
-        if (!this.datatableElement.dtInstance) {
-            return;
+    redrawTable(expenses: Expense[]) {
+        if (this.datatableElement.dtInstance) {
+            this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                dtInstance.clear();
+                for (const e of expenses) {
+                    dtInstance.row.add(this.toRowDataObject(e));
+                }
+                dtInstance.draw();
+                this.disableUserSelect();
+                this.expenseId = null;
+            });
         }
-        this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            dtInstance.clear();
-            for (const e of this.expenses) {
-                dtInstance.row.add([e.id, Utils.localDateToIsoDate(e.createdOn), e.description, (e.amount / 100).toFixed(2)]);
-            }
-            dtInstance.draw();
-            this.disableUserSelectOnTableCells();
-            this.expenseId = null;
-        });
+    }
+
+    toRowDataObject(e: Expense) {
+        return [e.id, Utils.localDateToIsoDate(e.createdOn), e.description, (e.amount / 100).toFixed(2)];
     }
 
     onRowSelected(id: number) {
         this.expenseId = id;
     }
-
 
     onClickNewExpense() {
         this.router.navigate(['new/expense']);
@@ -117,19 +124,14 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         this.searchTerms.next(value);
     }
 
-    filterExpenses() {
-        this.searchTerms.pipe(debounceTime(300), distinctUntilChanged())
-        .subscribe((term: string) => {
-            this.expenses = this.entity.expenses.filter(e => e.description.toLowerCase().includes(term.toLowerCase()));
-            this.redrawTable();
-        });
-    }
-
-    disableUserSelectOnTableCells() {
-        $('td').css('-webkit-user-select', 'none');
-        $('td').css('-webkit-touch-callout', 'none');
-        $('td').css('-khtml-user-select', 'none');
-        $('td').css('-moz-user-select', 'none');
-        $('td').css('user-select', 'none');
+    disableUserSelect() {
+        const properties = {
+            '-webkit-user-select': 'none',
+            '-webkit-touch-callout': 'none',
+            '-khtml-user-select': 'none',
+            '-moz-user-select': 'none',
+            'user-select': 'none'
+        };
+        $('td').css(properties);
     }
 }
