@@ -42,7 +42,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             { title: 'Date', render: e => Utils.localDateToIsoDate(e.createdOn) },
             { title: 'Details', render: e => e.description },
             { title: 'Amount', render: e => (e.amount / 100).toFixed(2) },
-            { title: 'Category', render: e => e.category.name }
+            { title: 'Category', render: e => e.category.name, visible: screen.availWidth > 768 }
         ],
         select: 'single',
         data: null,
