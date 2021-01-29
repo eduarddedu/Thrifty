@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { NotificationService } from '../services/notification.service';
 import { AppMessage } from '../model/app-message';
-import { Utils } from '../util/utils';
 
 @Component({
     templateUrl: './page.component.html',
@@ -19,7 +18,6 @@ export class PageComponent implements OnInit {
     }
 
     onActivateRoute() {
-        Utils.scrollPage();
         this.ns.push(null);
     }
 }
