@@ -1,10 +1,10 @@
  import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Category, RadioOption } from '../../model';
-import * as MyValidators from '../../validators/validators';
+import { Category, RadioOption } from '../../../model';
+import * as MyValidators from '../../../validators/validators';
 
-export class CategoryFormParent {
+export class CategoryForm {
 
     categoryForm: FormGroup;
 

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { RestService } from '../../services/rest.service';
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { Expense, Account, Category } from '../../model';
+import { RestService } from '../../../services/rest.service';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { Expense, Account, Category } from '../../../model';
 import { ExpenseForm } from './expense-form';
-import { AnalyticsService } from '../../services/analytics.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 
 @Component({

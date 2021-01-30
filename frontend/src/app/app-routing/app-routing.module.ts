@@ -5,12 +5,12 @@ import { PageComponent } from '../page/page.component';
 import { AccountDetailsComponent } from '../page-content/view/account-details/account-details.component';
 import { CategoryDetailsComponent } from '../page-content/view/category-details/category-details.component';
 import { LabelDetailsComponent } from '../page-content/view/label-details/label-details.component';
-import { CategoryEditComponent } from '../page-content/category/category-edit.component';
-import { CategoryCreateComponent } from '../page-content/category/category-create.component';
-import { ExpenseEditComponent } from '../page-content/expense/expense-edit.component';
-import { ExpenseCreateComponent } from '../page-content/expense/expense-create.component';
-import { LabelCreateComponent } from '../page-content/label/label-create.component';
-import { LabelEditComponent } from '../page-content/label/label-edit.component';
+import { CategoryEditComponent } from '../page-content/forms/category/category-edit.component';
+import { CategoryCreateComponent } from '../page-content/forms/category/category-create.component';
+import { ExpenseEditComponent } from '../page-content/forms/expense/expense-edit.component';
+import { ExpenseCreateComponent } from '../page-content/forms/expense/expense-create.component';
+import { LabelCreateComponent } from '../page-content/forms/label/label-create.component';
+import { LabelEditComponent } from '../page-content/forms/label/label-edit.component';
 import { DeleteEntityComponent } from '../page-content/delete-entity/delete-entity.component';
 
 const routes: Routes = [

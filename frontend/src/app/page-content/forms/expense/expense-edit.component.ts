@@ -3,13 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 
-import { RestService } from '../../services/rest.service';
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { Expense, Account, Category, RadioOption } from '../../model';
+import { RestService } from '../../../services/rest.service';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { Expense, Account, Category, RadioOption } from '../../../model';
 import { ExpenseForm } from './expense-form';
-import { Utils } from '../../util/utils';
-import { AnalyticsService } from '../../services/analytics.service';
+import { Utils } from '../../../util/utils';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
     templateUrl: './expense-form.component.html',

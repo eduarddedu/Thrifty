@@ -1,9 +1,9 @@
 import { Validators, FormGroup, AbstractControl, FormBuilder } from '@angular/forms';
 
-import { Label } from '../../model';
-import * as MyValidators  from '../../validators/validators';
+import { Label } from '../../../model';
+import * as MyValidators  from '../../../validators/validators';
 
-export class LabelFormParent {
+export class LabelForm {
 
     labelForm: FormGroup;
 

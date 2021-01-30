@@ -3,18 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { RestService } from '../../services/rest.service';
-import { AnalyticsService } from '../../services/analytics.service';
-import { Account, Category, Label, RadioOption } from '../../model';
-import { CategoryFormParent } from './category-form-parent';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { RestService } from '../../../services/rest.service';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { Account, Category, Label, RadioOption } from '../../../model';
+import { CategoryForm } from './category-form';
 
 
 @Component({
     templateUrl: './category-form.component.html',
 })
-export class CategoryEditComponent extends CategoryFormParent implements OnInit {
+export class CategoryEditComponent extends CategoryForm implements OnInit {
 
     categoryId: number;
 

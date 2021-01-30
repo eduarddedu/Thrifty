@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { RestService } from '../../services/rest.service';
-import { Account } from '../../model';
-import { CategoryFormParent } from './category-form-parent';
-import { AnalyticsService } from '../../services/analytics.service';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { RestService } from '../../../services/rest.service';
+import { Account } from '../../../model';
+import { CategoryForm } from './category-form';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 
 @Component({
     templateUrl: './category-form.component.html',
 })
-export class CategoryCreateComponent extends CategoryFormParent implements OnInit {
+export class CategoryCreateComponent extends CategoryForm implements OnInit {
 
     pageTitle = 'Create Category';
 

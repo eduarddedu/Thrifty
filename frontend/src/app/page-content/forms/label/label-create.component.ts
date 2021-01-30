@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { LabelFormParent } from './label-form-parent';
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { RestService } from '../../services/rest.service';
-import { Account } from '../../model';
-import { AnalyticsService } from '../../services/analytics.service';
+import { LabelForm } from './label-form';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { RestService } from '../../../services/rest.service';
+import { Account } from '../../../model';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 
 @Component({
     templateUrl: './label-form.component.html',
     styles: []
 })
-export class LabelCreateComponent extends LabelFormParent implements OnInit {
+export class LabelCreateComponent extends LabelForm implements OnInit {
 
     pageTitle = 'Create Label';
 

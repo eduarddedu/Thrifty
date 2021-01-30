@@ -3,18 +3,18 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
-import { Label } from '../../model';
-import { LabelFormParent } from './label-form-parent';
-import { NotificationService } from '../../services/notification.service';
-import { Kind, AppMessage } from '../../model/app-message';
-import { RestService } from '../../services/rest.service';
-import { Account } from '../../model';
-import { AnalyticsService } from '../../services/analytics.service';
+import { Label } from '../../../model';
+import { LabelForm } from './label-form';
+import { NotificationService } from '../../../services/notification.service';
+import { Kind, AppMessage } from '../../../model/app-message';
+import { RestService } from '../../../services/rest.service';
+import { Account } from '../../../model';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
     templateUrl: './label-form.component.html'
 })
-export class LabelEditComponent extends LabelFormParent implements OnInit {
+export class LabelEditComponent extends LabelForm implements OnInit {
 
     pageTitle = 'Update Label';
 
