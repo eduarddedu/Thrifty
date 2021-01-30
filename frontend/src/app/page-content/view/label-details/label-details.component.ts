@@ -18,7 +18,7 @@ import { Report } from '../report';
 export class LabelDetailsComponent extends Report implements OnInit {
   account: Account;
   labelId: number;
-  label: Label;
+  entity: Label;
   pieChart: Chart;
   columnChart: Chart;
   dataReady = false;
@@ -49,12 +49,12 @@ export class LabelDetailsComponent extends Report implements OnInit {
 
   private init(account: Account) {
     this.account = account;
-    this.label = account.labels.find(label => label.id === this.labelId);
-    this.setPeriodOptions(this.label.yearsSeries);
-    this.refPeriod = this.options.find(o => o.selected).value;
+    this.entity = account.labels.find(label => label.id === this.labelId);
+    this.setPeriodOptions();
     this.setCharts();
     this.setSize();
     this.setSpent();
+    this.setExpenses();
     this.dataReady = true;
   }
 
@@ -63,15 +63,16 @@ export class LabelDetailsComponent extends Report implements OnInit {
     this.setCharts();
     this.setSize();
     this.setSpent();
+    this.setExpenses();
   }
 
   setSpent() {
     let spent: number;
     if (this.refPeriod === 'All time') {
-      spent = this.label.balance;
+      spent = this.entity.balance;
       this.spentPercentage = Utils.percent(this.account.balance, spent);
     } else {
-      spent = this.label.mapYearBalance.get(this.refPeriod) || 0;
+      spent = this.entity.mapYearBalance.get(this.refPeriod) || 0;
       const base = this.account.mapYearBalance.get(this.refPeriod) || 0;
       this.spentPercentage = Utils.percent(base, spent);
     }
@@ -80,10 +81,10 @@ export class LabelDetailsComponent extends Report implements OnInit {
 
   setSize() {
     if (this.refPeriod === 'All time') {
-      this.size = this.label.expenses.length;
+      this.size = this.entity.expenses.length;
       this.sizePercentage = Utils.percent(this.account.expenses.length, this.size);
     } else {
-      this.size = this.label.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+      this.size = this.entity.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
       const base = this.account.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
       this.sizePercentage = Utils.percent(base, this.size);
     }
@@ -95,11 +96,11 @@ export class LabelDetailsComponent extends Report implements OnInit {
     };
     navigate = navigate.bind({ router: this.router });
     if (this.refPeriod === 'All time') {
-      this.pieChart = Charts.getLabelSpendingPerCategoryPieChart(this.label, null, navigate);
-      this.columnChart = Charts.getLabelSpendingPerYearColumnChart(this.label);
+      this.pieChart = Charts.getLabelSpendingPerCategoryPieChart(this.entity, null, navigate);
+      this.columnChart = Charts.getLabelSpendingPerYearColumnChart(this.entity);
     } else {
-      this.pieChart = Charts.getLabelSpendingPerCategoryPieChart(this.label, this.refPeriod, navigate);
-      this.columnChart = Charts.getLabelSpendingPerMonthColumnChart(this.label, this.refPeriod);
+      this.pieChart = Charts.getLabelSpendingPerCategoryPieChart(this.entity, this.refPeriod, navigate);
+      this.columnChart = Charts.getLabelSpendingPerMonthColumnChart(this.entity, this.refPeriod);
     }
   }
 
@@ -117,7 +118,7 @@ export class LabelDetailsComponent extends Report implements OnInit {
   }
 
   get hasExpenses() {
-    return this.label && this.label.expenses.length > 0;
+    return this.entity && this.entity.expenses.length > 0;
   }
 
 }

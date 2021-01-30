@@ -17,7 +17,7 @@ import { Report as Report } from '../report';
     templateUrl: './account-details.component.html'
 })
 export class AccountDetailsComponent extends Report implements OnInit {
-    account: Account;
+    entity: Account;
     pieChart: Chart;
     columnChart: Chart;
     dataReady = false;
@@ -44,14 +44,14 @@ export class AccountDetailsComponent extends Report implements OnInit {
     }
 
     init(account: Account) {
-        this.account = account;
-        if (this.account.expenses.length > 0) {
-            this.setPeriodOptions(this.account.yearsSeries);
-            this.refPeriod = this.options.find(o => o.selected).value;
+        this.entity = account;
+        if (this.entity.expenses.length > 0) {
+            this.setPeriodOptions();
             this.setCharts();
             this.setSize();
             this.setSpent();
             this.setSince();
+            this.setExpenses();
         }
         this.dataReady = true;
     }
@@ -62,6 +62,7 @@ export class AccountDetailsComponent extends Report implements OnInit {
         this.setCharts();
         this.setSpent();
         this.setSince();
+        this.setExpenses();
     }
 
     setCharts() {
@@ -70,49 +71,49 @@ export class AccountDetailsComponent extends Report implements OnInit {
         };
         navigate = navigate.bind({ router: this.router });
         if (this.refPeriod === 'All time') {
-            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, null, navigate);
-            this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.account);
+            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.entity, null, navigate);
+            this.columnChart = Charts.getAccountSpendingPerYearColumnChart(this.entity);
         } else {
-            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.account, this.refPeriod, navigate);
-            this.columnChart = Charts.getAccountSpendingPerMonthColumnChart(this.account, this.refPeriod);
+            this.pieChart = Charts.getAccountSpendingPerCategoryPieChart(this.entity, this.refPeriod, navigate);
+            this.columnChart = Charts.getAccountSpendingPerMonthColumnChart(this.entity, this.refPeriod);
         }
     }
 
     setSize() {
         if (this.refPeriod === 'All time') {
-            this.size = this.account.expenses.length;
+            this.size = this.entity.expenses.length;
             this.sizePercentage = '100%';
         } else {
-            this.size = this.account.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
-            this.sizePercentage = Utils.percent(this.account.expenses.length, this.size);
+            this.size = this.entity.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+            this.sizePercentage = Utils.percent(this.entity.expenses.length, this.size);
         }
     }
 
     setSpent() {
         let spent: number;
         if (this.refPeriod === 'All time') {
-            spent = this.account.balance || 0;
+            spent = this.entity.balance || 0;
             this.spentPercentage = '100%';
         } else {
-            spent = this.account.mapYearBalance.get(this.refPeriod) || 0;
-            this.spentPercentage = Utils.percent(this.account.balance, spent);
+            spent = this.entity.mapYearBalance.get(this.refPeriod) || 0;
+            this.spentPercentage = Utils.percent(this.entity.balance, spent);
         }
         this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
     }
 
     setSince() {
-        if (this.account && this.account.expenses.length > 0) {
+        if (this.entity && this.entity.expenses.length > 0) {
             if (this.refPeriod === 'All time') {
-                this.since = Utils.localDateToJsDate(this.account.dateRange.startDate);
+                this.since = Utils.localDateToJsDate(this.entity.dateRange.startDate);
             } else {
                 const oldestExpenseInYear: Expense =
-                    this.account.expenses.slice().reverse().find(e => e.createdOn.year === this.refPeriod);
+                    this.entity.expenses.slice().reverse().find(e => e.createdOn.year === this.refPeriod);
                 this.since = Utils.localDateToJsDate(oldestExpenseInYear.createdOn);
             }
         }
     }
 
     get hasExpenses() {
-        return this.account && this.account.expenses.length > 0;
+        return this.entity && this.entity.expenses.length > 0;
     }
 }

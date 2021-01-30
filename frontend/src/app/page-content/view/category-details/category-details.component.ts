@@ -17,7 +17,7 @@ import { Report } from '../report';
 })
 export class CategoryDetailsComponent extends Report implements OnInit {
     account: Account;
-    category: Category;
+    entity: Category;
     categoryId: number;
     dataReady = false;
     pieChart: Chart;
@@ -49,12 +49,12 @@ export class CategoryDetailsComponent extends Report implements OnInit {
 
     init(account: Account) {
         this.account = account;
-        this.category = account.categories.find(c => c.id === this.categoryId);
-        this.setPeriodOptions(this.category.yearsSeries);
-        this.refPeriod = this.options.find(o => o.selected).value;
+        this.entity = account.categories.find(c => c.id === this.categoryId);
+        this.setPeriodOptions();
         this.setCharts();
         this.setSpent();
         this.setSize();
+        this.setExpenses();
         this.dataReady = true;
     }
 
@@ -63,14 +63,15 @@ export class CategoryDetailsComponent extends Report implements OnInit {
         this.setSpent();
         this.setSize();
         this.setCharts();
+        this.setExpenses();
     }
 
     setSize() {
         if (this.refPeriod === 'All time') {
-            this.size = this.category.expenses.length;
+            this.size = this.entity.expenses.length;
             this.sizePercentage = Utils.percent(this.account.expenses.length, this.size);
         } else {
-            this.size = this.category.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
+            this.size = this.entity.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
             const base = this.account.expenses.filter(e => e.createdOn.year === this.refPeriod).length;
             this.sizePercentage = Utils.percent(base, this.size);
         }
@@ -79,10 +80,10 @@ export class CategoryDetailsComponent extends Report implements OnInit {
     setSpent() {
         let spent: number;
         if (this.refPeriod === 'All time') {
-            spent = this.category.balance;
+            spent = this.entity.balance;
             this.spentPercentage = Utils.percent(this.account.balance, spent);
         } else {
-            spent = this.category.mapYearBalance.get(this.refPeriod);
+            spent = this.entity.mapYearBalance.get(this.refPeriod);
             const base = this.account.mapYearBalance.get(this.refPeriod);
             this.spentPercentage = Utils.percent(base, spent);
         }
@@ -95,11 +96,11 @@ export class CategoryDetailsComponent extends Report implements OnInit {
         };
         navigate = navigate.bind({ router: this.router });
         if (this.refPeriod === 'All time') {
-            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, null, navigate);
-            this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.category);
+            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.entity, null, navigate);
+            this.columnChart = Charts.getCategorySpendingPerYearColumnChart(this.entity);
         } else {
-            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.category, this.refPeriod, navigate);
-            this.columnChart = Charts.getCategorySpendingPerMonthColumnChart(this.category, this.refPeriod);
+            this.pieChart = Charts.getCategorySpendingPerLabelPieChart(this.entity, this.refPeriod, navigate);
+            this.columnChart = Charts.getCategorySpendingPerMonthColumnChart(this.entity, this.refPeriod);
         }
     }
 
@@ -117,7 +118,7 @@ export class CategoryDetailsComponent extends Report implements OnInit {
     }
 
     get hasExpenses() {
-        return this.category && this.category.expenses.length > 0;
+        return this.entity && this.entity.expenses.length > 0;
     }
 
 }

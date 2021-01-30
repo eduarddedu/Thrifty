@@ -61,7 +61,6 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
     constructor(private router: Router, private ms: DeleteEntityModalService) { }
 
     ngOnInit() {
-        this.redrawTable(this.data);
         this.searchTerms.pipe(debounceTime(200), distinctUntilChanged())
             .subscribe((term: string) => {
                 let expenses: Expense[];
