@@ -24,9 +24,6 @@
                             <label for="amount">Amount</label>
                             <input type="text" class="form-control" id="expenseValue" name="amount"
                                 formControlName="amount" placeholder="0.00" autocomplete="off">
-                            <p *ngIf="amount.dirty && amount.touched && amount.errors && amount.errors.forbiddenValue"
-                                class="alert alert-danger"> {{amount.errors.forbiddenValue}}
-                            </p>
                             <p *ngIf="amount.dirty && amount.errors && amount.errors.nan" class="alert alert-danger">
                                 {{amount.errors.nan}}
                             </p>
@@ -44,7 +41,7 @@
                         <div class="form-group" id="descriptionInput">
                             <label for="description">Details</label>
                             <textarea class="form-control" rows="1" name="description" formControlName="description"
-                                placeholder="Details">
+                                placeholder="Details" autocomplete="on">
                             </textarea>
                             <p *ngIf="description.dirty && description.errors && description.errors.maxlength"
                                 class="alert alert-danger">

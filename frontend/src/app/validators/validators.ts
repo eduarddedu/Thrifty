@@ -13,13 +13,13 @@ export function forbiddenNames(names: Array<string>): ValidatorFn {
 
 }
 
-export function isNegativeNumber(): ValidatorFn {
+export function isDecimalNumber(): ValidatorFn {
     return (c: AbstractControl): {[key: string]: any} | null => {
-        const numberExp = new RegExp('^-\\d*\\.?\\d*$');
-        if (numberExp.test(c.value)) {
+        const pattern = new RegExp('^-?\\d*\\.?\\d*$');
+        if (pattern.test(c.value)) {
             return null;
         } else {
-            return c.value ? { 'nan': 'Please enter a negative number' } : null;
+            return c.value ? { 'nan': 'Please enter a number' } : null;
         }
     };
 }

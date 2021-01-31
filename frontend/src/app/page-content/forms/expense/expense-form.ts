@@ -25,7 +25,7 @@ export class ExpenseForm {
         this.form = this.fb.group({
             createdOn: [{ jsdate: new Date() }, Validators.required],
             description: [null, [Validators.required, Validators.maxLength(100)]],
-            amount: [null, [Validators.required, MyValidators.forbiddenNumber(0), MyValidators.isNegativeNumber()]],
+            amount: [null, [Validators.required, MyValidators.isDecimalNumber()]],
             category: [null, Validators.required]
         });
     }
@@ -46,7 +46,7 @@ export class ExpenseForm {
         return {
             createdOn: Utils.jsDateToLocalDate(this.date.value.jsdate),
             description: (<string>this.description.value).trim(),
-            amount: this.amount.value
+            amount: -1 * Math.abs(this.amount.value)
         };
     }
 
