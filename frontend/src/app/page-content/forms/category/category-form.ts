@@ -6,7 +6,7 @@ import * as MyValidators from '../../../validators/validators';
 
 export class CategoryForm {
 
-    categoryForm: FormGroup;
+    form: FormGroup;
 
     showForm = false;
 
@@ -20,15 +20,15 @@ export class CategoryForm {
     }
 
     get name(): AbstractControl {
-        return this.categoryForm.get('name');
+        return this.form.get('name');
     }
 
     get description(): AbstractControl {
-        return this.categoryForm.get('description');
+        return this.form.get('description');
     }
 
     protected createForm() {
-        this.categoryForm = this.fb.group({
+        this.form = this.fb.group({
             name: [null, [Validators.required, Validators.maxLength(25), MyValidators.forbiddenNames(this.forbiddenNames)]],
             description: [null, [Validators.required, Validators.maxLength(100)]]
         });
@@ -36,8 +36,8 @@ export class CategoryForm {
 
     protected readFormData(): Category {
         return {
-            name: this.name.value,
-            description: this.description.value
+            name: (<string>this.name.value).trim(),
+            description: (<string>this.description.value).trim()
         };
     }
 

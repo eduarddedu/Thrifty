@@ -68,7 +68,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
     }
 
     private fillForm() {
-        this.expenseForm.patchValue({
+        this.form.patchValue({
             date: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
             description: this.expense.description,
             amount: (this.expense.amount / 100).toFixed(2),
@@ -77,11 +77,11 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
     }
 
     private get selectedCategory(): Category {
-        return this.account.categories.find(c => c.name === this.expenseForm.get('category').value);
+        return this.account.categories.find(c => c.name === this.form.get('category').value);
     }
 
     private onSelectCategory(event: any) {
-        this.expenseForm.patchValue({ category: event.target.value });
+        this.form.patchValue({ category: event.target.value });
     }
 
     private setLabelOptions() {

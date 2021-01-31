@@ -8,7 +8,7 @@ import { Utils } from '../../../util/utils';
 
 export class ExpenseForm {
 
-    expenseForm: FormGroup;
+    form: FormGroup;
 
     showForm = false;
 
@@ -22,7 +22,7 @@ export class ExpenseForm {
     selectedLabels: Label[] = [];
 
     constructor(protected fb: FormBuilder) {
-        this.expenseForm = this.fb.group({
+        this.form = this.fb.group({
             createdOn: [{ jsdate: new Date() }, Validators.required],
             description: [null, [Validators.required, Validators.maxLength(100)]],
             amount: [null, [Validators.required, MyValidators.forbiddenNumber(0), MyValidators.isNegativeNumber()]],
@@ -31,21 +31,21 @@ export class ExpenseForm {
     }
 
     protected get date(): AbstractControl {
-        return this.expenseForm.get('createdOn');
+        return this.form.get('createdOn');
     }
 
-    protected get description(): AbstractControl  {
-        return this.expenseForm.get('description');
+    protected get description(): AbstractControl {
+        return this.form.get('description');
     }
 
     protected get amount(): AbstractControl {
-        return this.expenseForm.get('amount');
+        return this.form.get('amount');
     }
 
     protected readFormData() {
         return {
             createdOn: Utils.jsDateToLocalDate(this.date.value.jsdate),
-            description: this.description.value,
+            description: (<string>this.description.value).trim(),
             amount: this.amount.value
         };
     }

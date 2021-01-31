@@ -5,7 +5,7 @@
                 <h3> {{pageTitle}}</h3>
             </div>
             <div class="panel-body">
-                <form [formGroup]="expenseForm" novalidate (ngSubmit)="onSubmit()">
+                <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
                     <div class="col-lg-6" id="left-column">
                         <div class="form-group" id="dateInput">
                             <label for="date">Date</label>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="col-lg-12" id="save-button">
-                        <button type="submit" [disabled]="expenseForm.invalid" class="btn btn-primary">
+                        <button type="submit" [disabled]="form.invalid" class="btn btn-primary">
                             {{submitFormButtonText}}
                         </button>
                     </div>

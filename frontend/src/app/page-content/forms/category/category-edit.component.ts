@@ -39,7 +39,7 @@ export class CategoryEditComponent extends CategoryForm implements OnInit {
             this.setRadioSelectorOptions(account, category);
             this.selectedLabels = [].concat(category.labels);
             this.createForm();
-            this.categoryForm.patchValue({ name: category.name, description: category.description });
+            this.form.patchValue({ name: category.name, description: category.description });
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));

@@ -61,7 +61,7 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
     }
 
     private setDefaultCategoryOption() {
-        this.expenseForm.patchValue({ category: this.findLargestCategory().name });
+        this.form.patchValue({ category: this.findLargestCategory().name });
     }
 
     private findLargestCategory(): Category {
@@ -70,11 +70,11 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
     }
 
     private get selectedCategory(): Category {
-        return this.account.categories.find(c => c.name === this.expenseForm.get('category').value);
+        return this.account.categories.find(c => c.name === this.form.get('category').value);
     }
 
     private onSelectCategory(event: any) {
-        this.expenseForm.patchValue({ category: event.target.value });
+        this.form.patchValue({ category: event.target.value });
     }
 
     private setLabelOptions() {

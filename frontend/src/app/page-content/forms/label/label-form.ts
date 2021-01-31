@@ -5,7 +5,7 @@ import * as MyValidators  from '../../../validators/validators';
 
 export class LabelForm {
 
-    labelForm: FormGroup;
+    form: FormGroup;
 
     forbiddenNames: string[];
 
@@ -14,17 +14,17 @@ export class LabelForm {
     constructor(protected fb: FormBuilder) {}
 
     get name(): AbstractControl {
-        return this.labelForm.get('name');
+        return this.form.get('name');
     }
 
     protected createForm() {
         const validators = [Validators.required, Validators.maxLength(25), MyValidators.forbiddenNames(this.forbiddenNames)];
-        this.labelForm = this.fb.group({name: [null, validators]});
+        this.form = this.fb.group({name: [null, validators]});
     }
 
     protected readFormData(): Label {
         return {
-            name: this.name.value
+            name: (<string>this.name.value).trim()
         };
     }
 }
