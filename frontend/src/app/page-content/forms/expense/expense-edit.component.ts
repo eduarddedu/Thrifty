@@ -69,7 +69,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
 
     private fillForm() {
         this.form.patchValue({
-            date: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
+            createdOn: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
             description: this.expense.description,
             amount: (this.expense.amount / 100).toFixed(2),
             category: this.expense.category.name

@@ -30,7 +30,7 @@ export class ExpenseForm {
         });
     }
 
-    protected get date(): AbstractControl {
+    protected get createdOn(): AbstractControl {
         return this.form.get('createdOn');
     }
 
@@ -44,7 +44,7 @@ export class ExpenseForm {
 
     protected readFormData() {
         return {
-            createdOn: Utils.jsDateToLocalDate(this.date.value.jsdate),
+            createdOn: Utils.jsDateToLocalDate(this.createdOn.value.jsdate),
             description: (<string>this.description.value).trim(),
             amount: -1 * Math.abs(this.amount.value)
         };
