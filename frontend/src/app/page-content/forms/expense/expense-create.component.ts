@@ -4,7 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { RestService } from '../../../services/rest.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { Expense, Account, Category } from '../../../model';
+import { ExpenseData, Account, Category } from '../../../model';
 import { ExpenseForm } from './expense-form';
 import { AnalyticsService } from '../../../services/analytics.service';
 
@@ -44,7 +44,7 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
     onSubmit() {
         this.showForm = false;
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
-        const expense: Expense = Object.assign(this.readFormData(), {
+        const expense: ExpenseData = Object.assign(this.readFormData(), {
             labels: this.selectedLabels,
             category: {
                 id: this.selectedCategory.id,

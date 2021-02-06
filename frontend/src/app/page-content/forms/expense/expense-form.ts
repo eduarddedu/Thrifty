@@ -44,7 +44,7 @@ export class ExpenseForm {
 
     protected readFormData() {
         return {
-            createdOn: Utils.jsDateToLocalDate(this.createdOn.value.jsdate),
+            createdOn: Utils.jsDateToLocalDate(this.createdOn.value.jsdate).toString(),
             description: (<string>this.description.value).trim(),
             amount: -1 * Math.abs(this.amount.value)
         };

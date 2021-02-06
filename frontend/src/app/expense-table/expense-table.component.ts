@@ -9,7 +9,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Expense } from '../model';
 import { Kind, AppMessage } from '../model/app-message';
-import { Utils } from '../util/utils';
 import { DeleteEntityModalService } from '../services/modal.service';
 
 /*
@@ -39,9 +38,9 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         pageLength: 10,
         columns: [
             { title: 'Id', visible: false },
-            { title: 'Date', render: createdOn => Utils.localDateToIsoDate(createdOn) },
+            { title: 'Date' },
             { title: 'Details' },
-            { title: 'Amount', render: amount => (amount / 100).toFixed(2) },
+            { title: 'Amount', render: cents => (cents / 100).toFixed(2) },
             { title: 'Category', visible: screen.availWidth > 768 }
         ],
         select: 'single',
@@ -86,7 +85,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.clear();
                 for (const e of expenses) {
-                    dtInstance.row.add([e.id, e.createdOn, e.description, e.amount, e.category.name]);
+                    dtInstance.row.add([e.id, e.createdOn, e.description, e.cents, e.category.name]);
                 }
                 dtInstance.draw();
                 this.disableUserSelect();

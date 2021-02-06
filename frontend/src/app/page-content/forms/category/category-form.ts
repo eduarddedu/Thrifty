@@ -1,7 +1,7 @@
  import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Category, RadioOption } from '../../../model';
+import { Category, CategoryData, RadioOption } from '../../../model';
 import * as MyValidators from '../../../validators/validators';
 
 export class CategoryForm {
@@ -34,7 +34,7 @@ export class CategoryForm {
         });
     }
 
-    protected readFormData(): Category {
+    protected readFormData(): CategoryData {
         return {
             name: (<string>this.name.value).trim(),
             description: (<string>this.description.value).trim()

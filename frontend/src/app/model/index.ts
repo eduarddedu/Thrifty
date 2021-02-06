@@ -1,66 +1,23 @@
-export interface Account {
-    expenses: Expense[];
-    categories: Category[];
-    labels: Label[];
-    balance: number;
-    dateRange: DateRange;
-    mapYearBalance: Map<number, number>;
-    yearsSeries: number[];
-}
-
-export interface Category {
-    id?: number;
-    name: string;
-    description: string;
-    balance?: number;
-    expenses?: Expense[];
-    labels?: Label[];
-    dateRange?: DateRange;
-    mapYearBalance?: Map<number, number>;
-    yearsSeries?: number[];
-}
-
-export interface Label {
-    id?: number;
-    name: string;
-    expenses?: Expense[];
-    categories?: Category[];
-    balance?: number;
-    mapYearBalance?: Map<number, number>;
-    yearsSeries?: number[];
-}
-
-export interface Expense {
-    id?: number;
-    createdOn: LocalDate;
-    description: string;
-    amount: number;
-    labels?: Label[];
-    category: Category;
-}
-
-export interface LocalDate {
-    year: number;
-    month: number;
-    day: number;
-}
-
-export interface DateRange {
-    startDate: LocalDate;
-    endDate: LocalDate;
-}
-
-export interface CheckLabel {
-    id: number;
-    name: string;
-    checked: boolean;
-}
-
-export interface RadioOption {
-    id: number;
-    name: string;
-    checked: boolean;
-}
+import { Alert, Kind, AppMessage } from './app-message';
+import { ExpenseData } from './expenseData';
+import { CategoryData } from './categoryData';
+import { LabelData } from './labelData';
+import { Expense } from './expense';
+import { Category } from './category';
+import { Label } from './label';
+import { AccountDetails } from './accountDetails';
+import { Account } from './account';
+import { LocalDate } from './localDate';
+import { DateRange } from './dateRange';
+import { CheckLabel } from './checkLabel';
+import { RadioOption } from './radioOption';
 
 export type RefPeriod = number | 'All time';
 
+export {
+    Alert, Kind, AppMessage,
+    ExpenseData, CategoryData, LabelData,
+    Expense, Category, Label,
+    Account, AccountDetails,
+    LocalDate, DateRange, CheckLabel, RadioOption
+};

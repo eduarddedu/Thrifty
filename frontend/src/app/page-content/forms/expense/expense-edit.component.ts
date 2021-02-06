@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { RestService } from '../../../services/rest.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { Expense, Account, Category, RadioOption } from '../../../model';
+import { Expense, ExpenseData, Account, Category, RadioOption } from '../../../model';
 import { ExpenseForm } from './expense-form';
 import { Utils } from '../../../util/utils';
 import { AnalyticsService } from '../../../services/analytics.service';
@@ -50,7 +50,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
     onSubmit() {
         this.showForm = false;
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
-        const expense: Expense = Object.assign(this.readFormData(), {
+        const expense: ExpenseData = Object.assign(this.readFormData(), {
             id: this.expense.id,
             labels: this.selectedLabels,
             category: {
@@ -71,7 +71,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
         this.form.patchValue({
             createdOn: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
             description: this.expense.description,
-            amount: (this.expense.amount / 100).toFixed(2),
+            amount: (this.expense.cents / 100).toFixed(2),
             category: this.expense.category.name
         });
     }
@@ -86,7 +86,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
 
     private setLabelOptions() {
         const map: Map<number, RadioOption> = new Map();
-        this.account.labels.forEach(l => map.set(l.id, <RadioOption>Object.assign({checked: false}, l)));
+        this.account.labels.forEach(l => map.set(l.id, { id: l.id, name: l.name, checked: false }));
         this.expense.labels.forEach(l => map.get(l.id).checked = true);
         this.radioOptionsLabel = Array.from(map.values());
     }

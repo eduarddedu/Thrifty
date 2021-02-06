@@ -4,16 +4,18 @@ export class Utils {
 
     static deepFreeze(object: any) {
         try {
-            const properties = Object.getOwnPropertyNames(object);
-            for (const prop of properties) {
-                const value = object[prop];
-                const descriptor = Object.getOwnPropertyDescriptor(object, prop);
+            const objectValues = [];
+            for (const property of Object.getOwnPropertyNames(object)) {
+                const value = object[property];
+                const descriptor = Object.getOwnPropertyDescriptor(object, property);
                 if (typeof value === 'object' && descriptor.writable) {
-                    Utils.deepFreeze(value);
-                    object[prop] = value;
+                    objectValues.push(value);
                 }
             }
-            return Object.freeze(object);
+            Object.freeze(object);
+            for (const value of objectValues) {
+                Utils.deepFreeze(value);
+            }
         } catch (error) {
             console.log('An error occurred while deep freezing the object: ', error);
         }
@@ -24,19 +26,7 @@ export class Utils {
     }
 
     static jsDateToLocalDate(date: Date): LocalDate {
-        return {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            day: date.getDate()
-        };
-    }
-
-    static localDateToIsoDate(date: LocalDate) {
-        function prependZero(x: number): string {
-            let prefix = x < 10 ? '0' : '';
-            return prefix += x;
-        }
-        return [date.year, prependZero(date.month), prependZero(date.day)].join('-');
+        return new LocalDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
     }
 
     static scrollPage() {
@@ -44,7 +34,7 @@ export class Utils {
     }
 
     static sumExpenses(expense: Expense[]) {
-        return this.sum(expense.map(e => e.amount));
+        return this.sum(expense.map(e => e.cents));
     }
 
     static sum(series: Array<number> = []): number {

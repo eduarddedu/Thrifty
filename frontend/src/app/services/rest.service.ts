@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Category, Label, Expense } from '../model';
+import { CategoryData, LabelData, ExpenseData } from '../model';
 
 @Injectable()
 export class RestService {
 
     constructor(private http: HttpClient) { }
 
-    public getExpenses(): Observable<Expense[]> {
-        return this.http.get<Expense[]>('expenses');
+    public getExpenses(): Observable<ExpenseData[]> {
+        return this.http.get<ExpenseData[]>('expenses');
     }
 
-    public getCategories(): Observable<Category[]> {
-        return this.http.get<Category[]>('categories');
+    public getCategories(): Observable<CategoryData[]> {
+        return this.http.get<CategoryData[]>('categories');
     }
 
-    public getLabels(): Observable<Label[]> {
-        return this.http.get<Category[]>('labels');
+    public getLabels(): Observable<LabelData[]> {
+        return this.http.get<LabelData[]>('labels');
     }
 
-    public createCategory(category: Category) {
+    public createCategory(category: CategoryData) {
         return this.http.post('categories', JSON.stringify(category));
     }
 
-    public updateCategory(category: Category) {
+    public updateCategory(category: CategoryData) {
         return this.http.put(`categories`, JSON.stringify(category));
     }
 
@@ -32,11 +32,11 @@ export class RestService {
         return this.http.delete(`categories/${id}`);
     }
 
-    public createExpense(expense: Expense): Observable<any> {console.log(expense);
+    public createExpense(expense: ExpenseData): Observable<any> {
         return this.http.post('expenses', JSON.stringify(expense));
     }
 
-    public updateExpense(expense: Expense): Observable<any> {
+    public updateExpense(expense: ExpenseData): Observable<any> {
         return this.http.put(`expenses`, JSON.stringify(expense));
     }
 
@@ -44,11 +44,11 @@ export class RestService {
         return this.http.delete(`expenses/${id}`);
     }
 
-    public createLabel(label: Label) {
+    public createLabel(label: LabelData) {
         return this.http.post('labels', JSON.stringify(label));
     }
 
-    public updateLabel(label: Label) {
+    public updateLabel(label: LabelData) {
         return this.http.put(`labels`, JSON.stringify(label));
     }
 
