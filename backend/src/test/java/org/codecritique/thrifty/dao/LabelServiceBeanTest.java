@@ -14,7 +14,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testAddLabel() {
-        Label label = createLabel();
+        Label label = createAndStoreLabel();
         assertEquals(label, labelService.getLabel(label.getId()));
     }
 
@@ -40,8 +40,8 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     void testUpdateLabel() {
         //setup
 
-        Label label = createLabel();
-        Expense expense = createExpense();
+        Label label = createAndStoreLabel();
+        Expense expense = createAndStoreExpense();
         expense.addLabel(label);
 
         //exercise
@@ -62,7 +62,7 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testRemoveLabel() {
-        Label label = createLabel();
+        Label label = createAndStoreLabel();
         assertNotNull(labelService.getLabel(label.getId()));
         labelService.removeLabel(label.getId());
         assertNull(labelService.getLabel(label.getId()));
@@ -71,8 +71,8 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testRemoveLabelLinkedToExpense() {
         // setup
-        Expense expense = createExpense();
-        Label label = createLabel();
+        Expense expense = createAndStoreExpense();
+        Label label = createAndStoreLabel();
         expense.addLabel(label);
         expenseService.updateExpense(expense);
 

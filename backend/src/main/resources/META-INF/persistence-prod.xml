@@ -10,6 +10,9 @@
         <class>org.codecritique.thrifty.entity.Expense</class>
         <class>org.codecritique.thrifty.entity.Label</class>
         <class>org.codecritique.thrifty.entity.Category</class>
+        <class>org.codecritique.thrifty.entity.ExpenseView</class>
+        <class>org.codecritique.thrifty.entity.CategoryView</class>
+        <class>org.codecritique.thrifty.entity.LabelView</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.ddl-auto" value="none"/>

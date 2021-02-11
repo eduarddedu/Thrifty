@@ -21,7 +21,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testStoreExpense() {
-        Category category = createCategory();
+        Category category = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         Label label = labelSupplier.get();
@@ -36,7 +36,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testGetExpense() {
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expenseService.store(expense);
         assertEquals(expense, expenseService.getExpense(expense.getId()));
     }
@@ -46,7 +46,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         //setup
 
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expenseService.store(expense);
 
         Label label = labelSupplier.get();
@@ -66,12 +66,12 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
 
     @Test
     void testSetCategory() {
-        Category category = createCategory();
+        Category category = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         expenseService.store(expense);
 
-        Category category2 = createCategory();
+        Category category2 = createAndStoreCategory();
 
         //exercise
         expense.setCategory(category2);
@@ -91,7 +91,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
         labelService.store(label2);
 
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expense.setLabels(Arrays.asList(label, label2));
         expenseService.store(expense);
 
@@ -108,7 +108,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testGetExpensesSortedByDateDescending() {
         int numEntities = 5;
-        Category category = createCategory();
+        Category category = createAndStoreCategory();
         for (int i = 0; i < numEntities; i++) {
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
@@ -209,7 +209,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     void setAmountMaxNumberOfDigits() {
         BigDecimal amount = new BigDecimal("1234567.00");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
         expenseService.store(expense);
     }
@@ -218,7 +218,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     void setAmountWithLargerThanMaxNumberOfIntegers() {
         BigDecimal amount = new BigDecimal("12345678.00");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
     }
@@ -227,7 +227,7 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     void setAmountWithLargerThanMaxNumberOfDecimals() {
         BigDecimal amount = new BigDecimal("1234567.001");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
     }

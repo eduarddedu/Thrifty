@@ -1,5 +1,5 @@
 import { ExpenseGroupEntity } from './expenseGroupEntity';
-import { AccountDetails } from './accountDetails';
+import { AccountSettings } from './accountSettings';
 import { Expense } from './expense';
 import { Category } from './category';
 import { Label } from './label';
@@ -8,13 +8,13 @@ import { LabelData } from './labelData';
 import { CategoryData } from './categoryData';
 
 export class Account extends ExpenseGroupEntity {
-    accountDetails: AccountDetails;
+    accountDetails: AccountSettings;
     categories: Category[];
     labels: Label[];
     private mapIdLabel: Map<number, Label> = new Map();
     private mapIdCategory: Map<number, Category> = new Map();
 
-    constructor(expenses: ExpenseData[], categories: CategoryData[], labels: LabelData[], accountDetails: AccountDetails) {
+    constructor(expenses: ExpenseData[], categories: CategoryData[], labels: LabelData[], accountDetails: AccountSettings) {
         super();
         this.accountDetails = accountDetails;
         this.buildEntities(expenses, categories, labels);
@@ -46,6 +46,17 @@ export class Account extends ExpenseGroupEntity {
             expense.category = category;
             expense.labels = labels;
         }
+        this.sortExpensesByDate();
+    }
+
+    private sortExpensesByDate() {
+        this.expenses = this.expenses.sort((a, b) => {
+            const yearDiff = a.createdOn.year - b.createdOn.year;
+            const monthDiff = a.createdOn.month - b.createdOn.month;
+            const dayDiff = a.createdOn.day - b.createdOn.day;
+            const result = yearDiff !== 0 ? yearDiff : monthDiff !== 0 ? monthDiff : dayDiff;
+            return result * -1;
+        });
     }
 
     private mapCategories(categories: CategoryData[]) {

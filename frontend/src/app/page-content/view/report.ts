@@ -13,7 +13,7 @@ export class Report {
                 selected: false
             }
         ];
-        const years = Array.from(this.entity.yearsSeries).reverse();
+        const years = Array.from(this.entity.yearsSeries);
         if (years.length > 0) {
             const currYear = new Date().getFullYear();
             years.map(year => ({

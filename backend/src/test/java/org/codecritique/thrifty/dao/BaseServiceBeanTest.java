@@ -24,21 +24,21 @@ public abstract class BaseServiceBeanTest {
     protected LabelService labelService;
 
 
-    protected Expense createExpense() {
+    protected Expense createAndStoreExpense() {
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
+        expense.setCategory(createAndStoreCategory());
         expenseService.store(expense);
         return expense;
     }
 
 
-    protected Category createCategory() {
+    protected Category createAndStoreCategory() {
         Category category = categorySupplier.get();
         categoryService.store(category);
         return category;
     }
 
-    protected Label createLabel() {
+    protected Label createAndStoreLabel() {
         Label label = labelSupplier.get();
         labelService.store(label);
         return label;

@@ -21,7 +21,7 @@ export class AnalyticsService {
         if (this.account) {
             return of(this.account);
         } else {
-            return forkJoin(this.rest.getExpenses(), this.rest.getCategories(), this.rest.getLabels())
+            return forkJoin(this.rest.getExpenseViews(), this.rest.getCategories(), this.rest.getLabels())
                 .pipe(
                     switchMap(data => {
                         this.setAccount(data[0], data[1], data[2]);
@@ -41,7 +41,7 @@ export class AnalyticsService {
         try {
             const accountDetails: AccountDetails = {
                 currencyName: 'lei',
-                description: 'Daily expenses'
+                accountDescription: 'Daily expenses'
             };
             this.account = new Account(expenses, categories, labels, accountDetails);
         } catch (error) {

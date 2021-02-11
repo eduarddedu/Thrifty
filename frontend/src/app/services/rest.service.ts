@@ -8,6 +8,10 @@ export class RestService {
 
     constructor(private http: HttpClient) { }
 
+    public getExpenseViews(): Observable<ExpenseData[]> {
+        return this.http.get<ExpenseData[]>('view/expenses');
+    }
+
     public getExpenses(): Observable<ExpenseData[]> {
         return this.http.get<ExpenseData[]>('expenses');
     }
