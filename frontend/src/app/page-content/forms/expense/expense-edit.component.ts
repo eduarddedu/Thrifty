@@ -40,7 +40,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
             this.expense = account.expenses.find(ex => ex.id === this.expenseId);
             this.fillForm();
             this.setLabelOptions();
-            this.selectedLabels = [].concat(this.expense.labels);
+            this.selectedLabels = this.expense.labels.map(l => ({ id: l.id, name: l.name}));
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));

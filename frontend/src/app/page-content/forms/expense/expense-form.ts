@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { INgxMyDpOptions } from 'ngx-mydatepicker';
 
-import { Label, RadioOption } from '../../../model';
+import { LabelData, RadioOption } from '../../../model';
 import * as MyValidators from '../../../validators/validators';
 import { Utils } from '../../../util/utils';
 
@@ -19,7 +19,7 @@ export class ExpenseForm {
 
     radioOptionsLabel: RadioOption[] = [];
 
-    selectedLabels: Label[] = [];
+    selectedLabels: LabelData[] = [];
 
     constructor(protected fb: FormBuilder) {
         this.form = this.fb.group({
