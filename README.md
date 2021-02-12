@@ -22,5 +22,5 @@ Upload `thrifty.war` to a local WildFly server.
 Deploy to a remote WildFly server.
 
 
-    $ mvn  -pl backend -P prod -DskipTests=true clean wildfly:deploy
+    $ mvn  -pl backend -P prod clean wildfly:redeploy
 
