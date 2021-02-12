@@ -10,8 +10,8 @@ export class ExpenseGroupEntity {
         const length = this.expenses.length;
         if (length > 0) {
             return {
-                startDate: this.expenses[0].createdOn,
-                endDate: this.expenses[length - 1].createdOn
+                startDate: this.expenses[length - 1].createdOn,
+                endDate: this.expenses[0].createdOn
             };
         }
     }

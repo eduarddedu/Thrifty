@@ -98,7 +98,7 @@ export class AccountDetailsComponent extends Report implements OnInit {
             spent = this.entity.mapYearBalance.get(this.refPeriod) || 0;
             this.spentPercentage = Utils.percent(this.entity.balance, spent);
         }
-        this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
+        this.spent = (Math.abs(spent) / 100).toFixed(2);
     }
 
     setSince() {

@@ -76,7 +76,7 @@ export class LabelDetailsComponent extends Report implements OnInit {
       const base = this.account.mapYearBalance.get(this.refPeriod) || 0;
       this.spentPercentage = Utils.percent(base, spent);
     }
-    this.spent = '-' + (Math.abs(spent) / 100).toFixed(2);
+    this.spent = (Math.abs(spent) / 100).toFixed(2);
   }
 
   setSize() {
