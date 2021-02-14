@@ -39,7 +39,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         columns: [
             { title: 'Id', visible: false },
             { title: 'Date' },
-            { title: 'Details' },
+            { title: 'Details'},
             { title: 'Amount', render: cents => (cents / 100).toFixed(2) },
             { title: 'Category', visible: screen.availWidth > 768 }
         ],
@@ -88,7 +88,7 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
                     dtInstance.row.add([e.id, e.createdOn, e.description, e.cents, e.category.name]);
                 }
                 dtInstance.draw();
-                this.disableUserSelect();
+                this.styleTable();
                 this.expenseId = null;
             });
         }
@@ -119,6 +119,11 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
         this.searchTerms.next(value);
     }
 
+    styleTable() {
+        this.disableUserSelect();
+        this.disableLineBreaksOnDateField();
+    }
+
     disableUserSelect() {
         const properties = {
             '-webkit-user-select': 'none',
@@ -128,5 +133,9 @@ export class ExpenseTableComponent implements OnInit, OnChanges, AfterViewInit {
             'user-select': 'none'
         };
         $('td').css(properties);
+    }
+
+    disableLineBreaksOnDateField() {
+        $('td:first-child').css('white-space', 'nowrap');
     }
 }
