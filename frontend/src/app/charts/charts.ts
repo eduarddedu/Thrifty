@@ -29,7 +29,7 @@ const getPieChart = function (series: any) {
             useHTML: true,
             headerFormat: '<small>{point.key}</small><table>',
             pointFormat: '<tr><td>&bull; Total: </td><td style="text-align:right"><b>{point.y}</b> lei</td></tr>' +
-                         '<tr><td>&bull; Percentage: </td><td style="text-align:right">{point.percentage:.2f}%</td></tr>',
+                '<tr><td>&bull; Percentage: </td><td style="text-align:right">{point.percentage:.2f}%</td></tr>',
             footerFormat: '</table>',
             valueDecimals: 2
         }
@@ -86,39 +86,22 @@ const getAccountSpendingByCategoryDataPoints = function (account: Account, year?
 };
 
 const getCategorySpendingByLabelDataPoints = function (category: Category, year?: number, onClick?: Function) {
-    const points = category.labels
-        .map((label: Label) => {
-            const expenses: Expense[] = label.expenses
-                .filter(e => (!year || e.createdOn.year === year) && e.category.id === category.id);
-            const balance = Math.abs(Utils.sumExpenses(expenses)) / 100;
-            const callback = onClick ? onClick.bind(onClick, 'label', label.id) : null;
-            return {
-                name: label.name,
-                y: balance,
-                events: {
-                    click: callback
-                }
-            };
-        });
-
-    const expensesWithoutLabel = category.expenses
-        .filter(e => e.labels.length === 0 && (!year || e.createdOn.year === year));
-    if (expensesWithoutLabel.length > 0) {
-        const balance = Math.abs(Utils.sumExpenses(expensesWithoutLabel)) / 100;
-        points.push({
-            name: 'Unlabeled',
-            y: balance,
-            events: null
-        });
+    const map: Map<string, object> = new Map();
+    const expensesInPeriod = category.expenses.filter(e => (!year || e.createdOn.year === year));
+    for (const e of expensesInPeriod) {
+        const key = e.labels.length === 0 ? 'Unlabeled' :
+            e.labels.map(l => l.name).sort((a, b) => a <= b ? -1 : 1).join('-');
+        const dataPoint: any = map.get(key) || {
+            name: key,
+            y: 0,
+            events: (e.labels.length === 0 ? null : {
+                click: onClick.bind(onClick, 'label', e.labels[0].id)
+            })
+        };
+        dataPoint.y += Math.abs(e.cents / 100);
+        map.set(key, dataPoint);
     }
-    const doubleCheck = () => {
-        const total = Math.abs(year ? category.mapYearBalance.get(year) : category.balance);
-        const sumY = points.map(p => p.y * 100).reduce((a, b) => a + b, 0);
-        if (total !== sumY) {
-            console.error(`Wrong datapoints: total = ${total} sumY = ${sumY}`);
-        }
-    };
-    doubleCheck();
+    const points: any = Array.from(map.values());
     return points.filter(point => point.y !== 0);
 };
 
