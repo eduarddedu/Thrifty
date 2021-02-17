@@ -1,6 +1,7 @@
 import { Chart } from 'angular-highcharts';
 
 import { Account, Expense, Category, Label } from '../model';
+import { ExpenseGroupEntity } from '../model/expenseGroupEntity';
 import { Utils } from '../util/utils';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -121,15 +122,10 @@ const getLabelSpendingByCategoryDataPoints = function (label: Label, year?: numb
     return points;
 };
 
-const getSpendingPerYearColumnChart = function (expenses: Expense[]) {
-    const yearTotals = [];
-    const years: number[] = Utils.getYearsSeries(expenses);
-    years.forEach(year => {
-        const yearTotal = Utils.sumExpenses(expenses.filter(e => e.createdOn.year === year)) / 100;
-        yearTotals.push(yearTotal);
-    });
+const getSpendingPerYearColumnChart = function (entity: ExpenseGroupEntity) {
+    const years: number[] = entity.yearsSeries;
     const yearsStr: string[] = years.map((year: number) => `${year}`);
-    const series = dataSeries('Year', yearTotals);
+    const series = dataSeries('Year', years.map(year => entity.mapYearBalance.get(year) / 100));
     return getColumnChart(yearsStr, series, 'Total spending');
 };
 
@@ -146,7 +142,7 @@ const getSpendingPerMonthColumnChart = function (expenses: Expense[], year: numb
 export const Charts = {
 
     getAccountSpendingPerYearColumnChart: function (account: Account) {
-        return getSpendingPerYearColumnChart(account.expenses);
+        return getSpendingPerYearColumnChart(account);
     },
 
     getAccountSpendingPerMonthColumnChart: function (account: Account, year: number) {
@@ -154,7 +150,7 @@ export const Charts = {
     },
 
     getCategorySpendingPerYearColumnChart: function (category: Category) {
-        return getSpendingPerYearColumnChart(category.expenses);
+        return getSpendingPerYearColumnChart(category);
     },
 
     getCategorySpendingPerMonthColumnChart: function (category: Category, year: number) {
@@ -162,7 +158,7 @@ export const Charts = {
     },
 
     getLabelSpendingPerYearColumnChart(label: Label) {
-        return getSpendingPerYearColumnChart(label.expenses);
+        return getSpendingPerYearColumnChart(label);
     },
 
     getLabelSpendingPerMonthColumnChart: function (label: Label, year: number) {
