@@ -17,104 +17,100 @@ import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class ExpenseServiceBeanTest extends BaseServiceBeanTest {
+class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
-    void testStoreExpense() {
+    void shouldStoreExpense() {
         Category category = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        Label label = labelSupplier.get();
-        labelService.store(label);
+        Label label = createAndStoreLabel();
         expense.addLabel(label);
-        expenseService.store(expense);
+        expenseDao.store(expense);
 
         assertTrue(category.getExpenses().contains(expense));
         assertTrue(label.getExpenses().contains(expense));
     }
 
     @Test
-    void testGetExpense() {
+    void shouldGetExpense() {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
-        expenseService.store(expense);
-        assertEquals(expense, expenseService.getExpense(expense.getId()));
+        expenseDao.store(expense);
+        assertEquals(expense, expenseDao.getExpense(expense.getId()));
     }
 
     @Test
-    void testAddLabelToExpense() {
+    void shouldAddLabelToExpense() {
         //setup
-
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
-        expenseService.store(expense);
-
-        Label label = labelSupplier.get();
-        labelService.store(label);
+        expenseDao.store(expense);
+        Label label = createAndStoreLabel();
 
         //exercise
         expense.addLabel(label);
-        expenseService.updateExpense(expense);
+        expenseDao.updateExpense(expense);
 
         //verify
         assertTrue(expense.getLabels().contains(label));
         assertTrue(label.getExpenses().contains(expense));
-        Expense clone = expenseService.getExpense(expense.getId());
-        assertTrue(clone.getLabels().contains(label));
-        assertEquals(expense, clone);
+        Expense sameExpense = expenseDao.getExpense(expense.getId());
+        assertTrue(sameExpense.getLabels().contains(label));
+        assertEquals(expense, sameExpense);
     }
 
     @Test
-    void testSetCategory() {
+    void shouldSetCategory() {
         Category category = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseService.store(expense);
+        expenseDao.store(expense);
 
         Category category2 = createAndStoreCategory();
 
         //exercise
         expense.setCategory(category2);
-        expenseService.updateExpense(expense);
+        expenseDao.updateExpense(expense);
 
         //verify
         assertEquals(expense.getCategory(), category2);
-        assertEquals(expense, expenseService.getExpense(expense.getId()));
+        assertEquals(expense, expenseDao.getExpense(expense.getId()));
     }
 
     @Test
-    void testRemoveLabel() {
+    void shouldRemoveLabel() {
         //setup // create entities
         Label label = labelSupplier.get();
         Label label2 = labelSupplier.get();
-        labelService.store(label);
-        labelService.store(label2);
+        labelDao.store(label);
+        labelDao.store(label2);
 
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
         expense.setLabels(Arrays.asList(label, label2));
-        expenseService.store(expense);
+        expenseDao.store(expense);
 
         //exercise
         expense.removeLabel(label2);
-        expenseService.updateExpense(expense);
+        expenseDao.updateExpense(expense);
 
         //verify
         assertFalse(expense.getLabels().contains(label2));
-        assertEquals(expense, expenseService.getExpense(expense.getId()));
-        assertTrue(labelService.getLabels().contains(label2));
+        assertEquals(expense, expenseDao.getExpense(expense.getId()));
+        assertTrue(labelDao.getLabels().contains(label2));
     }
 
     @Test
-    void testGetExpensesSortedByDateDescending() {
+    void shouldGetExpensesSortedByDateDescending() {
         int numEntities = 5;
         Category category = createAndStoreCategory();
         for (int i = 0; i < numEntities; i++) {
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
-            expenseService.store(expense);
+            expenseDao.store(expense);
         }
-        Iterator<LocalDate> it = expenseService.getExpenses().stream().map(Expense::getCreatedOn).iterator();
+        Iterator<LocalDate> it = expenseDao.getExpenses().stream().map(Expense::getCreatedOn).iterator();
         while (it.hasNext()) {
             LocalDate date = it.next();
             if (it.hasNext()) {
@@ -124,11 +120,11 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
     }
 
     @Test
-    void testGetExpensesForPeriod() {
+    void shouldGetExpensesForInterval() {
         LocalDate startDate = LocalDate.of(2020, 1, 1);
         LocalDate endDate = LocalDate.of(2020, 12, 31);
         Category category = categorySupplier.get();
-        categoryService.store(category);
+        categoryDao.store(category);
         List<Expense> expensesBetweenDates = new ArrayList<>();
         int numEntities = 5;
         for (int i = 0; i < numEntities; i++) {
@@ -136,100 +132,91 @@ class ExpenseServiceBeanTest extends BaseServiceBeanTest {
             expense.setCategory(category);
             expense.setCreatedOn(dateSupplier.get().withYear(2020));
             expensesBetweenDates.add(expense);
-            expenseService.store(expense);
+            expenseDao.store(expense);
         }
-        List<Expense> responseExpenses = expenseService.getExpensesForPeriod(startDate, endDate);
+        List<Expense> responseExpenses = expenseDao.getExpensesForPeriod(startDate, endDate);
         assertTrue(responseExpenses.containsAll(expensesBetweenDates));
     }
 
     @Test
-    void testUpdateExpense() {
+    void shouldUpdateExpense() {
         //setup
-        Category c = categorySupplier.get();
-        categoryService.store(c);
+        Category c = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(c);
-        expenseService.store(expense);
-
-        Category category = categorySupplier.get();
-        Label label = labelSupplier.get();
-        categoryService.store(category);
-        labelService.store(label);
-
+        expenseDao.store(expense);
 
         //exercise
         expense.setCreatedOn(dateSupplier.get());
         expense.setAmount(new BigDecimal("17.23"));
         expense.setDescription(stringSupplier.get());
-        expense.setCategory(category);
-        expense.addLabel(label);
-        expenseService.updateExpense(expense);
+        expense.setCategory(createAndStoreCategory());
+        expense.addLabel(createAndStoreLabel());
+        expenseDao.updateExpense(expense);
 
         //verify
-        assertEquals(expense, expenseService.getExpense(expense.getId()));
+        assertEquals(expense, expenseDao.getExpense(expense.getId()));
     }
 
     @Test
-    void testRemoveExpense() {
+    void shouldRemoveExpense() {
         //setup
-        Category category = categorySupplier.get();
-        categoryService.store(category);
+        Category category = createAndStoreCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
 
-        Label label = labelSupplier.get();
-        labelService.store(label);
+        Label label = createAndStoreLabel();
         expense.addLabel(label);
-        expenseService.store(expense);
+        expenseDao.store(expense);
 
         //exercise
-        expenseService.removeExpense(expense.getId());
+        expenseDao.removeExpense(expense.getId());
 
         //verify that:
         //- expense has been deleted
-        assertNull(expenseService.getExpense(expense.getId()));
+        assertNull(expenseDao.getExpense(expense.getId()));
 
         //- existing labels have not been deleted
-        assertTrue(labelService.getLabels().contains(label));
+        assertTrue(labelDao.getLabels().contains(label));
 
         //- existing category has not been deleted
-        assertTrue(categoryService.getCategories().contains(category));
+        assertTrue(categoryDao.getCategories().contains(category));
 
     }
 
     @Test
-    void testGetExpensesTotalAmount() {
-        List<Expense> allExpenses = expenseService.getExpenses();
+    void shouldGetTotalExpensesAmount() {
+        List<Expense> allExpenses = expenseDao.getExpenses();
         BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
-        BigDecimal actualTotalAmount = expenseService.getExpensesTotalAmount();
+        BigDecimal actualTotalAmount = expenseDao.getTotalExpenseAmount();
         assertEquals(expectedTotalAmount, actualTotalAmount);
     }
 
     @Test
-    void setAmountMaxNumberOfDigits() {
+    void shouldAllowAmountWith_7_IntegerAnd_2_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.00");
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
-        expenseService.store(expense);
+        expenseDao.store(expense);
     }
 
     @Test
-    void setAmountWithLargerThanMaxNumberOfIntegers() {
+    void shouldNotAllowAmountWith_8_IntegerDigits() {
         BigDecimal amount = new BigDecimal("12345678.00");
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
+        assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
     }
 
     @Test
-    void setAmountWithLargerThanMaxNumberOfDecimals() {
+    void shouldNotAllowAmountWith_3_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.001");
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndStoreCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseService.store(expense));
+        assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
     }
 
 }

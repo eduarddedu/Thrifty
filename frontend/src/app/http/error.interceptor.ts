@@ -1,6 +1,5 @@
 
 import {catchError} from 'rxjs/operators';
-
 import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
@@ -14,15 +13,12 @@ import {
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-    constructor () {}
-
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+        return next.handle(req).pipe(catchError((err: HttpErrorResponse) => this.handleHttpError(err)));
     }
 
-    private handleError(err: HttpErrorResponse): Observable<HttpEvent<any>> {
+    private handleHttpError(err: HttpErrorResponse): Observable<never> {
         console.log(err);
-        // TODO Send error to the backend, so it can be logged
         return observableThrowError(err);
     }
 }

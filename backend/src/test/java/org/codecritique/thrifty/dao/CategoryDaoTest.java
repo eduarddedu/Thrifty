@@ -9,24 +9,24 @@ import java.util.Iterator;
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class CategoryServiceBeanTest extends BaseServiceBeanTest {
+class CategoryDaoTest extends BaseDaoTest {
 
     @Test
-    void testStoreCategory() {
+    void shouldStoreCategory() {
         Category category = categorySupplier.get();
-        categoryService.store(category);
-        assertEquals(category, categoryService.getCategory(category.getId()));
+        categoryDao.store(category);
+        assertEquals(category, categoryDao.getCategory(category.getId()));
     }
 
     @Test
-    void testGetCategoriesSortedByName() {
+    void shouldGetCategoriesSortedByName() {
 
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            categoryService.store(categorySupplier.get());
+            categoryDao.store(categorySupplier.get());
 
-        Iterator<String> it = categoryService.getCategories()
+        Iterator<String> it = categoryDao.getCategories()
                 .stream().map(Category::getName).iterator();
 
         while (it.hasNext()) {
@@ -38,35 +38,35 @@ class CategoryServiceBeanTest extends BaseServiceBeanTest {
     }
 
     @Test
-    void testUpdateCategory() {
+    void shouldUpdateCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryService.store(category);
+        categoryDao.store(category);
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseService.store(expense);
+        expenseDao.store(expense);
 
         //exercise
         category.setName(stringSupplier.get());
         category.setDescription(stringSupplier.get());
-        categoryService.updateCategory(category);
+        categoryDao.updateCategory(category);
 
         //verify
-        assertEquals(category, categoryService.getCategory(category.getId()));
+        assertEquals(category, categoryDao.getCategory(category.getId()));
         assertEquals(category, expense.getCategory());
     }
 
     @Test
-    void testRemoveCategory() {
+    void shouldRemoveCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryService.store(category);
+        categoryDao.store(category);
 
         //exercise
-        categoryService.removeCategory(category.getId());
+        categoryDao.removeCategory(category.getId());
 
         //verify
-        assertNull(categoryService.getCategory(category.getId()));
+        assertNull(categoryDao.getCategory(category.getId()));
     }
 
 }

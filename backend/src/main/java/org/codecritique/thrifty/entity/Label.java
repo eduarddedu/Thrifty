@@ -2,11 +2,9 @@ package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,16 +19,30 @@ import java.util.Set;
 public class Label extends BaseEntity {
 
     @NotNull
+    @Column(name = "account_id")
+    private Long accountId;
+
+    @NotNull
+    @Size(min = 1, max = 25)
     private String name;
 
     @ManyToMany(mappedBy = "labels")
-    private Set<Expense> expenses = new HashSet<>();
+    private final Set<Expense> expenses = new HashSet<>();
 
     public Label() {
     }
 
-    public Label(String name) {
+    public Label(long accountId, String name) {
+        this.accountId = accountId;
         this.name = name;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 
     @JsonIgnore
@@ -60,17 +72,20 @@ public class Label extends BaseEntity {
             return true;
         else if (!(o instanceof Label))
             return false;
-        return Objects.equals(name, ((Label) o).name);
+        Label other = (Label) o;
+        return  Objects.equals(id, other.id) &&
+                Objects.equals(accountId, other.accountId) &&
+                Objects.equals(name, other.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, accountId, name);
     }
 
     @Override
     public String toString() {
-        return "Label[" + name + "]";
+        return "Label [" + name + "]";
     }
 
 }

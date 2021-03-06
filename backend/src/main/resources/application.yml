@@ -1,6 +1,10 @@
 server:
   servlet:
     context-path: /thrifty
+    session:
+      cookie:
+        path: /
+        max-age: 30m
 
 spring:
   jpa:
@@ -10,11 +14,17 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 ---
 
+debug: false
 spring:
   profiles: dev
   jpa:
-    show-sql: true
-    format_sql: true
+    show-sql: false
+    hibernate.ddl-auto: create-drop
+    properties.javax.persistence:
+      schema-generation:
+        drop-source: script
+        drop-script-source: drop-tables.sql
+      sql-load-script-source: test-data.sql
 ---
 
 spring:

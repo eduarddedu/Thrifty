@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Sign up</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <section id="registration-form" th:class="${hasCompletedRegistration} ? 'hidden' : 'visible'">
+        <form class="form-signin" method="post" action="./register">
+            <h2>Create an account</h2>
+            <br>
+            <div class="form-group">
+                <label for="username">Email address</label>
+                <input type="text" id="username" name="username" class="form-control"
+                       th:placeholder="${emailPlaceholder}" required autofocus>
+                <p class="error" th:text="${emailValidationError}"></p>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password"
+                       required>
+                <p class="text-muted">Must be between 6 and 80 characters, no spaces</p>
+                <p class="error" th:text="${passwordValidationError}"></p>
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="hidden" th:name="accountId" th:value="${accountId}"/>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        </form>
+    </section>
+    <section id="members" th:class="${hasCompletedRegistration} ? 'hidden' : 'visible'">
+        <p class="text-muted" style="text-align:center">Already have an account? <a href="login">Sign in</a></p>
+    </section>
+    <section id="successMessage" th:class="${hasCompletedRegistration} ? 'visible' : 'hidden'">
+        <h2> Congratulations </h2>
+        <p style="text-align:center">Your account has been created. <a href="login">Sign in</a></p>
+    </section>
+</div>
+</body>
+</html>

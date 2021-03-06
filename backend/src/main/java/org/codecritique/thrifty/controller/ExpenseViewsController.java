@@ -1,8 +1,7 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.ExpenseViewService;
+import org.codecritique.thrifty.dao.ExpenseViewDao;
 import org.codecritique.thrifty.entity.ExpenseView;
-import org.codecritique.thrifty.exception.WebException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,26 +17,18 @@ import java.util.List;
 public class ExpenseViewsController {
 
     @Autowired
-    private ExpenseViewService service;
+    private ExpenseViewDao dao;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ExpenseView> getExpenses() {
-        try {
-            return service.findAll();
-        } catch (Exception ex) {
-            throw new WebException(ex);
-        }
+        return dao.findAll();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExpenseView> getExpense(@PathVariable long id) {
-        try {
-            ExpenseView expense = service.findById(id);
-            if (expense == null)
-                return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(expense);
-        } catch (Exception e) {
-            throw new WebException(e);
-        }
+        ExpenseView expense = dao.findById(id);
+        if (expense == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(expense);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface ExpenseViewService extends Repository<ExpenseView, Long> {
+public interface ExpenseViewDao extends Repository<ExpenseView, Long> {
 
     List<ExpenseView> findAll();
     ExpenseView findById(Long id);

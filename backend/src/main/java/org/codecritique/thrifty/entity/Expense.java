@@ -3,6 +3,7 @@ package org.codecritique.thrifty.entity;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -13,15 +14,18 @@ import java.util.Set;
 /**
  * @author Eduard Dedu
  */
-
-
 @Entity
 @Table(name = "Expense")
 public class Expense extends BaseEntity {
     @NotNull
+    @Column(name = "account_id")
+    private Long accountId;
+
+    @NotNull
     private LocalDate createdOn;
 
     @NotNull
+    @Size(max = 255)
     private String description;
 
     @NotNull
@@ -43,6 +47,14 @@ public class Expense extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<Label> labels = new HashSet<>();
 
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -52,7 +64,6 @@ public class Expense extends BaseEntity {
             return;
         if (this.category != null)
             this.category.removeExpense(this);
-
         this.category = category;
         this.category.addExpense(this);
     }
@@ -109,23 +120,19 @@ public class Expense extends BaseEntity {
         else if (!(o instanceof Expense))
             return false;
         Expense other = (Expense) o;
-        return Objects.equals(id, other.id)
-                && Objects.equals(amount, other.amount)
-                && Objects.equals(createdOn, other.createdOn)
-                && Objects.equals(description, other.description)
-                && Objects.equals(category, other.category)
-                /*
-                 * cannot compare sets with Object.equals
-                 * See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200
-                 **/
-
-                && equals(labels, other.labels);
+        return Objects.equals(id, other.id) &&
+                Objects.equals(accountId, other.accountId) &&
+                Objects.equals(amount, other.amount) &&
+                Objects.equals(createdOn, other.createdOn) &&
+                Objects.equals(description, other.description) &&
+                Objects.equals(category, other.category) &&
+                isEqual(labels, other.labels);
     }
-
     /*
-     * compare two sets based on logical equality between elements
+     * Compare sets based on logical equality between elements.
+     * See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200
      */
-    private boolean equals(Set<?> set1, Set<?> set2) {
+    private boolean isEqual(Set<?> set1, Set<?> set2) {
         if (set1 == null && set2 == null)
             return true;
         else if (set1 == null || set2 == null)
@@ -141,12 +148,12 @@ public class Expense extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amount, createdOn, description, category, labels);
+        return Objects.hash(id, accountId, amount, createdOn, description, category, labels);
     }
 
     @Override
     public String toString() {
-        return "Expense[" + id + "]";
+        return "Expense [" + id + "]";
     }
 
 

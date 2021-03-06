@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
+  baseUrl: 'http://localhost:8080/thrifty/',
   apiUrl: 'http://localhost:8080/thrifty/rest-api/'
 };

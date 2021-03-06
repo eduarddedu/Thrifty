@@ -9,7 +9,6 @@ import java.io.Serializable;
 /**
  * @author Eduard Dedu
  */
-
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 

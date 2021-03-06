@@ -12,42 +12,41 @@ import java.util.List;
 
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 class ExpensesControllerTest extends BaseControllerTest {
 
     @Test
-    void testCreateExpense() throws Exception {
+    void shouldCreateExpense() throws Exception {
         createExpense();
     }
 
     @Test
-    void testCreateExpenseBadRequest() throws Exception {
+    void shouldReturnBadRequest() throws Exception {
         Expense expense = expenseSupplier.get();
         assertNull(expense.getCategory());
         String json = mapper.writeValueAsString(expense);
-        mockMvc.perform(post(Resource.EXPENSES.url)
+        mockMvc.perform(post(Resource.EXPENSE.url)
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testGetExpenses() throws Exception {
+    void shouldReturnExpenses() throws Exception {
         createExpense();
-        mockMvc.perform(get(Resource.EXPENSES.url))
-                .andDo(print())
+        mockMvc.perform(get(Resource.EXPENSE.url))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
     @Test
-    void testGetExpensesBetweenDates() throws Exception {
+    void shouldReturnExpensesBetweenDates() throws Exception {
         LocalDate startDate = LocalDate.of(2020, 1, 1);
         LocalDate endDate = LocalDate.of(2020, 12, 31);
         int numEntities = 5;
@@ -58,15 +57,14 @@ class ExpensesControllerTest extends BaseControllerTest {
             expense.setCreatedOn(dateSupplier.get().withYear(2020));
             createEntity(expense);
         }
-        String url = String.format(Resource.EXPENSES.url + "forPeriod?startDate=%s&endDate=%s", startDate, endDate);
+        String url = String.format(Resource.EXPENSE.url + "forPeriod?startDate=%s&endDate=%s", startDate, endDate);
         String json = mockMvc.perform(get(url))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        List<Expense> responseExpenses = mapper.readValue(json, new TypeReference<List<Expense>>() {
+        List<Expense> expenses = mapper.readValue(json, new TypeReference<List<Expense>>() {
         });
-        assertTrue(responseExpenses.size() >= numEntities);
-        responseExpenses.forEach(expense -> {
+        assertTrue(expenses.size() >= numEntities);
+        expenses.forEach(expense -> {
             LocalDate createdOn = expense.getCreatedOn();
             assertTrue(createdOn.compareTo(startDate) >= 0);
             assertTrue(createdOn.compareTo(endDate) <= 0);
@@ -74,7 +72,7 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void testGetExpensesForYear() throws Exception {
+    void shouldReturnExpensesForYear() throws Exception {
         int year = 2020;
         int numEntities = 2;
         Category category = createCategory();
@@ -84,9 +82,8 @@ class ExpensesControllerTest extends BaseControllerTest {
             expense.setCreatedOn(dateSupplier.get().withYear(2020));
             createEntity(expense);
         }
-        String url = Resource.EXPENSES.url + "forYear?year=" + year;
+        String url = Resource.EXPENSE.url + "forYear?year=" + year;
         String json = mockMvc.perform(get(url))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         List<Expense> responseExpenses = mapper.readValue(json, new TypeReference<List<Expense>>() {
@@ -96,14 +93,13 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void testGetExpensesTotalAmount() throws Exception {
-        String json = mockMvc.perform(get(Resource.EXPENSES.url))
+    void shouldReturnTotalExpensesAmount() throws Exception {
+        String json = mockMvc.perform(get(Resource.EXPENSE.url))
                 .andReturn().getResponse().getContentAsString();
         List<Expense> allExpenses = mapper.readValue(json, new TypeReference<List<Expense>>() {
         });
-        String url = Resource.EXPENSES.url + "sum";
+        String url = Resource.EXPENSE.url + "sum";
         String totalAmountStr = mockMvc.perform(get(url))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
@@ -114,44 +110,32 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void testUpdateExpenseAmount() throws Exception {
-        //setup
+    void shouldUpdateExpenseAmount() throws Exception {
         Expense expense = createExpense();
-        //exercise
         expense.setAmount(expenseAmountSupplier.get());
-        //verify
-        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
+        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
     }
 
     @Test
-    void testUpdateExpenseCategory() throws Exception {
+    void shouldUpdateExpenseCategory() throws Exception {
         Expense expense = createExpense();
         Category category = createCategory();
-        //exercise
         expense.setCategory(category);
-        //verify
-        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
-        ;
+        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
     }
 
     @Test
-    void testUpdateExpenseCreatedOn() throws Exception {
-        //setup
+    void shouldUpdateExpenseCreatedOn() throws Exception {
         Expense expense = createExpense();
-        //exercise
         expense.setCreatedOn(dateSupplier.get());
-        //verify
-        assertEquals(expense, updateEntity(expense, Resource.EXPENSES));
+        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
     }
 
     @Test
-    void testRemoveExpense() throws Exception {
+    void shouldRemoveExpense() throws Exception {
         Expense expense = createExpense();
-
-        //exercise
-        deleteEntity(Resource.EXPENSES, expense.getId());
-        //verify
-        mockMvc.perform(get(Resource.EXPENSES.url + expense.getId()))
+        deleteEntity(Resource.EXPENSE, expense.getId());
+        mockMvc.perform(get(Resource.EXPENSE.url + expense.getId()))
                 .andExpect(status().isNotFound());
     }
 }

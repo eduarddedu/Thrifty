@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 
-public interface LabelService {
+public interface LabelDao {
 
     void store(Label label);
 

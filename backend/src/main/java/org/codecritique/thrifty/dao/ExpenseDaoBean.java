@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Service
-public class ExpenseServiceBean extends BaseService implements ExpenseService {
+public class ExpenseDaoBean extends BaseDao implements ExpenseDao {
 
     @Override
     public void store(Expense expense) {
@@ -60,7 +60,7 @@ public class ExpenseServiceBean extends BaseService implements ExpenseService {
     }
 
     @Override
-    public BigDecimal getExpensesTotalAmount() {
+    public BigDecimal getTotalExpenseAmount() {
         return (BigDecimal) em.createNativeQuery("Select SUM(AMOUNT) AS Total from Expense").getSingleResult();
     }
 }

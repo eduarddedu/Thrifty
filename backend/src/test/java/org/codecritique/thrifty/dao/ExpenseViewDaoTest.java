@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.stream.Collectors;
 
-public class ExpenseViewServiceTest extends BaseServiceBeanTest {
+public class ExpenseViewDaoTest extends BaseDaoTest {
 
     @Autowired
-    private ExpenseViewService service;
+    private ExpenseViewDao expenseViewDao;
 
     @Test
     public void findById() {
@@ -21,8 +21,8 @@ public class ExpenseViewServiceTest extends BaseServiceBeanTest {
         for (int i = 0; i < 2; i++) {
             expense.addLabel(createAndStoreLabel());
         }
-        expenseService.updateExpense(expense);
-        ExpenseView view = service.findById(expense.getId());
+        expenseDao.updateExpense(expense);
+        ExpenseView view = expenseViewDao.findById(expense.getId());
         assertNotNull(view);
         assertEquals(expense.getId(), view.getId());
         assertEquals(expense.getCreatedOn(), view.getCreatedOn());

@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Transactional
-public abstract class BaseService {
+public abstract class BaseDao {
 
     @PersistenceContext
     protected EntityManager em;

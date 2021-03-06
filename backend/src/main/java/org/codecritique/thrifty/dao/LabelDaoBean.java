@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 @Service
-public class LabelServiceBean extends BaseService implements LabelService {
+public class LabelDaoBean extends BaseDao implements LabelDao {
 
     @Override
     public void store(Label label) {

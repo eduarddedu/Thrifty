@@ -10,12 +10,12 @@ import static org.codecritique.thrifty.Generator.labelSupplier;
 import static org.codecritique.thrifty.Generator.stringSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
-class LabelServiceBeanTest extends BaseServiceBeanTest {
+class LabelDaoTest extends BaseDaoTest {
 
     @Test
     void testAddLabel() {
         Label label = createAndStoreLabel();
-        assertEquals(label, labelService.getLabel(label.getId()));
+        assertEquals(label, labelDao.getLabel(label.getId()));
     }
 
     @Test
@@ -23,9 +23,9 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            labelService.store(labelSupplier.get());
+            labelDao.store(labelSupplier.get());
 
-        Iterator<String> it = labelService.getLabels()
+        Iterator<String> it = labelDao.getLabels()
                 .stream().map(Label::getName).iterator();
 
         while (it.hasNext()) {
@@ -47,11 +47,11 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         //exercise
 
         label.setName(stringSupplier.get());
-        labelService.updateLabel(label);
+        labelDao.updateLabel(label);
 
         //verify
 
-        assertEquals(label, labelService.getLabel(label.getId()));
+        assertEquals(label, labelDao.getLabel(label.getId()));
 
         //verify the view from expense side is consistent
         assertEquals(1, expense.getLabels().size());
@@ -63,9 +63,9 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
     @Test
     void testRemoveLabel() {
         Label label = createAndStoreLabel();
-        assertNotNull(labelService.getLabel(label.getId()));
-        labelService.removeLabel(label.getId());
-        assertNull(labelService.getLabel(label.getId()));
+        assertNotNull(labelDao.getLabel(label.getId()));
+        labelDao.removeLabel(label.getId());
+        assertNull(labelDao.getLabel(label.getId()));
     }
 
     @Test
@@ -74,15 +74,15 @@ class LabelServiceBeanTest extends BaseServiceBeanTest {
         Expense expense = createAndStoreExpense();
         Label label = createAndStoreLabel();
         expense.addLabel(label);
-        expenseService.updateExpense(expense);
+        expenseDao.updateExpense(expense);
 
         // exercise
-        labelService.removeLabel(label.getId());
+        labelDao.removeLabel(label.getId());
 
         // verify
-        assertNull(labelService.getLabel(label.getId()));
+        assertNull(labelDao.getLabel(label.getId()));
         //assertFalse(expense.getLabels().contains(label)); // fails
-        assertFalse(expenseService.getExpense(expense.getId()).getLabels().contains(label));
+        assertFalse(expenseDao.getExpense(expense.getId()).getLabels().contains(label));
     }
 
 }

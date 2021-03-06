@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 
-public interface CategoryService {
+public interface CategoryDao {
 
     void store(Category o);
 

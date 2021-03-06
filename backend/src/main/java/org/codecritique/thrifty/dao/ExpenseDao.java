@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 
-public interface ExpenseService {
+public interface ExpenseDao {
 
     void store(Expense o);
 
@@ -27,5 +27,5 @@ public interface ExpenseService {
 
     void updateExpense(Expense e);
 
-    BigDecimal getExpensesTotalAmount();
+    BigDecimal getTotalExpenseAmount();
 }

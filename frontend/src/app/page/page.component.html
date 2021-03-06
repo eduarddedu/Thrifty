@@ -1,23 +1,23 @@
 <app-delete-entity-modal></app-delete-entity-modal>
 
+<div id="navbar" class="navbar-default navbar-static-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+            <a [routerLink]="['/']"> Thrifty</a>
+        </span>
+    </div>
+    <app-menu></app-menu>
+</div>
+
 <div id="sidebar" class="navbar-default sidebar" role="navigation">
     <div id="sidebar-menu">
-        <div class="clearfix">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <span class="navbar-brand">
-                <a [routerLink]="['/']"> Thrifty</a>
-            </span>
-        </div>
         <app-sidebar></app-sidebar>
-    </div>
-
-    <div id="sidebar-footer">
-        <small>ⓒ 2018 codecritique.org</small>
     </div>
 </div>
 

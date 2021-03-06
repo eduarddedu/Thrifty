@@ -10,11 +10,4 @@ public abstract class BaseController {
         String apiBaseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
         return URI.create(apiBaseUrl + path);
     }
-
-    protected boolean isConstraintViolationException(Throwable e) {
-        return e instanceof javax.validation.ConstraintViolationException ||
-                e instanceof org.hibernate.exception.ConstraintViolationException ||
-                e.getCause() instanceof org.hibernate.exception.ConstraintViolationException ||
-                e.getCause() instanceof javax.validation.ConstraintViolationException;
-    }
 }

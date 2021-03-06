@@ -1,5 +1,7 @@
 package org.codecritique.thrifty.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -14,10 +16,13 @@ import java.util.Set;
  * @author Eduard Dedu
  */
 
-
 @Entity
 @Table(name = "Expense")
 public class ExpenseView extends BaseEntity {
+    @NotNull
+    @Column(name = "account_id")
+    private Long accountId;
+
     @NotNull
     private LocalDate createdOn;
 
@@ -43,6 +48,11 @@ public class ExpenseView extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelView> labels = new HashSet<>();
 
+    @JsonIgnore
+    public Long getAccountId() {
+        return accountId;
+    }
+
     public LocalDate getCreatedOn() {
         return createdOn;
     }
@@ -60,6 +70,5 @@ public class ExpenseView extends BaseEntity {
     }
 
     public Set<LabelView> getLabels() { return new HashSet<>(labels); }
-
 
 }

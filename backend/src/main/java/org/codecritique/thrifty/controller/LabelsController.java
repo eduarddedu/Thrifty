@@ -1,8 +1,7 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.LabelService;
+import org.codecritique.thrifty.dao.LabelDao;
 import org.codecritique.thrifty.entity.Label;
-import org.codecritique.thrifty.exception.WebException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -20,69 +19,41 @@ import java.util.List;
 @RequestMapping("/rest-api/labels")
 public class LabelsController extends BaseController {
     @Autowired
-    private LabelService service;
+    private LabelDao dao;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createLabel(@RequestBody Label label) {
-        try {
-            service.store(label);
-            URI uri = toAbsoluteUri("/rest-api/labels/" + label.getId());
-            return ResponseEntity.created(uri).build();
-        } catch (Exception e) {
-            if (isConstraintViolationException(e))
-                return ResponseEntity.badRequest().build();
-            throw new WebException(e);
-        }
+        dao.store(label);
+        URI location = toAbsoluteUri("/rest-api/labels/" + label.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateLabel(@RequestBody Label label) {
-        try {
-            service.updateLabel(label);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            if (isConstraintViolationException(e))
-                return ResponseEntity.badRequest().build();
-            throw new WebException(e);
-        }
+        dao.updateLabel(label);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeLabel(@PathVariable long id) {
-
-        try {
-            Label label = service.getLabel(id);
-            if (label == null)
-                return ResponseEntity.notFound().build();
-            service.removeLabel(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            if (isConstraintViolationException(e))
-                return ResponseEntity.badRequest().build();
-            throw new WebException(e);
-        }
+        Label label = dao.getLabel(id);
+        if (label == null)
+            return ResponseEntity.notFound().build();
+        dao.removeLabel(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Label> getLabel(@PathVariable long id) {
-
-        try {
-            Label label = service.getLabel(id);
-            if (label == null)
-                return ResponseEntity.notFound().build();
-            return ResponseEntity.ok(label);
-        } catch (Exception e) {
-            throw new WebException(e);
-        }
+        Label label = dao.getLabel(id);
+        if (label == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(label);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Label> getLabelsSortedByName() {
-        try {
-            return service.getLabels();
-        } catch (Exception e) {
-            throw new WebException(e);
-        }
+        return dao.getLabels();
     }
 
 }

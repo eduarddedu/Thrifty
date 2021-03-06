@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 @Service
-public class CategoryServiceBean extends BaseService implements CategoryService {
+public class CategoryDaoBean extends BaseDao implements CategoryDao {
 
     @Override
     public void store(Category o) {

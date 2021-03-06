@@ -11,6 +11,7 @@ import { LocalDate } from './localDate';
 import { DateRange } from './dateRange';
 import { CheckLabel } from './checkLabel';
 import { RadioOption } from './radioOption';
+import { User } from './user';
 
 export type RefPeriod = number | 'All time';
 
@@ -19,5 +20,6 @@ export {
     ExpenseData, CategoryData, LabelData,
     Expense, Category, Label,
     Account, AccountSettings as AccountDetails,
-    LocalDate, DateRange, CheckLabel, RadioOption
+    LocalDate, DateRange, CheckLabel, RadioOption,
+    User
 };

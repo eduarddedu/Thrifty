@@ -31,11 +31,13 @@ import { RestService } from './services/rest.service';
 import { NotificationService } from './services/notification.service';
 import { DeleteEntityModalService } from './services/modal.service';
 import { AnalyticsService } from './services/analytics.service';
-import { BaseUriInterceptor } from './http/baseuri.interceptor';
+import { SessionTimeoutService } from './services/timeout.service';
+import { RestApiRequestInterceptor } from './http/request.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
 import { DeleteEntityComponent } from './page-content/delete-entity/delete-entity.component';
 import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { MenuComponent} from './page-content/menu/menu.component';
 
 
 
@@ -61,6 +63,7 @@ import { SpinnerComponent } from './spinner/spinner.component';
         LabelDetailsComponent,
         DeleteEntityComponent,
         SpinnerComponent,
+        MenuComponent
     ],
     imports: [
         BrowserModule,
@@ -77,7 +80,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
         NotificationService,
         DeleteEntityModalService,
         AnalyticsService,
-        { provide: HTTP_INTERCEPTORS, useClass: BaseUriInterceptor, multi: true },
+        SessionTimeoutService,
+        { provide: HTTP_INTERCEPTORS, useClass: RestApiRequestInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
     ],
     bootstrap: [AppComponent]
