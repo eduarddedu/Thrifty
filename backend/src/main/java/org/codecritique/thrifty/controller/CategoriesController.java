@@ -29,10 +29,10 @@ public class CategoriesController extends BaseController {
             service.store(category);
             URI uri = toAbsoluteUri("/rest-api/categories/" + category.getId());
             return ResponseEntity.created(uri).build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -41,10 +41,10 @@ public class CategoriesController extends BaseController {
         try {
             service.updateCategory(category);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -56,8 +56,8 @@ public class CategoriesController extends BaseController {
             if (category == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(category);
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -65,8 +65,8 @@ public class CategoriesController extends BaseController {
     public List<Category> getCategoriesSortedByName() {
         try {
             return service.getCategories();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -78,8 +78,8 @@ public class CategoriesController extends BaseController {
                 return ResponseEntity.notFound().build();
             service.removeCategory(id);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 }

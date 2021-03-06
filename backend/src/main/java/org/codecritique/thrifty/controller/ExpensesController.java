@@ -33,10 +33,10 @@ public class ExpensesController extends BaseController {
             service.store(expense);
             URI uri = toAbsoluteUri("/rest-api/expenses/" + expense.getId());
             return ResponseEntity.created(uri).build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -46,10 +46,10 @@ public class ExpensesController extends BaseController {
         try {
             service.updateExpense(expense);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -60,8 +60,8 @@ public class ExpensesController extends BaseController {
             if (expense == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(expense);
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -73,8 +73,8 @@ public class ExpensesController extends BaseController {
                 return ResponseEntity.notFound().build();
             service.removeExpense(id);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -83,8 +83,8 @@ public class ExpensesController extends BaseController {
     public List<Expense> getExpensesSortedByDate() {
         try {
             return service.getExpenses();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -96,8 +96,8 @@ public class ExpensesController extends BaseController {
             return ResponseEntity.ok(expenses);
         } catch (DateTimeParseException ex) {
             return ResponseEntity.badRequest().build();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -107,8 +107,8 @@ public class ExpensesController extends BaseController {
         try {
             List<Expense> expenses = service.getExpensesForYear(year);
             return ResponseEntity.ok(expenses);
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -116,8 +116,8 @@ public class ExpensesController extends BaseController {
     public String getExpensesTotalAmount() {
         try {
             return "" + service.getExpensesTotalAmount();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 

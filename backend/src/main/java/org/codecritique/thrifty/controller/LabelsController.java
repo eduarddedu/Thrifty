@@ -28,10 +28,10 @@ public class LabelsController extends BaseController {
             service.store(label);
             URI uri = toAbsoluteUri("/rest-api/labels/" + label.getId());
             return ResponseEntity.created(uri).build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -40,10 +40,10 @@ public class LabelsController extends BaseController {
         try {
             service.updateLabel(label);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -56,10 +56,10 @@ public class LabelsController extends BaseController {
                 return ResponseEntity.notFound().build();
             service.removeLabel(id);
             return ResponseEntity.ok().build();
-        } catch (Throwable th) {
-            if (isConstraintViolationException(th))
+        } catch (Exception e) {
+            if (isConstraintViolationException(e))
                 return ResponseEntity.badRequest().build();
-            throw new WebException(th);
+            throw new WebException(e);
         }
     }
 
@@ -71,8 +71,8 @@ public class LabelsController extends BaseController {
             if (label == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(label);
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 
@@ -80,8 +80,8 @@ public class LabelsController extends BaseController {
     public List<Label> getLabelsSortedByName() {
         try {
             return service.getLabels();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 

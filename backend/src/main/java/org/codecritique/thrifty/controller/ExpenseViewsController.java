@@ -24,8 +24,8 @@ public class ExpenseViewsController {
     public List<ExpenseView> getExpenses() {
         try {
             return service.findAll();
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception ex) {
+            throw new WebException(ex);
         }
     }
 
@@ -36,8 +36,8 @@ public class ExpenseViewsController {
             if (expense == null)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.ok(expense);
-        } catch (Throwable th) {
-            throw new WebException(th);
+        } catch (Exception e) {
+            throw new WebException(e);
         }
     }
 }
