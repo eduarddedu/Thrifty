@@ -24,7 +24,8 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenLabelNameIsEmptyString() throws Exception {
-        Label label = new Label(1, "");
+        Label label = new Label();
+        label.setName("");
         mockMvc.perform(post(Resource.LABEL.url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
@@ -34,8 +35,9 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenLabelNameIsDuplicate() throws Exception {
-        Label label = createLabel();
-        Label duplicate = new Label(1, label.getName());
+        Label original = createLabel();
+        Label duplicate = new Label();
+        duplicate.setName(original.getName());
         mockMvc.perform(post(Resource.LABEL.url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())

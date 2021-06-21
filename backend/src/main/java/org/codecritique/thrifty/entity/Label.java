@@ -9,11 +9,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @author Eduard Dedu
- */
-
-
 @Entity
 @Table(name = "Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Label extends BaseEntity {
@@ -30,11 +25,6 @@ public class Label extends BaseEntity {
     private final Set<Expense> expenses = new HashSet<>();
 
     public Label() {
-    }
-
-    public Label(long accountId, String name) {
-        this.accountId = accountId;
-        this.name = name;
     }
 
     public Long getAccountId() {

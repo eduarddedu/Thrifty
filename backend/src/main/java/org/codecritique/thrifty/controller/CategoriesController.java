@@ -11,11 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
-
 @RestController
 @RequestMapping("/rest-api/categories")
 public class CategoriesController extends BaseController {
@@ -25,7 +20,7 @@ public class CategoriesController extends BaseController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
         dao.store(category);
-        URI location = toAbsoluteUri("/rest-api/categories/" + category.getId());
+        URI location = toAbsoluteURI("/rest-api/categories/" + category.getId());
         return ResponseEntity.created(location).build();
     }
 
@@ -55,6 +50,5 @@ public class CategoriesController extends BaseController {
             return ResponseEntity.notFound().build();
         dao.removeCategory(id);
         return ResponseEntity.ok().build();
-
     }
 }

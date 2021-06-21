@@ -26,7 +26,7 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequest() throws Exception {
+    void shouldReturnBadRequestOnCreateExpenseMissingCategory() throws Exception {
         Expense expense = expenseSupplier.get();
         assertNull(expense.getCategory());
         String json = mapper.writeValueAsString(expense);

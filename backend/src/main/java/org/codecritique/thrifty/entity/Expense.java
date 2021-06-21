@@ -11,9 +11,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @author Eduard Dedu
- */
 @Entity
 @Table(name = "Expense")
 public class Expense extends BaseEntity {
@@ -45,7 +42,7 @@ public class Expense extends BaseEntity {
     @JoinTable(name = "Expense_Label",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
-    private Set<Label> labels = new HashSet<>();
+    private final Set<Label> labels = new HashSet<>();
 
     public Long getAccountId() {
         return accountId;
@@ -128,6 +125,7 @@ public class Expense extends BaseEntity {
                 Objects.equals(category, other.category) &&
                 isEqual(labels, other.labels);
     }
+
     /*
      * Compare sets based on logical equality between elements.
      * See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6579200

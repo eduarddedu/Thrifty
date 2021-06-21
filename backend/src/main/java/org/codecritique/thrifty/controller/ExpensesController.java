@@ -14,12 +14,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-
-/**
- * @author Eduard Dedu
- */
-
-
 @RestController
 @RequestMapping("/rest-api/expenses")
 public class ExpensesController extends BaseController {
@@ -29,7 +23,7 @@ public class ExpensesController extends BaseController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createExpense(@RequestBody Expense expense) {
         dao.store(expense);
-        URI location = toAbsoluteUri("/rest-api/expenses/" + expense.getId());
+        URI location = toAbsoluteURI("/rest-api/expenses/" + expense.getId());
         return ResponseEntity.created(location).build();
     }
 

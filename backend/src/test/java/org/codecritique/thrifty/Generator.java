@@ -24,9 +24,20 @@ public class Generator {
     public static Supplier<LocalDate> dateSupplier = () ->
             LocalDate.of(2000 + r.nextInt(100), 1 + r.nextInt(12), 1 + r.nextInt(28));
 
-    public static Supplier<Label> labelSupplier = () -> new Label(1, stringSupplier.get());
+    public static Supplier<Label> labelSupplier = () -> {
+        Label label = new Label();
+        label.setAccountId(1);
+        label.setName(stringSupplier.get());
+        return label;
+    };
 
-    public static Supplier<Category> categorySupplier = () -> new Category(1, stringSupplier.get(), stringSupplier.get());
+    public static Supplier<Category> categorySupplier = () -> {
+        Category category = new Category();
+        category.setAccountId(1);
+        category.setName(stringSupplier.get());
+        category.setDescription(stringSupplier.get());
+        return category;
+    };
 
     public static Supplier<BigDecimal> expenseAmountSupplier = () -> {
         BigDecimal cents = new BigDecimal(String.format("%.2f", r.nextDouble()));
@@ -35,7 +46,7 @@ public class Generator {
 
     public static Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
-        expense.setAccountId(1L);
+        expense.setAccountId(1);
         expense.setCreatedOn(dateSupplier.get());
         expense.setAmount(expenseAmountSupplier.get());
         expense.setDescription(stringSupplier.get());

@@ -33,8 +33,10 @@ class CategoriesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenCategoryNameIsDuplicate() throws Exception {
-        Category category = createCategory();
-        Category duplicate = new Category(1, category.getName(), "description");
+        Category original = createCategory();
+        Category duplicate = new Category();
+        duplicate.setName(original.getName());
+        duplicate.setDescription("description");
         mockMvc.perform(post(Resource.CATEGORY.url)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)

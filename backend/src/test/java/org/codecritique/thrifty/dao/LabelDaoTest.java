@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class LabelDaoTest extends BaseDaoTest {
 
     @Test
-    void testAddLabel() {
+    void shouldCreateLabel() {
         Label label = createAndStoreLabel();
         assertEquals(label, labelDao.getLabel(label.getId()));
     }
 
     @Test
-    void testGetLabelsSortedByName() {
+    void shouldGetLabelsSortedByName() {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
@@ -37,20 +37,17 @@ class LabelDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void testUpdateLabel() {
+    void shouldUpdateLabel() {
         //setup
-
         Label label = createAndStoreLabel();
         Expense expense = createAndStoreExpense();
         expense.addLabel(label);
 
         //exercise
-
         label.setName(stringSupplier.get());
         labelDao.updateLabel(label);
 
         //verify
-
         assertEquals(label, labelDao.getLabel(label.getId()));
 
         //verify the view from expense side is consistent
@@ -61,7 +58,7 @@ class LabelDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void testRemoveLabel() {
+    void shouldRemoveLabel() {
         Label label = createAndStoreLabel();
         assertNotNull(labelDao.getLabel(label.getId()));
         labelDao.removeLabel(label.getId());
@@ -69,7 +66,7 @@ class LabelDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void testRemoveLabelLinkedToExpense() {
+    void shouldRemoveLabelLinkedToExpense() {
         // setup
         Expense expense = createAndStoreExpense();
         Label label = createAndStoreLabel();

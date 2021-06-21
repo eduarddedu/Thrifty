@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
 @RestController
 @RequestMapping("/rest-api/labels")
 public class LabelsController extends BaseController {
@@ -24,7 +20,7 @@ public class LabelsController extends BaseController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createLabel(@RequestBody Label label) {
         dao.store(label);
-        URI location = toAbsoluteUri("/rest-api/labels/" + label.getId());
+        URI location = toAbsoluteURI("/rest-api/labels/" + label.getId());
         return ResponseEntity.created(location).build();
     }
 

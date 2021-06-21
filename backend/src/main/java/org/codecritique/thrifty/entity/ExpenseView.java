@@ -1,20 +1,12 @@
 package org.codecritique.thrifty.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-
-/**
- * @author Eduard Dedu
- */
 
 @Entity
 @Table(name = "Expense")
@@ -48,7 +40,6 @@ public class ExpenseView extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelView> labels = new HashSet<>();
 
-    @JsonIgnore
     public Long getAccountId() {
         return accountId;
     }
@@ -69,6 +60,8 @@ public class ExpenseView extends BaseEntity {
         return category;
     }
 
-    public Set<LabelView> getLabels() { return new HashSet<>(labels); }
+    public Set<LabelView> getLabels() {
+        return new HashSet<>(labels);
+    }
 
 }

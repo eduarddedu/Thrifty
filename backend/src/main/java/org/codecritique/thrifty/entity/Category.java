@@ -9,10 +9,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @author Eduard Dedu
- */
-
 @Entity
 @Table(name = "Category", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Category extends BaseEntity {
@@ -30,7 +26,7 @@ public class Category extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    private Set<Expense> expenses = new HashSet<>();
+    private final Set<Expense> expenses = new HashSet<>();
 
     public Category() {
     }

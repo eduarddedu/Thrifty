@@ -70,7 +70,7 @@ public abstract class BaseControllerTest extends MockMvcTest {
     }
 
     protected BaseEntity getEntity(Resource resource, Long id) throws Exception {
-        String url = id == null ? Resource.USER.url : resource.url + id;
+        String url = id == null ? resource.url : resource.url + id;
         String json = mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

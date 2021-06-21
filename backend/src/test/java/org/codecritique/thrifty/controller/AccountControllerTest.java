@@ -3,7 +3,7 @@ package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.entity.Account;
 import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.ExpenseView;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -22,7 +22,7 @@ public class AccountControllerTest extends BaseControllerTest {
         Set<Category> categories = account.getCategories();
         assertNotNull(categories);
         assertEquals(2, categories.stream().map(Category::getName).filter(s -> s.matches("Groceries|Rent")).count());
-        Set<Expense> expenses = account.getExpenses();
+        Set<ExpenseView> expenses = account.getExpenses();
         assertNotNull(expenses);
     }
 

@@ -105,7 +105,6 @@
                             <include>**/LabelDaoTest</include>
                             <include>**/CategoryDaoTest</include>
                             <include>**/ExpenseDaoTest</include>
-                            <include>**/LabelDaoTest</include>
                             <include>**/ExpenseViewDaoTest</include>
 
                             <include>**/WebSecurityTest</include>
