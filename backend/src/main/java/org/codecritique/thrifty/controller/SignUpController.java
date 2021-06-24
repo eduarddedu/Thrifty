@@ -1,11 +1,7 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.AccountDao;
-import org.codecritique.thrifty.dao.UserDao;
-import org.codecritique.thrifty.entity.Account;
-import org.codecritique.thrifty.entity.User;
+import org.codecritique.thrifty.service.UserService;
 import org.codecritique.thrifty.exception.InvalidPasswordException;
-import org.codecritique.thrifty.validators.Passwords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
@@ -16,11 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class SignUpController {
+public class SignUpController extends BaseController {
     @Autowired
-    private UserDao userDao;
-    @Autowired
-    private AccountDao accountDao;
+    private UserService users;
 
     @PostMapping(path = "register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createUser(@RequestParam String username,
@@ -28,11 +22,7 @@ public class SignUpController {
                              @RequestParam long accountId,
                              Model m) {
         try {
-            User user = new User(username, Passwords.validateAndEncode(password), accountId);
-            if (user.getAccountId() == 0) {
-                user.setAccountId(accountDao.save(new Account()).getId());
-            }
-            userDao.save(user);
+            users.createUser(username, password, accountId);
             m.addAttribute("hasCompletedRegistration", true);
             return "registerForm";
         } catch (InvalidPasswordException passwordException) {

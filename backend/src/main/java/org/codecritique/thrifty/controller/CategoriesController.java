@@ -17,6 +17,7 @@ public class CategoriesController extends BaseController {
     @Autowired
     private CategoryDao dao;
 
+    //@PreAuthorize("#principal.accountId == '1'")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
         dao.store(category);

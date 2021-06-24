@@ -28,22 +28,31 @@ import java.net.URI;
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BaseSecurityTest {
+    private final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
     @Autowired
     protected Environment env;
     protected RestTemplate customTemplate;
     protected CookieStore cookieStore = new BasicCookieStore();
     @LocalServerPort
     protected int port;
-    protected String webAppBaseUrl;
+    protected String baseUrl;
+    protected User mockUser;
 
     protected void setBaseUrl() {
-        this.webAppBaseUrl = "http://localhost:" + port + "/thrifty/";
+        this.baseUrl = "http://localhost:" + port + "/thrifty/";
     }
 
     @BeforeAll
     void init() {
         initCustomRestTemplate();
         setBaseUrl();
+        setMockUser();
+    }
+
+    private void setMockUser() {
+        mockUser = new User();
+        mockUser.setUsername("johndoe@example.com");
+        mockUser.setPassword("password");
     }
 
     protected void initCustomRestTemplate() {
@@ -59,31 +68,36 @@ public class BaseSecurityTest {
         }
     }
 
-    protected String getXsrfToken() {
+    private String getXsrfToken() {
         Cookie xsrfCookie = cookieStore.getCookies().stream()
                 .filter(c -> c.getName().equalsIgnoreCase("xsrf-token")).findAny()
                 .orElseThrow(() -> new RuntimeException("Missing xsrf token"));
         return xsrfCookie.getValue();
     }
 
-    protected void login(String username, String password) {
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("username", username);
-        map.add("password", password);
+    protected HttpHeaders addXsrfHeader(HttpHeaders headers) {
+        headers.add(XSRF_HEADER_NAME, getXsrfToken());
+        return headers;
+    }
 
-        customTemplate.getForEntity(webAppBaseUrl + "login", String.class);
+    protected void login(User user) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("username", user.getUsername());
+        map.add("password", user.getPassword());
+
+        customTemplate.getForEntity(baseUrl + "login", String.class);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-XSRF-TOKEN", getXsrfToken());
 
         HttpEntity<MultiValueMap<String, String>> submitFormRequest = new HttpEntity<>(map, headers);
 
-        customTemplate.postForEntity(webAppBaseUrl + "login", submitFormRequest, String.class);
+        customTemplate.postForEntity(baseUrl + "login", submitFormRequest, String.class);
     }
 
     protected void logout() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-XSRF-TOKEN", getXsrfToken());
         HttpEntity<MultiValueMap<String, String>> signOutRequest = new HttpEntity<>(null, headers);
-        customTemplate.postForEntity(URI.create(webAppBaseUrl + "logout"), signOutRequest, String.class);
+        customTemplate.postForEntity(URI.create(baseUrl + "logout"), signOutRequest, String.class);
     }
 }

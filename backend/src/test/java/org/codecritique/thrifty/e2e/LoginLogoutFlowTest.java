@@ -10,14 +10,14 @@ public class LoginLogoutFlowTest extends BaseSecurityTest {
 
     @Test
     public void unauthenticatedRequestsShouldGetRedirectedToLoginUrl() {
-        ResponseEntity<String> homepageResponse = customTemplate.getForEntity(webAppBaseUrl, String.class);
+        ResponseEntity<String> homepageResponse = customTemplate.getForEntity(baseUrl, String.class);
         assertThat(homepageResponse.getBody()).contains("<title>Sign in</title>");
     }
 
     @Test
     public void shouldLoginThenGetHomePageThenLogout() {
-        login("johndoe@example.com", "password");
-        ResponseEntity<String> homePageResponse = customTemplate.getForEntity(webAppBaseUrl, String.class);
+        login(mockUser);
+        ResponseEntity<String> homePageResponse = customTemplate.getForEntity(baseUrl, String.class);
         assertThat(homePageResponse.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
         assertThat(homePageResponse.getBody()).contains("<title>Thrifty</title>");
         logout();

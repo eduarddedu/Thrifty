@@ -6,7 +6,6 @@ public enum Resource {
     EXPENSE("http://localhost:8080/rest-api/expenses/", Expense.class),
     CATEGORY("http://localhost:8080/rest-api/categories/", Category.class),
     LABEL("http://localhost:8080/rest-api/labels/", Label.class),
-    USER("http://localhost:8080/rest-api/user/", User.class),
     ACCOUNT("http://localhost:8080/rest-api/account/", Account.class);
 
     Resource(String url, Class<? extends BaseEntity> klass) {

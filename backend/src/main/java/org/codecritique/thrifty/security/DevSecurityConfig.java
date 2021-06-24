@@ -1,20 +1,19 @@
 package org.codecritique.thrifty.security;
 
-import org.codecritique.thrifty.dao.UserDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,38 +21,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Profile("dev")
 @Configuration
 @EnableWebSecurity(debug = false)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserDao userDao;
-
-    private final UserDetailsService userDetailsService = new UserDetailsService() {
-        @Override
-        public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-            org.codecritique.thrifty.entity.User user = userDao.findByUsernameIgnoreCase(s);
-            if (user == null)
-                throw new UsernameNotFoundException(s);
-            return User.builder()
-                    .username(user.getUsername())
-                    .password(user.getPassword())
-                    .roles("USER").build();
-        }
-    };
 
     private CookieCsrfTokenRepository cookieCsrfTokenRepository() {
         CookieCsrfTokenRepository r = new CookieCsrfTokenRepository();
         r.setCookieHttpOnly(false);
         r.setCookiePath("/");
         return r;
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(userDetailsService);
-        auth.authenticationProvider(daoProvider);
     }
 
     @Override
@@ -76,7 +57,7 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
@@ -88,7 +69,7 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    WebMvcConfigurer mvcConfigurer() {
+    public WebMvcConfigurer mvcConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addViewControllers(ViewControllerRegistry registry) {
@@ -97,4 +78,13 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        List<AccessDecisionVoter<? extends Object>> decisionVoters
+                = Arrays.asList(
+                new WebExpressionVoter(),
+                new RoleVoter(),
+                new AuthenticatedVoter());
+        return new UnanimousBased(decisionVoters);
+    }
 }

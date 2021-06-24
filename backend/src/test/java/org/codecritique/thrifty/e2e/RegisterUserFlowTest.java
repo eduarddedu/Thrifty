@@ -15,12 +15,11 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
     private final String registrationCompletedSuccessMessage = "Your account has been created";
 
     private ResponseEntity<String> register(User user) {
-        String url = webAppBaseUrl + "register";
+        String url = baseUrl + "register";
         ResponseEntity<String> registerPageResponse = customTemplate.getForEntity(url, String.class);
         assertThat(registerPageResponse.getBody()).contains("<title>Sign up</title>");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-XSRF-TOKEN", getXsrfToken());
+        HttpHeaders headers = addXsrfHeader(new HttpHeaders());
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("username", user.getUsername());
@@ -38,9 +37,9 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
         ResponseEntity<String> submitFormResponse = register(jane);
         assertThat(submitFormResponse.getBody()).contains(registrationCompletedSuccessMessage);
 
-        login(jane.getUsername(), jane.getPassword());
+        login(jane);
 
-        ResponseEntity<String> homePageResponse = customTemplate.getForEntity(webAppBaseUrl, String.class);
+        ResponseEntity<String> homePageResponse = customTemplate.getForEntity(baseUrl, String.class);
         assertThat(homePageResponse.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
         assertThat(homePageResponse.getBody()).contains("<title>Thrifty</title>");
 

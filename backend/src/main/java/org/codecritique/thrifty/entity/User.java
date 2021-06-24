@@ -1,29 +1,22 @@
 package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Entity
 @Table(name = "User", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
-public class User extends BaseEntity {
-    /**
-     * The email address of the user serves as the login username
-     */
+public class User extends BaseEntity implements UserDetails {
     @NotNull
     @Email(message = "Invalid email: '${validatedValue}'")
     private String username;
 
-    /**
-     * The password hash based on the chosen encoding algorithm
-     */
     @NotNull
-    @JsonIgnore
     private String password;
 
     @Column(name = "account_id")
@@ -38,6 +31,8 @@ public class User extends BaseEntity {
         this.accountId = accountId;
     }
 
+    @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -46,6 +41,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -62,5 +58,39 @@ public class User extends BaseEntity {
         return accountId;
     }
 
+    @JsonIgnore
+    @Transient
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Transient
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Transient
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Transient
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Transient
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
 }
