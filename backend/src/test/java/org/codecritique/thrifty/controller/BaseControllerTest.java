@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser
+@WithMockUser(authorities = {"1"})
 public abstract class BaseControllerTest extends MockMvcTest {
 
     protected final ObjectMapper mapper;

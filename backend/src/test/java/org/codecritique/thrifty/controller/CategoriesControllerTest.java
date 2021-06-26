@@ -4,6 +4,7 @@ import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.codecritique.thrifty.Generator.categorySupplier;
 import static org.codecritique.thrifty.Generator.stringSupplier;
@@ -21,7 +22,17 @@ class CategoriesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenCategoryNameIsEmptyString() throws Exception {
+    void shouldReturnForbiddenOnCreateCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
+        Category category = categorySupplier.get();
+        category.setAccountId(100);
+        String json = mapper.writeValueAsString(category);
+        mockMvc.perform(post(Resource.CATEGORY.url).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnBadRequestOnCreateCategoryWhenCategoryNameIsEmptyString() throws Exception {
         Category category = categorySupplier.get();
         category.setName("");
         mockMvc.perform(post(Resource.CATEGORY.url)
@@ -32,11 +43,12 @@ class CategoriesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenCategoryNameIsDuplicate() throws Exception {
+    void shouldReturnBadRequestOnCreateCategoryWhenCategoryNameIsDuplicate() throws Exception {
         Category original = createCategory();
         Category duplicate = new Category();
         duplicate.setName(original.getName());
         duplicate.setDescription("description");
+        duplicate.setAccountId(1);
         mockMvc.perform(post(Resource.CATEGORY.url)
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -58,6 +70,20 @@ class CategoriesControllerTest extends BaseControllerTest {
         category.setName(stringSupplier.get());
         category.setDescription(stringSupplier.get());
         assertEquals(category, updateAndGetEntity(category, Resource.CATEGORY));
+    }
+
+    @Test
+    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnUpdateCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
+        Category category = new Category();
+        category.setAccountId(1);
+        category.setName("Rent");
+        category.setDescription("Rent"); // in test-data.sql
+        String json = mapper.writeValueAsString(category);
+
+        mockMvc.perform(put(Resource.CATEGORY.url).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -83,6 +109,14 @@ class CategoriesControllerTest extends BaseControllerTest {
         //verify
         mockMvc.perform(get(Resource.CATEGORY.url + category.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnRemoveCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
+        mockMvc.perform(delete(Resource.CATEGORY.url + 1)
+                .with(csrf()))
+                .andExpect(status().isForbidden());
     }
 }
 

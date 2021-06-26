@@ -1,5 +1,7 @@
 package org.codecritique.thrifty.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -63,5 +65,9 @@ public class Account extends BaseEntity {
     public Set<ExpenseView> getExpenses() {
         return expenses;
     }
+
+    @Override
+    @JsonIgnore
+    public Long getAccountId() { return id; }
 
 }

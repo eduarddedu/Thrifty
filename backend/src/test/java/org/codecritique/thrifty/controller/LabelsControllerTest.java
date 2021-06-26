@@ -4,13 +4,13 @@ import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
+import static org.codecritique.thrifty.Generator.labelSupplier;
 import static org.codecritique.thrifty.Generator.stringSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,9 +23,21 @@ class LabelsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenLabelNameIsEmptyString() throws Exception {
+    void shouldReturnForbiddenOnCreateLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
+        Label label = labelSupplier.get();
+        label.setAccountId(100);
+        String json = mapper.writeValueAsString(label);
+        mockMvc.perform(post(Resource.LABEL.url).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    void shouldReturnBadRequestOnCreateLabelWhenLabelNameIsEmptyString() throws Exception {
         Label label = new Label();
         label.setName("");
+        label.setAccountId(1);
         mockMvc.perform(post(Resource.LABEL.url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
@@ -34,10 +46,11 @@ class LabelsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenLabelNameIsDuplicate() throws Exception {
+    void shouldReturnBadRequestOnCreateLabelWhenLabelNameIsDuplicate() throws Exception {
         Label original = createLabel();
         Label duplicate = new Label();
         duplicate.setName(original.getName());
+        duplicate.setAccountId(1);
         mockMvc.perform(post(Resource.LABEL.url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
@@ -106,6 +119,14 @@ class LabelsControllerTest extends BaseControllerTest {
                 .andExpect(status().isNotFound());
         Expense updated = (Expense) getEntity(Resource.EXPENSE, expense.getId());
         assertFalse(updated.getLabels().contains(label));
+    }
+
+    @Test
+    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnRemoveLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
+        mockMvc.perform(delete(Resource.LABEL.url + 1)
+                .with(csrf()))
+                .andExpect(status().isForbidden());
     }
 
 }

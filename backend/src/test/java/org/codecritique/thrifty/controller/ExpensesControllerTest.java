@@ -5,6 +5,7 @@ import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.Expense;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,8 +14,7 @@ import java.util.List;
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,7 +26,18 @@ class ExpensesControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestOnCreateExpenseMissingCategory() throws Exception {
+    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnCreateExpenseWhenExpenseAccountIdDoesNotEqualUserAccountId() throws Exception {
+        Expense expense = expenseSupplier.get();
+        assertEquals(1, expense.getAccountId());
+        String json = mapper.writeValueAsString(expense);
+        mockMvc.perform(post(Resource.EXPENSE.url).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnBadRequestOnCreateExpenseWhenCategoryIsNull() throws Exception {
         Expense expense = expenseSupplier.get();
         assertNull(expense.getCategory());
         String json = mapper.writeValueAsString(expense);
@@ -137,5 +148,13 @@ class ExpensesControllerTest extends BaseControllerTest {
         deleteEntity(Resource.EXPENSE, expense.getId());
         mockMvc.perform(get(Resource.EXPENSE.url + expense.getId()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnRemoveExpenseWhenExpenseAccountIdDoesNotEqualUserAccountId() throws Exception {
+        mockMvc.perform(delete(Resource.EXPENSE.url + 1)
+                .with(csrf()))
+                .andExpect(status().isForbidden());
     }
 }

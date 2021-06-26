@@ -20,4 +20,6 @@ public abstract class BaseEntity implements Serializable {
         return id;
     }
 
+    public abstract Long getAccountId();
+
 }

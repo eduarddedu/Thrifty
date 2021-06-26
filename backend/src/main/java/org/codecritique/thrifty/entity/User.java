@@ -2,12 +2,14 @@ package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "User", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
@@ -29,6 +31,12 @@ public class User extends BaseEntity implements UserDetails {
         this.username = username;
         this.password = password;
         this.accountId = accountId;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getId() {
+        return id;
     }
 
     @Override
@@ -90,7 +98,8 @@ public class User extends BaseEntity implements UserDetails {
     @Transient
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return accountId == null ? null :
+                Collections.singleton(new SimpleGrantedAuthority(accountId.toString()));
     }
 
 }

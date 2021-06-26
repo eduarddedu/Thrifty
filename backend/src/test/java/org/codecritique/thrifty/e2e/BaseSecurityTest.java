@@ -28,7 +28,7 @@ import java.net.URI;
 @ActiveProfiles("dev")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BaseSecurityTest {
-    private final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
+    protected final String XSRF_HEADER_NAME = "X-XSRF-TOKEN";
     @Autowired
     protected Environment env;
     protected RestTemplate customTemplate;
@@ -53,6 +53,7 @@ public class BaseSecurityTest {
         mockUser = new User();
         mockUser.setUsername("johndoe@example.com");
         mockUser.setPassword("password");
+        mockUser.setAccountId(1);
     }
 
     protected void initCustomRestTemplate() {
@@ -68,7 +69,7 @@ public class BaseSecurityTest {
         }
     }
 
-    private String getXsrfToken() {
+    protected String getXsrfTokenValue() {
         Cookie xsrfCookie = cookieStore.getCookies().stream()
                 .filter(c -> c.getName().equalsIgnoreCase("xsrf-token")).findAny()
                 .orElseThrow(() -> new RuntimeException("Missing xsrf token"));
@@ -76,7 +77,7 @@ public class BaseSecurityTest {
     }
 
     protected HttpHeaders addXsrfHeader(HttpHeaders headers) {
-        headers.add(XSRF_HEADER_NAME, getXsrfToken());
+        headers.add(XSRF_HEADER_NAME, getXsrfTokenValue());
         return headers;
     }
 
@@ -87,7 +88,7 @@ public class BaseSecurityTest {
 
         customTemplate.getForEntity(baseUrl + "login", String.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-XSRF-TOKEN", getXsrfToken());
+        headers.add("X-XSRF-TOKEN", getXsrfTokenValue());
 
         HttpEntity<MultiValueMap<String, String>> submitFormRequest = new HttpEntity<>(map, headers);
 
@@ -96,7 +97,7 @@ public class BaseSecurityTest {
 
     protected void logout() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-XSRF-TOKEN", getXsrfToken());
+        headers.add("X-XSRF-TOKEN", getXsrfTokenValue());
         HttpEntity<MultiValueMap<String, String>> signOutRequest = new HttpEntity<>(null, headers);
         customTemplate.postForEntity(URI.create(baseUrl + "logout"), signOutRequest, String.class);
     }

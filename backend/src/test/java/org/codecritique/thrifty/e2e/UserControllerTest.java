@@ -21,5 +21,6 @@ public class UserControllerTest extends BaseSecurityTest {
         assertNotNull(user);
         assertEquals(mockUser.getUsername(), user.getUsername());
         assertNull(user.getPassword());
+        logout();
     }
 }

@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -17,7 +21,7 @@ public class CategoriesController extends BaseController {
     @Autowired
     private CategoryDao dao;
 
-    //@PreAuthorize("#principal.accountId == '1'")
+    @PreAuthorize("hasAuthority(#category.accountId)")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
         dao.store(category);
@@ -26,17 +30,20 @@ public class CategoriesController extends BaseController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority(#category.accountId)")
     public ResponseEntity<Resource> updateCategory(@RequestBody Category category) {
         dao.updateCategory(category);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Category> getCategory(@PathVariable long id) {
+    public ResponseEntity<Category> getCategory(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
         Category category = dao.getCategory(id);
         if (category == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(category);
+        if (hasAuthority(userDetails, category))
+            return ResponseEntity.ok(category);
+        throw new AccessDeniedException("Access is denied");
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,11 +52,14 @@ public class CategoriesController extends BaseController {
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Resource> removeCategory(@PathVariable long id) {
+    public ResponseEntity<Resource> removeCategory(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
         Category category = dao.getCategory(id);
         if (category == null)
             return ResponseEntity.notFound().build();
-        dao.removeCategory(id);
-        return ResponseEntity.ok().build();
+        if (hasAuthority(userDetails, category)) {
+            dao.removeCategory(id);
+            return ResponseEntity.ok().build();
+        }
+        throw new AccessDeniedException("Access is denied");
     }
 }
