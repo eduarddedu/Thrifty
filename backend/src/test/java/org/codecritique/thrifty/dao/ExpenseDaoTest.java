@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import static org.codecritique.thrifty.Generator.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,25 +118,6 @@ class ExpenseDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldGetExpensesForInterval() {
-        LocalDate startDate = LocalDate.of(2020, 1, 1);
-        LocalDate endDate = LocalDate.of(2020, 12, 31);
-        Category category = categorySupplier.get();
-        categoryDao.store(category);
-        List<Expense> expensesBetweenDates = new ArrayList<>();
-        int numEntities = 5;
-        for (int i = 0; i < numEntities; i++) {
-            Expense expense = expenseSupplier.get();
-            expense.setCategory(category);
-            expense.setCreatedOn(dateSupplier.get().withYear(2020));
-            expensesBetweenDates.add(expense);
-            expenseDao.store(expense);
-        }
-        List<Expense> responseExpenses = expenseDao.getExpensesForPeriod(startDate, endDate);
-        assertTrue(responseExpenses.containsAll(expensesBetweenDates));
-    }
-
-    @Test
     void shouldUpdateExpense() {
         //setup
         Category c = createAndStoreCategory();
@@ -184,13 +163,13 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     }
 
-    @Test
+   /* @Test
     void shouldGetTotalExpensesAmount() {
         List<Expense> allExpenses = expenseDao.getExpenses();
         BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
         BigDecimal actualTotalAmount = expenseDao.getTotalExpenseAmount();
         assertEquals(expectedTotalAmount, actualTotalAmount);
-    }
+    }*/
 
     @Test
     void shouldAllowAmountWith_7_IntegerAnd_2_FractionalDigits() {

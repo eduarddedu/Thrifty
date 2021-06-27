@@ -3,8 +3,6 @@ package org.codecritique.thrifty.dao;
 import org.codecritique.thrifty.entity.Expense;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -31,23 +29,6 @@ public class ExpenseDaoBean extends BaseDao implements ExpenseDao {
     }
 
     @Override
-    public List<Expense> getExpensesForPeriod(LocalDate startDate, LocalDate endDate) {
-        String sql = "Select e from Expense e where e.createdOn >= :startDate and e.createdOn <= :endDate " +
-                "order by e.createdOn DESC";
-        return em.createQuery(sql, Expense.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
-                .getResultList();
-    }
-
-    @Override
-    public List<Expense> getExpensesForYear(int year) {
-        LocalDate startDate = LocalDate.of(year, 1, 1);
-        LocalDate endDate = LocalDate.of(year, 12, 31);
-        return getExpensesForPeriod(startDate, endDate);
-    }
-
-    @Override
     public void removeExpense(long id) {
         Expense expense = em.find(Expense.class, id);
         if (expense != null)
@@ -59,8 +40,4 @@ public class ExpenseDaoBean extends BaseDao implements ExpenseDao {
         super.update(expense);
     }
 
-    @Override
-    public BigDecimal getTotalExpenseAmount() {
-        return (BigDecimal) em.createNativeQuery("Select SUM(AMOUNT) AS Total from Expense").getSingleResult();
-    }
 }

@@ -19,13 +19,13 @@ public interface ExpenseDao {
 
     List<Expense> getExpenses();
 
-    List<Expense> getExpensesForPeriod(LocalDate startDate, LocalDate endDate);
-
-    List<Expense> getExpensesForYear(int year);
-
     void removeExpense(long id);
 
     void updateExpense(Expense e);
 
-    BigDecimal getTotalExpenseAmount();
+   /* BigDecimal getTotalExpenseAmount();
+
+    List<Expense> getExpensesForPeriod(LocalDate startDate, LocalDate endDate);
+
+    List<Expense> getExpensesForYear(int year);*/
 }
