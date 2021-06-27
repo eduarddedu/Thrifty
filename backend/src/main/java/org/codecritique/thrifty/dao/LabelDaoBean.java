@@ -5,10 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
 @Service
 public class LabelDaoBean extends BaseDao implements LabelDao {
 

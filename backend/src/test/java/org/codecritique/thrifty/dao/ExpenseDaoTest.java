@@ -19,10 +19,10 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
     void shouldStoreExpense() {
-        Category category = createAndStoreCategory();
+        Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        Label label = createAndStoreLabel();
+        Label label = createAndGetLabel();
         expense.addLabel(label);
         expenseDao.store(expense);
 
@@ -33,7 +33,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldGetExpense() {
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expenseDao.store(expense);
         assertEquals(expense, expenseDao.getExpense(expense.getId()));
     }
@@ -42,9 +42,9 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldAddLabelToExpense() {
         //setup
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expenseDao.store(expense);
-        Label label = createAndStoreLabel();
+        Label label = createAndGetLabel();
 
         //exercise
         expense.addLabel(label);
@@ -60,12 +60,12 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
     void shouldSetCategory() {
-        Category category = createAndStoreCategory();
+        Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
         expenseDao.store(expense);
 
-        Category category2 = createAndStoreCategory();
+        Category category2 = createAndGetCategory();
 
         //exercise
         expense.setCategory(category2);
@@ -85,7 +85,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         labelDao.store(label2);
 
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expense.setLabels(Arrays.asList(label, label2));
         expenseDao.store(expense);
 
@@ -102,7 +102,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldGetExpensesSortedByDateDescending() {
         int numEntities = 5;
-        Category category = createAndStoreCategory();
+        Category category = createAndGetCategory();
         for (int i = 0; i < numEntities; i++) {
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
@@ -120,7 +120,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldUpdateExpense() {
         //setup
-        Category c = createAndStoreCategory();
+        Category c = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(c);
         expenseDao.store(expense);
@@ -129,8 +129,8 @@ class ExpenseDaoTest extends BaseDaoTest {
         expense.setCreatedOn(dateSupplier.get());
         expense.setAmount(new BigDecimal("17.23"));
         expense.setDescription(stringSupplier.get());
-        expense.setCategory(createAndStoreCategory());
-        expense.addLabel(createAndStoreLabel());
+        expense.setCategory(createAndGetCategory());
+        expense.addLabel(createAndGetLabel());
         expenseDao.updateExpense(expense);
 
         //verify
@@ -140,11 +140,11 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldRemoveExpense() {
         //setup
-        Category category = createAndStoreCategory();
+        Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
 
-        Label label = createAndStoreLabel();
+        Label label = createAndGetLabel();
         expense.addLabel(label);
         expenseDao.store(expense);
 
@@ -175,7 +175,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldAllowAmountWith_7_IntegerAnd_2_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.00");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         expenseDao.store(expense);
     }
@@ -184,7 +184,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldNotAllowAmountWith_8_IntegerDigits() {
         BigDecimal amount = new BigDecimal("12345678.00");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
     }
@@ -193,7 +193,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldNotAllowAmountWith_3_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.001");
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
     }

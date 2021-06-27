@@ -15,7 +15,7 @@ public class AccountControllerTest extends BaseControllerTest {
 
     @Test
     public void shouldGetTestAccount() throws Exception {
-        Account account = (Account) getEntity(Resource.ACCOUNT, 1L);
+        Account account = (Account) getEntity(Account.class, 1L);
         assertNotNull(account);
         assertEquals("Daily expenses", account.getName());
         assertEquals("English", account.getLanguage());

@@ -4,11 +4,6 @@ import org.codecritique.thrifty.entity.Category;
 
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
-
 public interface CategoryDao {
 
     void store(Category o);

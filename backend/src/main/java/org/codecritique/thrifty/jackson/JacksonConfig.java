@@ -9,10 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
-/**
- * @author Eduard Dedu
- */
-
 @Configuration
 public class JacksonConfig {
 

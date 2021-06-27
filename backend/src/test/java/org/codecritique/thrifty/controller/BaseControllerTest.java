@@ -2,16 +2,16 @@ package org.codecritique.thrifty.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codecritique.thrifty.MockMvcTest;
-import org.codecritique.thrifty.entity.BaseEntity;
-import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.Expense;
-import org.codecritique.thrifty.entity.Label;
+import org.codecritique.thrifty.entity.*;
 import org.codecritique.thrifty.jackson.JacksonConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.util.UriTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.codecritique.thrifty.Generator.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -21,64 +21,82 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WithMockUser(authorities = {"1"})
 public abstract class BaseControllerTest extends MockMvcTest {
-
+    private final Map<Class<? extends BaseEntity>, String> mapEntityClassToUrl = new HashMap<>();
     protected final ObjectMapper mapper;
 
     BaseControllerTest() {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(JacksonConfig.class);
         mapper = ctx.getBean(ObjectMapper.class);
+
+        String base = "http://localhost:8080/rest-api/";
+        mapEntityClassToUrl.put(Expense.class, base.concat("expenses/"));
+        mapEntityClassToUrl.put(Category.class, base.concat("categories/"));
+        mapEntityClassToUrl.put(Label.class, base.concat("labels/"));
+        mapEntityClassToUrl.put(Account.class, base.concat("account/"));
     }
 
-    protected Expense createExpense() throws Exception {
+    protected Expense createAndGetExpense() throws Exception {
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createCategory());
-        return (Expense) createEntity(expense);
+        expense.setCategory(createAndGetCategory());
+        return createAndGetEntity(expense);
     }
 
-    protected Category createCategory() throws Exception {
-        return (Category) createEntity(categorySupplier.get());
+    protected Category createAndGetCategory() throws Exception {
+        return createAndGetEntity(categorySupplier.get());
     }
 
-    protected Label createLabel() throws Exception {
-        return (Label) createEntity(labelSupplier.get());
+    protected Label createAndGetLabel() throws Exception {
+        return createAndGetEntity(labelSupplier.get());
     }
 
-    protected BaseEntity createEntity(BaseEntity entity) throws Exception {
+    @SuppressWarnings("unchecked")
+    protected <T extends BaseEntity> T createAndGetEntity(T entity) throws Exception {
         String json = mapper.writeValueAsString(entity);
+        String url = mapEntityClassToUrl.get(entity.getClass());
 
-        Resource resource = Resource.resolveEntityClass(entity.getClass());
-
-        String url = mockMvc.perform(post(resource.url).with(csrf())
+        String location = mockMvc.perform(post(url).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated())
-                .andExpect(redirectedUrlPattern(resource.url + "*"))
+                .andExpect(redirectedUrlPattern(url + "*"))
                 .andReturn().getResponse().getHeader("Location");
 
-        UriTemplate template = new UriTemplate(resource.url + "{id}");
-        long id = Long.parseLong(template.match(url).get("id"));
+        UriTemplate template = new UriTemplate(url + "{id}");
+        assert location != null;
+        long id = Long.parseLong(template.match(location).get("id"));
 
-        return getEntity(resource, id);
+        return (T) getEntity(entity.getClass(), id);
     }
 
-    protected BaseEntity updateAndGetEntity(BaseEntity entity, Resource resource) throws Exception {
-        String json = mapper.writeValueAsString(entity);
 
-        mockMvc.perform(put(resource.url).with(csrf())
+    @SuppressWarnings("unchecked")
+    protected <T extends BaseEntity> T updateAndGetEntity(T entity) throws Exception {
+        String json = mapper.writeValueAsString(entity);
+        String url = mapEntityClassToUrl.get(entity.getClass());
+        mockMvc.perform(put(url).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isOk());
-        return getEntity(resource, entity.getId());
+        return (T) getEntity(entity.getClass(), entity.getId());
     }
 
-    protected BaseEntity getEntity(Resource resource, Long id) throws Exception {
-        String url = id == null ? resource.url : resource.url + id;
+    protected <T extends BaseEntity> T getEntity(Class<T> klass, Long id) throws Exception {
+        String url = getUrl(klass, id);
         String json = mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        return mapper.readValue(json, resource.klass);
+        return mapper.readValue(json, klass);
     }
 
-    protected void deleteEntity(Resource resource, long id) throws Exception {
-        mockMvc.perform(delete(resource.url + id).with(csrf())).andExpect(status().isOk());
+    protected void deleteEntity(Class<? extends BaseEntity> klass, long id) throws Exception {
+        String url = mapEntityClassToUrl.get(klass) + id;
+        mockMvc.perform(delete(url).with(csrf())).andExpect(status().isOk());
+    }
+
+    protected String getUrl(Class<? extends BaseEntity> klass) {
+        return mapEntityClassToUrl.get(klass);
+    }
+
+    protected String getUrl(Class<? extends BaseEntity> klass, long id) {
+        return mapEntityClassToUrl.get(klass).concat(id + "");
     }
 
 }

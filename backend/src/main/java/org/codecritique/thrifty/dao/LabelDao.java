@@ -4,11 +4,6 @@ import org.codecritique.thrifty.entity.Label;
 
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
-
 public interface LabelDao {
 
     void store(Label label);

@@ -14,7 +14,7 @@ class LabelDaoTest extends BaseDaoTest {
 
     @Test
     void shouldCreateLabel() {
-        Label label = createAndStoreLabel();
+        Label label = createAndGetLabel();
         assertEquals(label, labelDao.getLabel(label.getId()));
     }
 
@@ -39,8 +39,8 @@ class LabelDaoTest extends BaseDaoTest {
     @Test
     void shouldUpdateLabel() {
         //setup
-        Label label = createAndStoreLabel();
-        Expense expense = createAndStoreExpense();
+        Label label = createAndGetLabel();
+        Expense expense = createAndGetExpense();
         expense.addLabel(label);
 
         //exercise
@@ -59,7 +59,7 @@ class LabelDaoTest extends BaseDaoTest {
 
     @Test
     void shouldRemoveLabel() {
-        Label label = createAndStoreLabel();
+        Label label = createAndGetLabel();
         assertNotNull(labelDao.getLabel(label.getId()));
         labelDao.removeLabel(label.getId());
         assertNull(labelDao.getLabel(label.getId()));
@@ -68,8 +68,8 @@ class LabelDaoTest extends BaseDaoTest {
     @Test
     void shouldRemoveLabelLinkedToExpense() {
         // setup
-        Expense expense = createAndStoreExpense();
-        Label label = createAndStoreLabel();
+        Expense expense = createAndGetExpense();
+        Label label = createAndGetLabel();
         expense.addLabel(label);
         expenseDao.updateExpense(expense);
 

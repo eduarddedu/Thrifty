@@ -19,7 +19,7 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldCreateLabel() throws Exception {
-        createLabel();
+        createAndGetLabel();
     }
 
     @Test
@@ -27,7 +27,7 @@ class LabelsControllerTest extends BaseControllerTest {
         Label label = labelSupplier.get();
         label.setAccountId(100);
         String json = mapper.writeValueAsString(label);
-        mockMvc.perform(post(Resource.LABEL.url).with(csrf())
+        mockMvc.perform(post(getUrl(Label.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isForbidden());
     }
@@ -38,7 +38,7 @@ class LabelsControllerTest extends BaseControllerTest {
         Label label = new Label();
         label.setName("");
         label.setAccountId(1);
-        mockMvc.perform(post(Resource.LABEL.url)
+        mockMvc.perform(post(getUrl(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 .content(mapper.writeValueAsString(label)))
@@ -47,11 +47,11 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestOnCreateLabelWhenLabelNameIsDuplicate() throws Exception {
-        Label original = createLabel();
+        Label original = createAndGetLabel();
         Label duplicate = new Label();
         duplicate.setName(original.getName());
         duplicate.setAccountId(1);
-        mockMvc.perform(post(Resource.LABEL.url)
+        mockMvc.perform(post(getUrl(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 .content(mapper.writeValueAsString(duplicate)))
@@ -60,7 +60,7 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldGetLabels() throws Exception {
-        mockMvc.perform(get(Resource.LABEL.url))
+        mockMvc.perform(get(getUrl(Label.class)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
@@ -68,63 +68,63 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldUpdateLabel() throws Exception {
-        Label label = createLabel();
+        Label label = createAndGetLabel();
         //exercise
         label.setName(stringSupplier.get());
         //verify
-        assertEquals(label, updateAndGetEntity(label, Resource.LABEL));
+        assertEquals(label, updateAndGetEntity(label));
     }
 
     @Test
     void shouldReflectLabelUpdateOnRelatedExpenses() throws Exception {
         //setup
-        Expense expense = createExpense();
+        Expense expense = createAndGetExpense();
         assertTrue(expense.getLabels().isEmpty());
-        Label label = createLabel();
+        Label label = createAndGetLabel();
         expense.addLabel(label);
-        updateAndGetEntity(expense, Resource.EXPENSE);
+        updateAndGetEntity(expense);
 
         //exercise
         label.setName(stringSupplier.get());
-        updateAndGetEntity(label, Resource.LABEL);
+        updateAndGetEntity(label);
 
         //verify
-        Expense sameExpense = (Expense) getEntity(Resource.EXPENSE, expense.getId());
+        Expense sameExpense = getEntity(Expense.class, expense.getId());
         assertEquals(expense, sameExpense);
     }
 
 
     @Test
     void shouldRemoveLabel() throws Exception {
-        Label label = createLabel();
-        deleteEntity(Resource.LABEL, label.getId());
-        mockMvc.perform(get(Resource.LABEL.url + label.getId()))
+        Label label = createAndGetLabel();
+        deleteEntity(Label.class, label.getId());
+        mockMvc.perform(get(getUrl(Label.class, label.getId())))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldRemoveLabelLinkedToExpense() throws Exception {
         //setup
-        Expense expense = createExpense();
+        Expense expense = createAndGetExpense();
         assertTrue(expense.getLabels().isEmpty());
-        Label label = createLabel();
+        Label label = createAndGetLabel();
         expense.addLabel(label);
-        updateAndGetEntity(expense, Resource.EXPENSE);
+        updateAndGetEntity(expense);
 
         //exercise
-        deleteEntity(Resource.LABEL, label.getId());
+        deleteEntity(Label.class, label.getId());
 
         //verify
-        mockMvc.perform(get(Resource.LABEL.url + label.getId()))
+        mockMvc.perform(get(getUrl(Label.class, label.getId())))
                 .andExpect(status().isNotFound());
-        Expense updated = (Expense) getEntity(Resource.EXPENSE, expense.getId());
+        Expense updated = getEntity(Expense.class, expense.getId());
         assertFalse(updated.getLabels().contains(label));
     }
 
     @Test
     @WithMockUser(authorities = "100")
     void shouldReturnForbiddenOnRemoveLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
-        mockMvc.perform(delete(Resource.LABEL.url + 1)
+        mockMvc.perform(delete((getUrl(Label.class, 1)))
                 .with(csrf()))
                 .andExpect(status().isForbidden());
     }

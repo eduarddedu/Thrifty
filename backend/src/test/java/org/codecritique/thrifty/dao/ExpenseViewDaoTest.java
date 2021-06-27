@@ -17,9 +17,9 @@ public class ExpenseViewDaoTest extends BaseDaoTest {
 
     @Test
     public void findById() {
-        Expense expense = createAndStoreExpense();
+        Expense expense = createAndGetExpense();
         for (int i = 0; i < 2; i++) {
-            expense.addLabel(createAndStoreLabel());
+            expense.addLabel(createAndGetLabel());
         }
         expenseDao.updateExpense(expense);
         ExpenseView view = expenseViewDao.findById(expense.getId());

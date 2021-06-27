@@ -16,20 +16,20 @@ public abstract class BaseDaoTest extends MockMvcTest {
     @Autowired
     protected LabelDao labelDao;
 
-    protected Expense createAndStoreExpense() {
+    protected Expense createAndGetExpense() {
         Expense expense = expenseSupplier.get();
-        expense.setCategory(createAndStoreCategory());
+        expense.setCategory(createAndGetCategory());
         expenseDao.store(expense);
         return expense;
     }
 
-    protected Category createAndStoreCategory() {
+    protected Category createAndGetCategory() {
         Category category = categorySupplier.get();
         categoryDao.store(category);
         return category;
     }
 
-    protected Label createAndStoreLabel() {
+    protected Label createAndGetLabel() {
         Label label = labelSupplier.get();
         labelDao.store(label);
         return label;

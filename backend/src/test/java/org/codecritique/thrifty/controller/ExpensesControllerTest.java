@@ -18,7 +18,7 @@ class ExpensesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldCreateExpense() throws Exception {
-        createExpense();
+        createAndGetExpense();
     }
 
     @Test
@@ -27,7 +27,7 @@ class ExpensesControllerTest extends BaseControllerTest {
         Expense expense = expenseSupplier.get();
         assertEquals(1, expense.getAccountId());
         String json = mapper.writeValueAsString(expense);
-        mockMvc.perform(post(Resource.EXPENSE.url).with(csrf())
+        mockMvc.perform(post(getUrl(Expense.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isForbidden());
     }
@@ -37,7 +37,7 @@ class ExpensesControllerTest extends BaseControllerTest {
         Expense expense = expenseSupplier.get();
         assertNull(expense.getCategory());
         String json = mapper.writeValueAsString(expense);
-        mockMvc.perform(post(Resource.EXPENSE.url)
+        mockMvc.perform(post(getUrl(Expense.class))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isBadRequest());
@@ -45,8 +45,8 @@ class ExpensesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnExpenses() throws Exception {
-        createExpense();
-        mockMvc.perform(get(Resource.EXPENSE.url))
+        createAndGetExpense();
+        mockMvc.perform(get(getUrl(Expense.class)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
@@ -54,38 +54,38 @@ class ExpensesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldUpdateExpenseAmount() throws Exception {
-        Expense expense = createExpense();
+        Expense expense = createAndGetExpense();
         expense.setAmount(expenseAmountSupplier.get());
-        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
+        assertEquals(expense, updateAndGetEntity(expense));
     }
 
     @Test
     void shouldUpdateExpenseCategory() throws Exception {
-        Expense expense = createExpense();
-        Category category = createCategory();
+        Expense expense = createAndGetExpense();
+        Category category = createAndGetCategory();
         expense.setCategory(category);
-        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
+        assertEquals(expense, updateAndGetEntity(expense));
     }
 
     @Test
     void shouldUpdateExpenseCreatedOn() throws Exception {
-        Expense expense = createExpense();
+        Expense expense = createAndGetExpense();
         expense.setCreatedOn(dateSupplier.get());
-        assertEquals(expense, updateAndGetEntity(expense, Resource.EXPENSE));
+        assertEquals(expense, updateAndGetEntity(expense));
     }
 
     @Test
     void shouldRemoveExpense() throws Exception {
-        Expense expense = createExpense();
-        deleteEntity(Resource.EXPENSE, expense.getId());
-        mockMvc.perform(get(Resource.EXPENSE.url + expense.getId()))
+        Expense expense = createAndGetExpense();
+        deleteEntity(Expense.class, expense.getId());
+        mockMvc.perform(get(getUrl(Expense.class, expense.getId())))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(authorities = "100")
     void shouldReturnForbiddenOnRemoveExpenseWhenExpenseAccountIdDoesNotEqualUserAccountId() throws Exception {
-        mockMvc.perform(delete(Resource.EXPENSE.url + 1)
+        mockMvc.perform(delete(getUrl(Expense.class, 1L))
                 .with(csrf()))
                 .andExpect(status().isForbidden());
     }

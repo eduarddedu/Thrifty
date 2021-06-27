@@ -18,7 +18,7 @@ class CategoriesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldCreateCategory() throws Exception {
-        createCategory();
+        createAndGetCategory();
     }
 
     @Test
@@ -26,7 +26,7 @@ class CategoriesControllerTest extends BaseControllerTest {
         Category category = categorySupplier.get();
         category.setAccountId(100);
         String json = mapper.writeValueAsString(category);
-        mockMvc.perform(post(Resource.CATEGORY.url).with(csrf())
+        mockMvc.perform(post(getUrl(Category.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isForbidden());
     }
@@ -35,7 +35,7 @@ class CategoriesControllerTest extends BaseControllerTest {
     void shouldReturnBadRequestOnCreateCategoryWhenCategoryNameIsEmptyString() throws Exception {
         Category category = categorySupplier.get();
         category.setName("");
-        mockMvc.perform(post(Resource.CATEGORY.url)
+        mockMvc.perform(post(getUrl(Category.class))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(category)))
@@ -44,12 +44,12 @@ class CategoriesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestOnCreateCategoryWhenCategoryNameIsDuplicate() throws Exception {
-        Category original = createCategory();
+        Category original = createAndGetCategory();
         Category duplicate = new Category();
         duplicate.setName(original.getName());
         duplicate.setDescription("description");
         duplicate.setAccountId(1);
-        mockMvc.perform(post(Resource.CATEGORY.url)
+        mockMvc.perform(post(getUrl(Category.class))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(duplicate)))
@@ -58,7 +58,7 @@ class CategoriesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldGetCategories() throws Exception {
-        mockMvc.perform(get(Resource.CATEGORY.url))
+        mockMvc.perform(get(getUrl(Category.class)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
@@ -66,10 +66,10 @@ class CategoriesControllerTest extends BaseControllerTest {
 
     @Test
     void shouldUpdateCategory() throws Exception {
-        Category category = createCategory();
+        Category category = createAndGetCategory();
         category.setName(stringSupplier.get());
         category.setDescription(stringSupplier.get());
-        assertEquals(category, updateAndGetEntity(category, Resource.CATEGORY));
+        assertEquals(category, updateAndGetEntity(category));
     }
 
     @Test
@@ -81,7 +81,7 @@ class CategoriesControllerTest extends BaseControllerTest {
         category.setDescription("Rent"); // in test-data.sql
         String json = mapper.writeValueAsString(category);
 
-        mockMvc.perform(put(Resource.CATEGORY.url).with(csrf())
+        mockMvc.perform(put(getUrl(Category.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isForbidden());
     }
@@ -89,32 +89,31 @@ class CategoriesControllerTest extends BaseControllerTest {
     @Test
     void shouldReflectCategoryUpdateOnRelatedExpenses() throws Exception {
         //setup
-        Expense expense = createExpense();
+        Expense expense = createAndGetExpense();
         Category category = expense.getCategory();
 
         //exercise
         category.setName(stringSupplier.get());
-        updateAndGetEntity(category, Resource.CATEGORY);
+        updateAndGetEntity(category);
 
         //verify
-        assertEquals(expense, getEntity(Resource.EXPENSE, expense.getId()));
+        assertEquals(expense, getEntity(Expense.class, expense.getId()));
     }
 
     @Test
     void shouldRemoveCategory() throws Exception {
-        Category category = createCategory();
-        mockMvc.perform(delete(Resource.CATEGORY.url + category.getId())
-                .with(csrf()))
-                .andExpect(status().isOk());
+        Category category = createAndGetCategory();
+        deleteEntity(Category.class, category.getId());
         //verify
-        mockMvc.perform(get(Resource.CATEGORY.url + category.getId()))
+        mockMvc.perform(get(getUrl(Category.class, category.getId())))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(authorities = "100")
     void shouldReturnForbiddenOnRemoveCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
-        mockMvc.perform(delete(Resource.CATEGORY.url + 1)
+        String url = getUrl(Category.class, 1L);
+        mockMvc.perform(delete(url)
                 .with(csrf()))
                 .andExpect(status().isForbidden());
     }

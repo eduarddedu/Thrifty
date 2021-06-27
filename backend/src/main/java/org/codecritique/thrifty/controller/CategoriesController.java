@@ -56,7 +56,7 @@ public class CategoriesController extends BaseController {
         Category category = dao.getCategory(id);
         if (category == null)
             return ResponseEntity.notFound().build();
-        if (hasAuthority(userDetails, category)) {
+        if (hasAuthority(userDetails, category) && category.getExpenses().isEmpty()) {
             dao.removeCategory(id);
             return ResponseEntity.ok().build();
         }
