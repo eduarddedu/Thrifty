@@ -10,7 +10,7 @@ public interface LabelDao {
 
     Label getLabel(long id);
 
-    List<Label> getLabels();
+    List<Label> getLabels(long accountId);
 
     void removeLabel(long id);
 

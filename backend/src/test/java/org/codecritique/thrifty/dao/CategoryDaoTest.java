@@ -26,7 +26,7 @@ class CategoryDaoTest extends BaseDaoTest {
         for (int i = 0; i < numEntities; i++)
             categoryDao.store(categorySupplier.get());
 
-        Iterator<String> it = categoryDao.getCategories()
+        Iterator<String> it = categoryDao.getCategories(accountId)
                 .stream().map(Category::getName).iterator();
 
         while (it.hasNext()) {

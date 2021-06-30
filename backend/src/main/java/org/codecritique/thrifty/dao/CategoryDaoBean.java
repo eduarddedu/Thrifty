@@ -23,8 +23,8 @@ public class CategoryDaoBean extends BaseDao implements CategoryDao {
     }
 
     @Override
-    public List<Category> getCategories() {
-        return getCategoriesSortedByName();
+    public List<Category> getCategories(long accountId) {
+        return getCategoriesSortedByName(accountId);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class CategoryDaoBean extends BaseDao implements CategoryDao {
             em.remove(category);
     }
 
-    private List<Category> getCategoriesSortedByName() {
-        String sql = "Select r from Category r Order by r.name ";
-        return em.createQuery(sql, Category.class).getResultList();
+    private List<Category> getCategoriesSortedByName(long accountId) {
+        String sql = "Select c from Category c where c.accountId = :accountId order by c.name";
+        return em.createQuery(sql, Category.class).setParameter("accountId", accountId).getResultList();
     }
 }

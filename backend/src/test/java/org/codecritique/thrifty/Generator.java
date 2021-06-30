@@ -10,7 +10,8 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 public class Generator {
-    private static final Random r = new Random();
+    private final static Random r = new Random();
+    private final static long accountId = 1;
 
     public static Supplier<String> stringSupplier = () -> {
         StringBuilder sb = new StringBuilder();
@@ -26,14 +27,14 @@ public class Generator {
 
     public static Supplier<Label> labelSupplier = () -> {
         Label label = new Label();
-        label.setAccountId(1);
+        label.setAccountId(accountId);
         label.setName(stringSupplier.get());
         return label;
     };
 
     public static Supplier<Category> categorySupplier = () -> {
         Category category = new Category();
-        category.setAccountId(1);
+        category.setAccountId(accountId);
         category.setName(stringSupplier.get());
         category.setDescription(stringSupplier.get());
         return category;
@@ -46,7 +47,7 @@ public class Generator {
 
     public static Supplier<Expense> expenseSupplier = () -> {
         Expense expense = new Expense();
-        expense.setAccountId(1);
+        expense.setAccountId(accountId);
         expense.setCreatedOn(dateSupplier.get());
         expense.setAmount(expenseAmountSupplier.get());
         expense.setDescription(stringSupplier.get());

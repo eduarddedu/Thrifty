@@ -59,8 +59,9 @@ public class LabelsController extends BaseController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Label> getLabelsSortedByName() {
-        return dao.getLabels();
+    public List<Label> getLabelsSortedByName(@AuthenticationPrincipal UserDetails userDetails) {
+        long accountId = Long.parseLong(userDetails.getAuthorities().iterator().next().getAuthority());
+        return dao.getLabels(accountId);
     }
 
 }

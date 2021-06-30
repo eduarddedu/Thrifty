@@ -47,8 +47,9 @@ public class CategoriesController extends BaseController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Category> getCategoriesSortedByName() {
-        return dao.getCategories();
+    public List<Category> getCategoriesSortedByName(@AuthenticationPrincipal UserDetails userDetails) {
+        long accountId = Long.parseLong(userDetails.getAuthorities().iterator().next().getAuthority());
+        return dao.getCategories(accountId);
     }
 
     @DeleteMapping(path = "{id}")

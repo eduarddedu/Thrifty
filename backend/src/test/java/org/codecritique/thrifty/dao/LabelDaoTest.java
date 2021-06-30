@@ -25,7 +25,7 @@ class LabelDaoTest extends BaseDaoTest {
         for (int i = 0; i < numEntities; i++)
             labelDao.store(labelSupplier.get());
 
-        Iterator<String> it = labelDao.getLabels()
+        Iterator<String> it = labelDao.getLabels(accountId)
                 .stream().map(Label::getName).iterator();
 
         while (it.hasNext()) {

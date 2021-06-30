@@ -15,6 +15,7 @@ public abstract class BaseDaoTest extends MockMvcTest {
     protected CategoryDao categoryDao;
     @Autowired
     protected LabelDao labelDao;
+    protected final long accountId = 1;
 
     protected Expense createAndGetExpense() {
         Expense expense = expenseSupplier.get();

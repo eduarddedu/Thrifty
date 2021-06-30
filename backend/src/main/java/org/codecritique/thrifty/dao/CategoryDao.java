@@ -10,7 +10,7 @@ public interface CategoryDao {
 
     Category getCategory(long id);
 
-    List<Category> getCategories();
+    List<Category> getCategories(long accountId);
 
     void removeCategory(long id);
 

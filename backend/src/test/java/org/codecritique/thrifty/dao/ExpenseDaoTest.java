@@ -78,7 +78,7 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
     void shouldRemoveLabel() {
-        //setup // create entities
+        //setup: create entities
         Label label = labelSupplier.get();
         Label label2 = labelSupplier.get();
         labelDao.store(label);
@@ -96,7 +96,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         //verify
         assertFalse(expense.getLabels().contains(label2));
         assertEquals(expense, expenseDao.getExpense(expense.getId()));
-        assertTrue(labelDao.getLabels().contains(label2));
+        assertTrue(labelDao.getLabels(accountId).contains(label2));
     }
 
     @Test
@@ -139,7 +139,7 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
     void shouldRemoveExpense() {
-        //setup
+        // setup
         Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
@@ -148,28 +148,20 @@ class ExpenseDaoTest extends BaseDaoTest {
         expense.addLabel(label);
         expenseDao.store(expense);
 
-        //exercise
+        // exercise
         expenseDao.removeExpense(expense.getId());
 
-        //verify that:
+        // verify that:
         //- expense has been deleted
         assertNull(expenseDao.getExpense(expense.getId()));
 
-        //- existing labels have not been deleted
-        assertTrue(labelDao.getLabels().contains(label));
+        //- its labels have not been deleted
+        assertTrue(labelDao.getLabels(accountId).contains(label));
 
-        //- existing category has not been deleted
-        assertTrue(categoryDao.getCategories().contains(category));
+        //- its category has not been deleted
+        assertTrue(categoryDao.getCategories(accountId).contains(category));
 
     }
-
-   /* @Test
-    void shouldGetTotalExpensesAmount() {
-        List<Expense> allExpenses = expenseDao.getExpenses();
-        BigDecimal expectedTotalAmount = allExpenses.stream().map(Expense::getAmount).reduce(new BigDecimal("0"), BigDecimal::add);
-        BigDecimal actualTotalAmount = expenseDao.getTotalExpenseAmount();
-        assertEquals(expectedTotalAmount, actualTotalAmount);
-    }*/
 
     @Test
     void shouldAllowAmountWith_7_IntegerAnd_2_FractionalDigits() {

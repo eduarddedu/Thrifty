@@ -19,8 +19,8 @@ public class LabelDaoBean extends BaseDao implements LabelDao {
     }
 
     @Override
-    public List<Label> getLabels() {
-        return getLabelsSortedByName();
+    public List<Label> getLabels(long accountId) {
+        return getLabelsSortedByName(accountId);
     }
 
     @Override
@@ -37,9 +37,9 @@ public class LabelDaoBean extends BaseDao implements LabelDao {
         }
     }
 
-    private List<Label> getLabelsSortedByName() {
-        String sql = "SELECT r from Label r ORDER BY r.name ";
-        return em.createQuery(sql, Label.class).getResultList();
+    private List<Label> getLabelsSortedByName(long accountId) {
+        String sql = "SELECT l from Label l where l.accountId = :accountId ORDER BY l.name";
+        return em.createQuery(sql, Label.class).setParameter("accountId", accountId).getResultList();
     }
 
 }
