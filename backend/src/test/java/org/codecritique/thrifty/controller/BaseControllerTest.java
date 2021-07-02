@@ -79,7 +79,7 @@ public abstract class BaseControllerTest extends MockMvcTest {
     }
 
     protected <T extends BaseEntity> T getEntity(Class<T> klass, Long id) throws Exception {
-        String url = getUrl(klass, id);
+        String url = id == null ? getUrl(klass) : getUrl(klass, id);
         String json = mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
