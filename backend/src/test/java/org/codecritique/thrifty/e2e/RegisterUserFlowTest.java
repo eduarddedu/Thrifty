@@ -1,7 +1,9 @@
 package org.codecritique.thrifty.e2e;
 
 import org.codecritique.thrifty.entity.User;
+import org.codecritique.thrifty.service.MessageService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,8 @@ import org.springframework.util.MultiValueMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegisterUserFlowTest extends BaseSecurityTest {
-    private final String registrationCompletedSuccessMessage = "Your account has been created";
+    @Autowired
+    private MessageService messages;
 
     private ResponseEntity<String> register(User user) {
         String url = baseUrl + "register";
@@ -25,6 +28,7 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
         map.add("username", user.getUsername());
         map.add("password", user.getPassword());
         map.add("accountId", user.getAccountId().toString());
+        map.add("currency", "EUR");
 
         HttpEntity<MultiValueMap<String, String>> signUpRequest = new HttpEntity<>(map, headers);
         return customTemplate.postForEntity(url, signUpRequest, String.class);
@@ -35,7 +39,7 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
     public void shouldSignUpThenLoginThenGetHomePageThenLogout() {
         User jane = new User("jane@example.com", "secret", 0L);
         ResponseEntity<String> submitFormResponse = register(jane);
-        assertThat(submitFormResponse.getBody()).contains(registrationCompletedSuccessMessage);
+        assertThat(submitFormResponse.getBody()).contains(messages.registrationSuccessful());
 
         login(jane);
 
@@ -56,9 +60,10 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
     @Test
     public void shouldFailRegistrationWhenInvalidPassword() {
         User wrong = new User("name@example.com", "pass", 0L);
-        assertThat(register(wrong).getBody()).contains("Invalid password");
+        String error = messages.invalidPassword();
+        assertThat(register(wrong).getBody()).contains(error);
         wrong.setPassword("password with spaces");
-        assertThat(register(wrong).getBody()).contains("Invalid password");
+        assertThat(register(wrong).getBody()).contains(error);
 
     }
 
@@ -66,7 +71,7 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
     public void shouldFailRegistrationWhenNotUniqueEmail() {
         String email = "bugs@bunny.com";
         User user = new User(email, "password", 0L);
-        assertThat(register(user).getBody()).contains(registrationCompletedSuccessMessage);
-        assertThat(register(user).getBody()).contains("A user with this email already exists");
+        assertThat(register(user).getBody()).contains(messages.registrationSuccessful());
+        assertThat(register(user).getBody()).contains(messages.emailExists());
     }
 }

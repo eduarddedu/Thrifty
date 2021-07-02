@@ -1,7 +1,8 @@
 package org.codecritique.thrifty.controller;
 
+import org.codecritique.thrifty.validators.PasswordValidationException;
+import org.codecritique.thrifty.service.MessageService;
 import org.codecritique.thrifty.service.UserService;
-import org.codecritique.thrifty.exception.InvalidPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
@@ -16,18 +17,25 @@ public class SignUpController extends BaseController {
     @Autowired
     private UserService users;
 
+    @Autowired
+    private MessageService messages;
+
     @PostMapping(path = "register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createUser(@RequestParam String username,
                              @RequestParam String password,
+                             @RequestParam String currency,
                              @RequestParam long accountId,
                              Model m) {
         try {
-            users.createUser(username, password, accountId);
+            if (accountId == 0)
+                users.createUserAndAccount(username, password, currency);
+            else
+                users.createUserForAccount(username, password, accountId);
             m.addAttribute("hasCompletedRegistration", true);
             return "registerForm";
-        } catch (InvalidPasswordException passwordException) {
+        } catch (PasswordValidationException passwordException) {
             m.addAttribute("emailPlaceholder", username);
-            m.addAttribute("passwordValidationError", passwordException.getMessage());
+            m.addAttribute("passwordValidationError", messages.invalidPassword());
             m.addAttribute("accountId", 0);
             return "registerForm";
         } catch (javax.validation.ConstraintViolationException e) {
@@ -37,7 +45,7 @@ public class SignUpController extends BaseController {
             return "registerForm";
         } catch (DataIntegrityViolationException ex) {
             m.addAttribute("emailPlaceholder", username);
-            m.addAttribute("emailValidationError", "A user with this email already exists");
+            m.addAttribute("emailValidationError", messages.emailExists());
             m.addAttribute("accountId", 0);
             return "registerForm";
         }

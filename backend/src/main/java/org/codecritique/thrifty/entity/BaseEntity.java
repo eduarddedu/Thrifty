@@ -6,9 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
-/**
- * @author Eduard Dedu
- */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
