@@ -1,4 +1,4 @@
-import { ExpenseData, LabelData, CategoryData } from '.';
+import { ExpenseData, LabelData, CategoryData } from '..';
 
 export interface AccountData {
     id: number;

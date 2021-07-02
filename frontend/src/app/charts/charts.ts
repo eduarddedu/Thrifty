@@ -1,7 +1,7 @@
 import { Chart } from 'angular-highcharts';
 
 import { Account, Expense, Category, Label } from '../model';
-import { ExpenseGroupEntity } from '../model/expenseGroupEntity';
+import { ExpenseGroup } from '../model/entity/expenseGroup';
 import { Utils } from '../util/utils';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -122,7 +122,7 @@ const getLabelSpendingByCategoryDataPoints = function (label: Label, year?: numb
     return points;
 };
 
-const getSpendingPerYearColumnChart = function (entity: ExpenseGroupEntity) {
+const getSpendingPerYearColumnChart = function (entity: ExpenseGroup) {
     const years: number[] = entity.yearsSeries;
     const yearsStr: string[] = years.map((year: number) => `${year}`);
     const series = dataSeries('Year', years.map(year => entity.mapYearBalance.get(year) / 100));

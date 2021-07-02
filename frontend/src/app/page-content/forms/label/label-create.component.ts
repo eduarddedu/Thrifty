@@ -19,12 +19,12 @@ export class LabelCreateComponent extends LabelForm implements OnInit {
     constructor(protected fb: FormBuilder,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.analytics.loadAccount().subscribe((account: Account) => {
+        this.accountService.loadAccount().subscribe((account: Account) => {
             this.forbiddenNames = account.labels.map(l => l.name);
             this.createForm();
             this.showForm = true;
@@ -40,7 +40,7 @@ export class LabelCreateComponent extends LabelForm implements OnInit {
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         this.rest.createLabel(newLabel).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.LABEL_CREATE_OK));
-            this.analytics.reload();
+            this.accountService.reload();
         },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

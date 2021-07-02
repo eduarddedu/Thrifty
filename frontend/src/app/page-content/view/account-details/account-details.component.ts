@@ -32,12 +32,12 @@ export class AccountDetailsComponent extends Report implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private ns: NotificationService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super();
     }
 
     ngOnInit() {
-        this.route.paramMap.pipe(switchMap(() => this.analytics.loadAccount()))
+        this.route.paramMap.pipe(switchMap(() => this.accountService.loadAccount()))
             .subscribe(this.init.bind(this), err => {
                 this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
             });

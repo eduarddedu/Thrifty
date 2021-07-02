@@ -26,14 +26,14 @@ export class LabelEditComponent extends LabelForm implements OnInit {
         private route: ActivatedRoute,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
         this.route.paramMap.pipe(switchMap(params => {
             this.labelId = +params.get('id');
-            return this.analytics.loadAccount();
+            return this.accountService.loadAccount();
         })).subscribe((account: Account) => {
             this.model = account.labels.find(label => this.labelId === label.id);
             this.forbiddenNames = account.labels.filter(label => this.labelId !== label.id).map(l => l.name);
@@ -51,7 +51,7 @@ export class LabelEditComponent extends LabelForm implements OnInit {
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         this.rest.updateLabel(newLabel).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.LABEL_EDIT_OK));
-            this.analytics.reload();
+            this.accountService.reload();
         },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

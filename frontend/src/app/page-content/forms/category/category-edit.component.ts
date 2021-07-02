@@ -24,14 +24,14 @@ export class CategoryEditComponent extends CategoryForm implements OnInit {
         private route: ActivatedRoute,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
         this.route.paramMap.pipe(switchMap(params => {
             this.categoryId = +params.get('id');
-            return this.analytics.loadAccount();
+            return this.accountService.loadAccount();
         })).subscribe((account: Account) => {
             const category = account.categories.find(c => c.id === this.categoryId);
             const categoryNames = account.categories.map(c => c.name);
@@ -72,7 +72,7 @@ export class CategoryEditComponent extends CategoryForm implements OnInit {
         const category = Object.assign({ id: this.categoryId }, this.readFormData());
         this.rest.updateCategory(category).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.CATEGORY_EDIT_OK));
-            this.analytics.reload();
+            this.accountService.reload();
         },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

@@ -22,12 +22,12 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
         protected fb: FormBuilder,
         private ns: NotificationService,
         private rest: RestService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.analytics.loadAccount().subscribe(v => {
+        this.accountService.loadAccount().subscribe(v => {
             this.account = v;
             if (this.account.categories.length === 0) {
                 this.ns.push(AppMessage.of(Kind.MUST_CREATE_CATEGORY));
@@ -55,7 +55,7 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
         this.rest.createExpense(expense).subscribe(
             () => {
                 this.ns.push(AppMessage.of(Kind.EXPENSE_CREATE_OK));
-                this.analytics.reload();
+                this.accountService.reload();
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

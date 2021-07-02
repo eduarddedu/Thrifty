@@ -1,7 +1,7 @@
 import { Expense } from './expense';
-import { DateRange } from './dateRange';
+import { DateRange } from '../dateRange';
 
-export class ExpenseGroupEntity {
+export class ExpenseGroup {
     expenses: Expense[] = [];
     mapYearBalance: Map<number, number> = new Map();
     balance = 0;

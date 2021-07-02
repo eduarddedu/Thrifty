@@ -12,22 +12,6 @@ export class RestService {
         return this.http.get<AccountData>('account');
     }
 
-    public getExpenseViews(): Observable<ExpenseData[]> {
-        return this.http.get<ExpenseData[]>('view/expenses');
-    }
-
-    public getExpenses(): Observable<ExpenseData[]> {
-        return this.http.get<ExpenseData[]>('expenses');
-    }
-
-    public getCategories(): Observable<CategoryData[]> {
-        return this.http.get<CategoryData[]>('categories');
-    }
-
-    public getLabels(): Observable<LabelData[]> {
-        return this.http.get<LabelData[]>('labels');
-    }
-
     public createCategory(category: CategoryData) {
         return this.http.post('categories', JSON.stringify(category));
     }

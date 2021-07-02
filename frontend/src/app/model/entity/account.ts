@@ -1,4 +1,4 @@
-import { ExpenseGroupEntity } from './expenseGroupEntity';
+import { ExpenseGroup } from './expenseGroup';
 import { Expense } from './expense';
 import { Category } from './category';
 import { Label } from './label';
@@ -7,7 +7,7 @@ import { LabelData } from './labelData';
 import { CategoryData } from './categoryData';
 import { AccountData } from './accountData';
 
-export class Account extends ExpenseGroupEntity {
+export class Account extends ExpenseGroup {
     categories: Category[];
     labels: Label[];
     private mapIdLabel: Map<number, Label> = new Map();
@@ -65,7 +65,7 @@ export class Account extends ExpenseGroupEntity {
         labels.forEach(d => this.mapIdLabel.set(d.id, new Label(d)));
     }
 
-    private addExpenseToEntity(entity: ExpenseGroupEntity, expense: Expense) {
+    private addExpenseToEntity(entity: ExpenseGroup, expense: Expense) {
         entity.expenses.push(expense);
         entity.balance += expense.cents;
         const year = expense.createdOn.year;

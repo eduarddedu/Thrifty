@@ -1,8 +1,8 @@
 import { LabelData } from './labelData';
-import { Category } from './category';
-import { ExpenseGroupEntity } from './expenseGroupEntity';
+import { Category } from '../entity/category';
+import { ExpenseGroup } from './expenseGroup';
 
-export class Label extends ExpenseGroupEntity implements LabelData {
+export class Label extends ExpenseGroup implements LabelData {
     id: number;
     name: string;
     categories: Category[] = [];

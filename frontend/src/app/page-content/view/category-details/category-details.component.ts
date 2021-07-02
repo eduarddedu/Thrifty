@@ -30,7 +30,7 @@ export class CategoryDetailsComponent extends Report implements OnInit {
     since: Date;
 
     constructor(
-        private analytics: AccountService,
+        private accountService: AccountService,
         private ns: NotificationService,
         private ms: DeleteEntityModalService,
         private route: ActivatedRoute,
@@ -41,7 +41,7 @@ export class CategoryDetailsComponent extends Report implements OnInit {
     ngOnInit(): void {
         this.route.paramMap.pipe(switchMap(params => {
             this.categoryId = +params.get('id');
-            return this.analytics.loadAccount();
+            return this.accountService.loadAccount();
         })).subscribe(this.init.bind(this), err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });

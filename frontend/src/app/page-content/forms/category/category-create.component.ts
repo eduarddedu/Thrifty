@@ -19,12 +19,12 @@ export class CategoryCreateComponent extends CategoryForm implements OnInit {
     constructor(protected fb: FormBuilder,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.analytics.loadAccount().subscribe((account: Account) => {
+        this.accountService.loadAccount().subscribe((account: Account) => {
             this.forbiddenNames = account.categories.map(c => c.name);
             this.setRadioSelectorOptions(account);
             this.createForm();
@@ -48,7 +48,7 @@ export class CategoryCreateComponent extends CategoryForm implements OnInit {
         const category = Object.assign(this.readFormData(), { labels: this.selectedLabels });
         this.rest.createCategory(category).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.CATEGORY_CREATE_OK));
-            this.analytics.reload();
+            this.accountService.reload();
         },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

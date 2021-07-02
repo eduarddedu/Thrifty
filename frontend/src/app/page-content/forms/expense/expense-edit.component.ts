@@ -27,14 +27,14 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
         private ns: NotificationService,
         private route: ActivatedRoute,
         private rest: RestService,
-        private analytics: AccountService) {
+        private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
         this.route.paramMap.pipe(switchMap(params => {
             this.expenseId = +params.get('id');
-            return this.analytics.loadAccount();
+            return this.accountService.loadAccount();
         })).subscribe((account: Account) => {
             this.account = account;
             this.expense = account.expenses.find(ex => ex.id === this.expenseId);
@@ -62,7 +62,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
         this.rest.updateExpense(expense).subscribe(
             () => {
                 this.ns.push(AppMessage.of(Kind.EXPENSE_EDIT_OK));
-                this.analytics.reload();
+                this.accountService.reload();
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

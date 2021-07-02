@@ -1,8 +1,8 @@
-import { ExpenseGroupEntity } from './expenseGroupEntity';
+import { ExpenseGroup } from './expenseGroup';
 import { Label } from './label';
 import { CategoryData } from './categoryData';
 
-export class Category extends ExpenseGroupEntity {
+export class Category extends ExpenseGroup {
     id: number;
     name: string;
     description: string;
