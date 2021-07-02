@@ -18,7 +18,6 @@ public class AccountControllerTest extends BaseControllerTest {
         Account account = getEntity(Account.class, null);
         assertNotNull(account);
         assertEquals("Daily expenses", account.getName());
-        assertEquals("English", account.getLanguage());
         Set<Category> categories = account.getCategories();
         assertNotNull(categories);
         assertEquals(2, categories.stream().map(Category::getName).filter(s -> s.matches("Groceries|Rent")).count());

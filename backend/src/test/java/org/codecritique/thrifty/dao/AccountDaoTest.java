@@ -20,7 +20,6 @@ public class AccountDaoTest extends BaseDaoTest {
         Account account = service.findById(1);
         assertNotNull(account);
         assertEquals("Daily expenses", account.getName());
-        assertEquals("English", account.getLanguage());
         Set<Category> categories = account.getCategories();
         assertNotNull(categories);
         assertEquals(2, categories.stream().map(Category::getName).filter(s -> s.matches("Groceries|Rent")).count());

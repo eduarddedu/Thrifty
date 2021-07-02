@@ -13,9 +13,6 @@ public class Account extends BaseEntity {
     private String name = "My account";
 
     @NotNull
-    private String language = "English";
-
-    @NotNull
     private String currency = "EUR";
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -36,14 +33,6 @@ public class Account extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public String getCurrency() {

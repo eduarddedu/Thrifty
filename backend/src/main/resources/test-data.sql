@@ -1,4 +1,4 @@
-INSERT INTO Account (id, name, language, currency) values(1, 'Daily expenses', 'English', 'EUR');
+INSERT INTO Account (id, name, currency) values(1, 'Daily expenses', 'EUR');
 INSERT INTO Category (id, name, description, account_id) values(1, 'Groceries',  'Groceries', 1);
 INSERT INTO Category (id, name, description, account_id) values(2, 'Rent',  'Rent', 1);
 INSERT INTO Label (id, name, account_id) values(1, 'Cosmetics', 1);
