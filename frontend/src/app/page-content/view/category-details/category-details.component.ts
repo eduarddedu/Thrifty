@@ -6,7 +6,7 @@ import { Chart } from 'angular-highcharts';
 import { Category, Account, RefPeriod } from '../../../model';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { NotificationService } from '../../../services/notification.service';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
@@ -30,7 +30,7 @@ export class CategoryDetailsComponent extends Report implements OnInit {
     since: Date;
 
     constructor(
-        private analytics: AnalyticsService,
+        private analytics: AccountService,
         private ns: NotificationService,
         private ms: DeleteEntityModalService,
         private route: ActivatedRoute,

@@ -1,4 +1,4 @@
-export interface AccountSettings {
+export interface Profile {
     accountDescription: string;
     currencyName: string;
 }

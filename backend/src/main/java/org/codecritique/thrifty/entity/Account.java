@@ -55,8 +55,8 @@ public class Account extends BaseEntity {
         return expenses;
     }
 
-    @Override
     @JsonIgnore
+    @Override
     public Long getAccountId() { return id; }
 
 }

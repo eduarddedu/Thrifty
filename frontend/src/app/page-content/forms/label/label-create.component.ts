@@ -5,7 +5,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
 import { Account } from '../../../model';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class LabelCreateComponent extends LabelForm implements OnInit {
     constructor(protected fb: FormBuilder,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AnalyticsService) {
+        private analytics: AccountService) {
         super(fb);
     }
 

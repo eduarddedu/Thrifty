@@ -30,7 +30,7 @@ import { NotificationComponent } from './notification/notification.component';
 import { RestService } from './services/rest.service';
 import { NotificationService } from './services/notification.service';
 import { DeleteEntityModalService } from './services/modal.service';
-import { AnalyticsService } from './services/analytics.service';
+import { AccountService } from './services/account.service';
 import { SessionTimeoutService } from './services/timeout.service';
 import { RestApiRequestInterceptor } from './http/request.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
@@ -79,7 +79,7 @@ import { MenuComponent} from './page-content/menu/menu.component';
         RestService,
         NotificationService,
         DeleteEntityModalService,
-        AnalyticsService,
+        AccountService,
         SessionTimeoutService,
         { provide: HTTP_INTERCEPTORS, useClass: RestApiRequestInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

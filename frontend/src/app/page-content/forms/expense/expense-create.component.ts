@@ -6,7 +6,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { ExpenseData, Account, Category } from '../../../model';
 import { ExpenseForm } from './expense-form';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class ExpenseCreateComponent extends ExpenseForm implements OnInit {
         protected fb: FormBuilder,
         private ns: NotificationService,
         private rest: RestService,
-        private analytics: AnalyticsService) {
+        private analytics: AccountService) {
         super(fb);
     }
 

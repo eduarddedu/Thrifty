@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CategoryData, LabelData, ExpenseData } from '../model';
+import { CategoryData, LabelData, ExpenseData, AccountData } from '../model';
 
 @Injectable()
 export class RestService {
 
     constructor(private http: HttpClient) { }
+
+    public getAccount(): Observable<AccountData> {
+        return this.http.get<AccountData>('account');
+    }
 
     public getExpenseViews(): Observable<ExpenseData[]> {
         return this.http.get<ExpenseData[]>('view/expenses');

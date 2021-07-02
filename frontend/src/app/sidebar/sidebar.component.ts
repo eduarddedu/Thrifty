@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { Account } from '../model';
-import { AnalyticsService } from '../services/analytics.service';
+import { AccountService } from '../services/account.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -13,7 +13,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     labels: { id: number, name: string }[];
     account: Account;
 
-    constructor(protected analytics: AnalyticsService) { }
+    constructor(protected analytics: AccountService) { }
 
     ngOnInit() {
         this.analytics.dataChanged.subscribe((account: Account) => {

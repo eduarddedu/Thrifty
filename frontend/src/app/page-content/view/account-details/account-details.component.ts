@@ -7,7 +7,7 @@ import { Account, RefPeriod, Expense } from '../../../model';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
 import { NotificationService } from '../../../services/notification.service';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { Report as Report } from '../report';
 
@@ -32,7 +32,7 @@ export class AccountDetailsComponent extends Report implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private ns: NotificationService,
-        private analytics: AnalyticsService) {
+        private analytics: AccountService) {
         super();
     }
 

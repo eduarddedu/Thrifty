@@ -5,8 +5,8 @@ import { LabelData } from './labelData';
 import { Expense } from './expense';
 import { Category } from './category';
 import { Label } from './label';
-import { AccountSettings } from './accountSettings';
 import { Account } from './account';
+import { AccountData } from './accountData';
 import { LocalDate } from './localDate';
 import { DateRange } from './dateRange';
 import { CheckLabel } from './checkLabel';
@@ -19,7 +19,7 @@ export {
     Alert, Kind, AppMessage,
     ExpenseData, CategoryData, LabelData,
     Expense, Category, Label,
-    Account, AccountSettings as AccountDetails,
+    Account, AccountData,
     LocalDate, DateRange, CheckLabel, RadioOption,
     User
 };

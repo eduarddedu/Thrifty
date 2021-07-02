@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 import { Account, Category, Label, RadioOption } from '../../../model';
 import { CategoryForm } from './category-form';
 
@@ -24,7 +24,7 @@ export class CategoryEditComponent extends CategoryForm implements OnInit {
         private route: ActivatedRoute,
         private rest: RestService,
         private ns: NotificationService,
-        private analytics: AnalyticsService) {
+        private analytics: AccountService) {
         super(fb);
     }
 

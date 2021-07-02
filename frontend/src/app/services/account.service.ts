@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, forkJoin } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs/index';
 
-import { RestService } from '../services/rest.service';
-import { Account, AccountDetails, ExpenseData, CategoryData, LabelData } from '../model';
+import { RestService } from './rest.service';
+import { Account, AccountData } from '../model';
 import { Utils } from '../util/utils';
 
 @Injectable()
-export class AnalyticsService {
+export class AccountService {
     private account: Account;
 
     private subject: Subject<Account> = new Subject();
@@ -21,11 +21,9 @@ export class AnalyticsService {
         if (this.account) {
             return of(this.account);
         } else {
-            return forkJoin(this.rest.getExpenseViews(), this.rest.getCategories(), this.rest.getLabels())
-                .pipe(
+            return this.rest.getAccount().pipe(
                     switchMap(data => {
-                        this.setAccount(data[0], data[1], data[2]);
-                        Utils.deepFreeze(this.account);
+                        this.setAccount(data);
                         this.subject.next(this.account);
                         return of(this.account);
                     }));
@@ -37,13 +35,10 @@ export class AnalyticsService {
         this.loadAccount().subscribe(() => console.log('Reload account...'));
     }
 
-    private setAccount(expenses: ExpenseData[], categories: CategoryData[], labels: LabelData[]) {
+    private setAccount(data: AccountData) {
         try {
-            const accountDetails: AccountDetails = {
-                currencyName: 'lei',
-                accountDescription: 'Daily expenses'
-            };
-            this.account = new Account(expenses, categories, labels, accountDetails);
+            this.account = new Account(data);
+            Utils.deepFreeze(this.account);
         } catch (error) {
             console.log('Error building account: ', error);
         }

@@ -7,7 +7,7 @@ import { Account, Label, RefPeriod } from '../../../model';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { Utils } from '../../../util/utils';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Charts } from '../../../charts/charts';
 import { Report } from '../report';
@@ -30,7 +30,7 @@ export class LabelDetailsComponent extends Report implements OnInit {
   since: Date;
 
   constructor(
-    private analytics: AnalyticsService,
+    private analytics: AccountService,
     private ns: NotificationService,
     private ms: DeleteEntityModalService,
     private route: ActivatedRoute,

@@ -1,26 +1,24 @@
 import { ExpenseGroupEntity } from './expenseGroupEntity';
-import { AccountSettings } from './accountSettings';
 import { Expense } from './expense';
 import { Category } from './category';
 import { Label } from './label';
 import { ExpenseData } from './expenseData';
 import { LabelData } from './labelData';
 import { CategoryData } from './categoryData';
+import { AccountData } from './accountData';
 
 export class Account extends ExpenseGroupEntity {
-    accountDetails: AccountSettings;
     categories: Category[];
     labels: Label[];
     private mapIdLabel: Map<number, Label> = new Map();
     private mapIdCategory: Map<number, Category> = new Map();
 
-    constructor(expenses: ExpenseData[], categories: CategoryData[], labels: LabelData[], accountDetails: AccountSettings) {
+    constructor(data: AccountData) {
         super();
-        this.accountDetails = accountDetails;
-        this.buildEntities(expenses, categories, labels);
+        this.buildAccount(data.expenses, data.categories, data.labels);
     }
 
-    private buildEntities(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {
+    private buildAccount(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {
         this.mapCategories(categoryDatas);
         this.mapLabels(labelDatas);
         this.labels = Array.from(this.mapIdLabel.values());

@@ -9,7 +9,7 @@ import { Kind, AppMessage } from '../../../model/app-message';
 import { Expense, ExpenseData, Account, Category, RadioOption } from '../../../model';
 import { ExpenseForm } from './expense-form';
 import { Utils } from '../../../util/utils';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
@@ -27,7 +27,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
         private ns: NotificationService,
         private route: ActivatedRoute,
         private rest: RestService,
-        private analytics: AnalyticsService) {
+        private analytics: AccountService) {
         super(fb);
     }
 
