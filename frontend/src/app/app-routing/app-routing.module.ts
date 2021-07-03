@@ -5,12 +5,12 @@ import { PageComponent } from '../page/page.component';
 import { AccountDetailsComponent } from '../page-content/view/account-details/account-details.component';
 import { CategoryDetailsComponent } from '../page-content/view/category-details/category-details.component';
 import { LabelDetailsComponent } from '../page-content/view/label-details/label-details.component';
-import { CategoryEditComponent } from '../page-content/forms/category/category-edit.component';
-import { CategoryCreateComponent } from '../page-content/forms/category/category-create.component';
-import { ExpenseEditComponent } from '../page-content/forms/expense/expense-edit.component';
-import { ExpenseCreateComponent } from '../page-content/forms/expense/expense-create.component';
-import { LabelCreateComponent } from '../page-content/forms/label/label-create.component';
-import { LabelEditComponent } from '../page-content/forms/label/label-edit.component';
+import { EditCategoryComponent } from '../page-content/forms/category/edit-category.component';
+import { CreateCategoryComponent } from '../page-content/forms/category/create-category.component';
+import { EditExpenseComponent } from '../page-content/forms/expense/edit-expense.component';
+import { CreateExpenseComponent } from '../page-content/forms/expense/create-expense.component';
+import { CreateLabelComponent } from '../page-content/forms/label/create-label.component';
+import { EditLabelComponent } from '../page-content/forms/label/edit-label.component';
 import { DeleteEntityComponent } from '../page-content/delete-entity/delete-entity.component';
 
 const routes: Routes = [
@@ -40,15 +40,15 @@ const routes: Routes = [
                 children: [
                     {
                         path: 'expense',
-                        component: ExpenseCreateComponent
+                        component: CreateExpenseComponent
                     },
                     {
                         path: 'category',
-                        component: CategoryCreateComponent
+                        component: CreateCategoryComponent
                     },
                     {
                         path: 'label',
-                        component: LabelCreateComponent
+                        component: CreateLabelComponent
                     }
                 ]
             },
@@ -57,15 +57,15 @@ const routes: Routes = [
                 children: [
                     {
                         path: 'label/:id',
-                        component: LabelEditComponent
+                        component: EditLabelComponent
                     },
                     {
                         path: 'category/:id',
-                        component: CategoryEditComponent,
+                        component: EditCategoryComponent,
                     },
                     {
                         path: 'expense/:id',
-                        component: ExpenseEditComponent
+                        component: EditExpenseComponent
                     }
                 ]
 

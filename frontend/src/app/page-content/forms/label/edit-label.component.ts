@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { zip } from 'rxjs';
 
 import { Label } from '../../../model';
 import { LabelForm } from './label-form';
@@ -14,13 +14,10 @@ import { AccountService } from '../../../services/account.service';
 @Component({
     templateUrl: './label-form.component.html'
 })
-export class LabelEditComponent extends LabelForm implements OnInit {
-
+export class EditLabelComponent extends LabelForm implements OnInit {
     pageTitle = 'Update Label';
-
-    labelId: number;
-
-    model: Label;
+    accountId: number;
+    label: Label;
 
     constructor(protected fb: FormBuilder,
         private route: ActivatedRoute,
@@ -31,14 +28,14 @@ export class LabelEditComponent extends LabelForm implements OnInit {
     }
 
     ngOnInit() {
-        this.route.paramMap.pipe(switchMap(params => {
-            this.labelId = +params.get('id');
-            return this.accountService.loadAccount();
-        })).subscribe((account: Account) => {
-            this.model = account.labels.find(label => this.labelId === label.id);
-            this.forbiddenNames = account.labels.filter(label => this.labelId !== label.id).map(l => l.name);
+        zip(this.route.paramMap, this.accountService.loadAccount()).subscribe(value => {
+            const params: ParamMap = value[0];
+            const account: Account = value[1];
+            this.accountId = account.id;
+            this.label = account.labels.find(label => +params.get('id') === label.id);
+            this.forbiddenNames = account.labels.filter(label => this.label.id !== label.id).map(l => l.name);
             this.createForm();
-            this.form.patchValue({ name: this.model.name });
+            this.form.patchValue({ name: this.label.name });
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
@@ -47,9 +44,9 @@ export class LabelEditComponent extends LabelForm implements OnInit {
 
     onSubmit() {
         this.showForm = false;
-        const newLabel = Object.assign({ id: this.labelId }, this.readFormData());
+        const label = Object.assign({ id: this.label.id, accountId: this.accountId }, this.readFormData());
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
-        this.rest.updateLabel(newLabel).subscribe(() => {
+        this.rest.updateLabel(label).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.LABEL_EDIT_OK));
             this.accountService.reload();
         },

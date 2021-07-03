@@ -1,5 +1,7 @@
 package org.codecritique.thrifty.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -40,6 +42,7 @@ public class ExpenseView extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private Set<LabelView> labels = new HashSet<>();
 
+    @JsonIgnore
     public Long getAccountId() {
         return accountId;
     }

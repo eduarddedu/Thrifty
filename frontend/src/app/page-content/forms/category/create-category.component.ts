@@ -12,9 +12,9 @@ import { AccountService } from '../../../services/account.service';
 @Component({
     templateUrl: './category-form.component.html',
 })
-export class CategoryCreateComponent extends CategoryForm implements OnInit {
-
+export class CreateCategoryComponent extends CategoryForm implements OnInit {
     pageTitle = 'Create Category';
+    account: Account;
 
     constructor(protected fb: FormBuilder,
         private rest: RestService,
@@ -25,8 +25,8 @@ export class CategoryCreateComponent extends CategoryForm implements OnInit {
 
     ngOnInit() {
         this.accountService.loadAccount().subscribe((account: Account) => {
+            this.account = account;
             this.forbiddenNames = account.categories.map(c => c.name);
-            this.setRadioSelectorOptions(account);
             this.createForm();
             this.showForm = true;
         }, err => {
@@ -34,18 +34,10 @@ export class CategoryCreateComponent extends CategoryForm implements OnInit {
         });
     }
 
-    private setRadioSelectorOptions(account: Account) {
-        account.labels.forEach(label => this.radioOptions.push({
-            id: label.id,
-            name: label.name,
-            checked: false
-        }));
-    }
-
     onSubmit() {
         this.showForm = false;
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
-        const category = Object.assign(this.readFormData(), { labels: this.selectedLabels });
+        const category = Object.assign(this.readFormData(), { accountId: this.account.id });
         this.rest.createCategory(category).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.CATEGORY_CREATE_OK));
             this.accountService.reload();

@@ -12,10 +12,6 @@ export class CategoryForm {
 
     forbiddenNames: string[];
 
-    radioOptions: RadioOption[] = [];
-
-    selectedLabels: Category[];
-
     constructor(protected fb: FormBuilder) {
     }
 
@@ -39,10 +35,6 @@ export class CategoryForm {
             name: (<string>this.name.value).trim(),
             description: (<string>this.description.value).trim()
         };
-    }
-
-    protected onClickOption(selector) {
-        this.selectedLabels = selector.options.map(o => Object.assign({}, o)).filter(o => o.checked && delete o.checked);
     }
 
 }

@@ -1,47 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
 
 import { RestService } from '../../../services/rest.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { Expense, ExpenseData, Account, Category, RadioOption } from '../../../model';
+import { ExpenseData, Account, Category } from '../../../model';
 import { ExpenseForm } from './expense-form';
-import { Utils } from '../../../util/utils';
 import { AccountService } from '../../../services/account.service';
+
 
 @Component({
     templateUrl: './expense-form.component.html',
     styleUrls: ['./select.css']
 })
-export class ExpenseEditComponent extends ExpenseForm implements OnInit {
-    pageTitle = 'Update Expense';
-    submitFormButtonText = 'Update';
-    expenseId: number;
-    expense: Expense;
+export class CreateExpenseComponent extends ExpenseForm implements OnInit {
+    pageTitle = 'Create Expense';
+    submitFormButtonText = 'Save';
     account: Account;
 
     constructor(
         protected fb: FormBuilder,
         private ns: NotificationService,
-        private route: ActivatedRoute,
         private rest: RestService,
         private accountService: AccountService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.route.paramMap.pipe(switchMap(params => {
-            this.expenseId = +params.get('id');
-            return this.accountService.loadAccount();
-        })).subscribe((account: Account) => {
-            this.account = account;
-            this.expense = account.expenses.find(ex => ex.id === this.expenseId);
-            this.fillForm();
-            this.setLabelOptions();
-            this.selectedLabels = this.expense.labels.map(l => ({ id: l.id, name: l.name}));
-            this.showForm = true;
+        this.accountService.loadAccount().subscribe(v => {
+            this.account = v;
+            if (this.account.categories.length === 0) {
+                this.ns.push(AppMessage.of(Kind.MUST_CREATE_CATEGORY));
+            } else {
+                this.setLabelOptions();
+                this.setDefaultCategoryOption();
+                this.showForm = true;
+            }
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
         });
@@ -51,7 +45,7 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
         this.showForm = false;
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         const expense: ExpenseData = Object.assign(this.readFormData(), {
-            id: this.expense.id,
+            accountId: this.account.id,
             labels: this.selectedLabels,
             category: {
                 id: this.selectedCategory.id,
@@ -59,21 +53,21 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
                 description: this.selectedCategory.description
             }
         });
-        this.rest.updateExpense(expense).subscribe(
+        this.rest.createExpense(expense).subscribe(
             () => {
-                this.ns.push(AppMessage.of(Kind.EXPENSE_EDIT_OK));
+                this.ns.push(AppMessage.of(Kind.EXPENSE_CREATE_OK));
                 this.accountService.reload();
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
-    private fillForm() {
-        this.form.patchValue({
-            createdOn: { jsdate: Utils.localDateToJsDate(this.expense.createdOn) },
-            description: this.expense.description,
-            amount: (this.expense.cents / 100).toFixed(2),
-            category: this.expense.category.name
-        });
+    private setDefaultCategoryOption() {
+        this.form.patchValue({ category: this.findLargestCategory().name });
+    }
+
+    private findLargestCategory(): Category {
+        return this.account.categories.slice().sort((a, b) => a.expenses.length - b.expenses.length)
+            .reverse()[0];
     }
 
     private get selectedCategory(): Category {
@@ -85,10 +79,11 @@ export class ExpenseEditComponent extends ExpenseForm implements OnInit {
     }
 
     private setLabelOptions() {
-        const map: Map<number, RadioOption> = new Map();
-        this.account.labels.forEach(l => map.set(l.id, { id: l.id, name: l.name, checked: false }));
-        this.expense.labels.forEach(l => map.get(l.id).checked = true);
-        this.radioOptionsLabel = Array.from(map.values());
+        this.account.labels.forEach(label => this.radioOptionsLabel.push({
+            id: label.id,
+            name: label.name,
+            accountId: label.id,
+            checked: false
+        }));
     }
 }
-

@@ -16,12 +16,12 @@ import { PageComponent } from './page/page.component';
 import { AccountDetailsComponent } from './page-content/view/account-details/account-details.component';
 import { CategoryDetailsComponent } from './page-content/view/category-details/category-details.component';
 import { LabelDetailsComponent } from './page-content/view/label-details/label-details.component';
-import { ExpenseEditComponent } from './page-content/forms/expense/expense-edit.component';
-import { ExpenseCreateComponent } from './page-content/forms/expense/expense-create.component';
-import { CategoryCreateComponent } from './page-content/forms/category/category-create.component';
-import { CategoryEditComponent } from './page-content/forms/category/category-edit.component';
-import { LabelCreateComponent } from './page-content/forms/label/label-create.component';
-import { LabelEditComponent } from './page-content/forms/label/label-edit.component';
+import { EditExpenseComponent } from './page-content/forms/expense/edit-expense.component';
+import { CreateExpenseComponent } from './page-content/forms/expense/create-expense.component';
+import { CreateCategoryComponent } from './page-content/forms/category/create-category.component';
+import { EditCategoryComponent } from './page-content/forms/category/edit-category.component';
+import { CreateLabelComponent } from './page-content/forms/label/create-label.component';
+import { EditLabelComponent } from './page-content/forms/label/edit-label.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { DropdownSelectorComponent } from './dropdown-selector/dropdown-selector.component';
@@ -47,19 +47,19 @@ import { MenuComponent} from './page-content/menu/menu.component';
         PageComponent,
         AccountDetailsComponent,
         CategoryDetailsComponent,
-        ExpenseCreateComponent,
-        ExpenseEditComponent,
-        ExpenseCreateComponent,
+        CreateExpenseComponent,
+        EditExpenseComponent,
+        CreateExpenseComponent,
         ExpenseTableComponent,
         DeleteEntityModalComponent,
         DropdownSelectorComponent,
         RadioSelectorComponent,
-        CategoryEditComponent,
+        EditCategoryComponent,
         SidebarComponent,
         NotificationComponent,
-        CategoryCreateComponent,
-        LabelCreateComponent,
-        LabelEditComponent,
+        CreateCategoryComponent,
+        CreateLabelComponent,
+        EditLabelComponent,
         LabelDetailsComponent,
         DeleteEntityComponent,
         SpinnerComponent,

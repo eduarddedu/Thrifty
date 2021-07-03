@@ -4,7 +4,7 @@ import { LabelForm } from './label-form';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
-import { Account } from '../../../model';
+import { Account, LabelData } from '../../../model';
 import { AccountService } from '../../../services/account.service';
 
 
@@ -12,8 +12,8 @@ import { AccountService } from '../../../services/account.service';
     templateUrl: './label-form.component.html',
     styles: []
 })
-export class LabelCreateComponent extends LabelForm implements OnInit {
-
+export class CreateLabelComponent extends LabelForm implements OnInit {
+    accountId: number;
     pageTitle = 'Create Label';
 
     constructor(protected fb: FormBuilder,
@@ -25,6 +25,7 @@ export class LabelCreateComponent extends LabelForm implements OnInit {
 
     ngOnInit() {
         this.accountService.loadAccount().subscribe((account: Account) => {
+            this.accountId = account.id;
             this.forbiddenNames = account.labels.map(l => l.name);
             this.createForm();
             this.showForm = true;
@@ -36,9 +37,10 @@ export class LabelCreateComponent extends LabelForm implements OnInit {
 
     onSubmit() {
         this.showForm = false;
-        const newLabel = this.readFormData();
+        const label: LabelData = this.readFormData();
+        label.accountId = this.accountId;
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
-        this.rest.createLabel(newLabel).subscribe(() => {
+        this.rest.createLabel(label).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.LABEL_CREATE_OK));
             this.accountService.reload();
         },

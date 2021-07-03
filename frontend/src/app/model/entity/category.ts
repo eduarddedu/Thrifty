@@ -4,12 +4,14 @@ import { CategoryData } from './categoryData';
 
 export class Category extends ExpenseGroup {
     id: number;
+    accountId: number;
     name: string;
     description: string;
     labels: Label[] = [];
     constructor(data: CategoryData) {
         super();
         this.id = data.id;
+        this.accountId = data.accountId;
         this.name = data.name;
         this.description = data.description;
     }

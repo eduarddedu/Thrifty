@@ -4,11 +4,13 @@ import { ExpenseGroup } from './expenseGroup';
 
 export class Label extends ExpenseGroup implements LabelData {
     id: number;
+    accountId: number;
     name: string;
     categories: Category[] = [];
     constructor(data: LabelData) {
         super();
         this.id = data.id;
+        this.accountId = data.accountId;
         this.name = data.name;
     }
 
