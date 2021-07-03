@@ -32,8 +32,8 @@ export class EditLabelComponent extends LabelForm implements OnInit {
             const params: ParamMap = value[0];
             const account: Account = value[1];
             this.accountId = account.id;
-            this.label = account.labels.find(label => +params.get('id') === label.id);
-            this.forbiddenNames = account.labels.filter(label => this.label.id !== label.id).map(l => l.name);
+            this.label = account.labels.find(l => l.id === +params.get('id'));
+            this.forbiddenNames = account.labels.filter(l => l.id !== this.label.id).map(l => l.name);
             this.createForm();
             this.form.patchValue({ name: this.label.name });
             this.showForm = true;

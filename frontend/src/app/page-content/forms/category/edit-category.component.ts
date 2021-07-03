@@ -31,8 +31,7 @@ export class EditCategoryComponent extends CategoryForm implements OnInit {
             const params: ParamMap = value[0];
             const account: Account = value[1];
             this.category = account.categories.find(c => c.id === +params.get('id'));
-            const categoryNames = account.categories.map(c => c.name);
-            this.forbiddenNames = categoryNames.filter(name => name !== this.category.name);
+            this.forbiddenNames = account.categories.filter(c => c.id !== this.category.id).map(c => c.name);
             this.createForm();
             this.form.patchValue({ name: this.category.name, description: this.category.description });
             this.showForm = true;
