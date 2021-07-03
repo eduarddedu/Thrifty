@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+@Table(name = "Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "account_id"}))
 public class Label extends BaseEntity {
 
     @NotNull
