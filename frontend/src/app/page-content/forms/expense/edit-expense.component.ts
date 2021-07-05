@@ -13,7 +13,7 @@ import { AccountService } from '../../../services/account.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
-    styleUrls: ['./select.css']
+    styleUrls: ['./expense-form.component.css']
 })
 export class EditExpenseComponent extends ExpenseForm implements OnInit {
     pageTitle = 'Update Expense';

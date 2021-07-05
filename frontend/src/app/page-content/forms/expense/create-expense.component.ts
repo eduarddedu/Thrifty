@@ -11,7 +11,7 @@ import { AccountService } from '../../../services/account.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
-    styleUrls: ['./select.css']
+    styleUrls: ['./expense-form.component.css']
 })
 export class CreateExpenseComponent extends ExpenseForm implements OnInit {
     pageTitle = 'Create Expense';

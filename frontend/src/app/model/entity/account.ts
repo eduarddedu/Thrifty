@@ -9,6 +9,7 @@ import { AccountData } from './accountData';
 
 export class Account extends ExpenseGroup {
     id: number;
+    currency: String;
     categories: Category[];
     labels: Label[];
     private mapIdLabel: Map<number, Label> = new Map();
@@ -17,6 +18,7 @@ export class Account extends ExpenseGroup {
     constructor(data: AccountData) {
         super();
         this.id = data.id;
+        this.currency = data.currency;
         this.buildAccount(data.expenses, data.categories, data.labels);
     }
 

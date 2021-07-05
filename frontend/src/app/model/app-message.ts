@@ -1,3 +1,4 @@
+
 export enum Alert {
     INFO, ERROR, WARNING, SUCCESS
 }
@@ -14,6 +15,7 @@ export enum Kind {
     CATEGORY_DELETE_WARN,
     EXPENSE_DELETE_WARN,
     LABEL_DELETE_WARN,
+    ACCOUNT_DELETE_WARN,
     LABEL_DELETE_OK,
     CATEGORY_EDIT_OK,
     EXPENSE_EDIT_OK,
@@ -114,6 +116,10 @@ export class AppMessage {
                 break;
             case Kind.LABEL_DELETE_WARN:
                 this.text = 'Label will be deleted. Continue?';
+                this.alert = Alert.WARNING;
+                break;
+            case Kind.ACCOUNT_DELETE_WARN:
+                this.text = 'All data associated with your account will be permanently deleted. Continue?';
                 this.alert = Alert.WARNING;
 
         }

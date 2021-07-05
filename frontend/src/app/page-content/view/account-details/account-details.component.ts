@@ -18,6 +18,7 @@ import { Report as Report } from '../report';
 })
 export class AccountDetailsComponent extends Report implements OnInit {
     entity: Account;
+    currency: String;
     pieChart: Chart;
     columnChart: Chart;
     dataReady = false;
@@ -45,6 +46,7 @@ export class AccountDetailsComponent extends Report implements OnInit {
 
     init(account: Account) {
         this.entity = account;
+        this.currency = account.currency;
         if (this.entity.expenses.length > 0) {
             this.setPeriodOptions();
             this.setCharts();

@@ -12,6 +12,14 @@ export class RestService {
         return this.http.get<AccountData>('account');
     }
 
+    public deleteAccount(): Observable<any> {
+        return this.http.delete('account');
+    }
+
+    public getUsername(): Observable<{username: string}> {
+        return this.http.get<{username: string}>('self');
+    }
+
     public createCategory(category: CategoryData) {
         return this.http.post('categories', JSON.stringify(category));
     }

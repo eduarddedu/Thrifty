@@ -12,6 +12,7 @@ import { CreateExpenseComponent } from '../page-content/forms/expense/create-exp
 import { CreateLabelComponent } from '../page-content/forms/label/create-label.component';
 import { EditLabelComponent } from '../page-content/forms/label/edit-label.component';
 import { DeleteEntityComponent } from '../page-content/delete-entity/delete-entity.component';
+import { SettingsComponent } from '../page-content/settings/settings.component';
 
 const routes: Routes = [
     {
@@ -73,6 +74,11 @@ const routes: Routes = [
             {
                 path: 'delete/:entity/:id',
                 component: DeleteEntityComponent
+            },
+            {
+                path: 'settings',
+                component: SettingsComponent
+
             },
             {
                 path: '**',

@@ -38,6 +38,7 @@ import { DeleteEntityComponent } from './page-content/delete-entity/delete-entit
 import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MenuComponent} from './menu/menu.component';
+import { SettingsComponent } from './page-content/settings/settings.component';
 
 
 
@@ -63,7 +64,8 @@ import { MenuComponent} from './menu/menu.component';
         LabelDetailsComponent,
         DeleteEntityComponent,
         SpinnerComponent,
-        MenuComponent
+        MenuComponent,
+        SettingsComponent
     ],
     imports: [
         BrowserModule,
