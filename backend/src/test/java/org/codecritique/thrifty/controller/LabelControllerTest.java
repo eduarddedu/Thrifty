@@ -4,7 +4,7 @@ import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import static org.codecritique.thrifty.Generator.labelSupplier;
 import static org.codecritique.thrifty.Generator.stringSupplier;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-class LabelsControllerTest extends BaseControllerTest {
+class LabelControllerTest extends BaseControllerTest {
 
     @Test
     void shouldCreateLabel() throws Exception {
@@ -23,22 +23,11 @@ class LabelsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    void shouldReturnForbiddenOnCreateLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
-        Label label = labelSupplier.get();
-        label.setAccountId(100);
-        String json = mapper.writeValueAsString(label);
-        mockMvc.perform(post(getUrl(Label.class)).with(csrf())
-                .contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isForbidden());
-    }
-
-
-    @Test
     void shouldReturnBadRequestOnCreateLabelWhenLabelNameIsEmptyString() throws Exception {
         Label label = new Label();
         label.setName("");
         label.setAccountId(1);
-        mockMvc.perform(post(getUrl(Label.class))
+        mockMvc.perform(post(url(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 .content(mapper.writeValueAsString(label)))
@@ -51,7 +40,7 @@ class LabelsControllerTest extends BaseControllerTest {
         Label duplicate = new Label();
         duplicate.setName(original.getName());
         duplicate.setAccountId(1);
-        mockMvc.perform(post(getUrl(Label.class))
+        mockMvc.perform(post(url(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 .content(mapper.writeValueAsString(duplicate)))
@@ -60,7 +49,7 @@ class LabelsControllerTest extends BaseControllerTest {
 
     @Test
     void shouldGetLabels() throws Exception {
-        mockMvc.perform(get(getUrl(Label.class)))
+        mockMvc.perform(get(url(Label.class)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
@@ -98,7 +87,7 @@ class LabelsControllerTest extends BaseControllerTest {
     void shouldRemoveLabel() throws Exception {
         Label label = createAndGetLabel();
         deleteEntity(Label.class, label.getId());
-        mockMvc.perform(get(getUrl(Label.class, label.getId())))
+        mockMvc.perform(get(url(Label.class, label.getId())))
                 .andExpect(status().isNotFound());
     }
 
@@ -115,16 +104,26 @@ class LabelsControllerTest extends BaseControllerTest {
         deleteEntity(Label.class, label.getId());
 
         //verify
-        mockMvc.perform(get(getUrl(Label.class, label.getId())))
+        mockMvc.perform(get(url(Label.class, label.getId())))
                 .andExpect(status().isNotFound());
         Expense updated = getEntity(Expense.class, expense.getId());
         assertFalse(updated.getLabels().contains(label));
     }
 
     @Test
-    @WithMockUser(authorities = "100")
+    void shouldReturnForbiddenOnCreateLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
+        Label label = labelSupplier.get();
+        label.setAccountId(2);
+        String json = mapper.writeValueAsString(label);
+        mockMvc.perform(post(url(Label.class)).with(csrf())
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails(value = "hacker@example.com")
     void shouldReturnForbiddenOnRemoveLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
-        mockMvc.perform(delete((getUrl(Label.class, 1)))
+        mockMvc.perform(delete((url(Label.class, 1)))
                 .with(csrf()))
                 .andExpect(status().isForbidden());
     }

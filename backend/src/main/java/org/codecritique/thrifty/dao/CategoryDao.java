@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryDao {
 
-    void store(Category o);
+    void save(Category o);
 
     Category getCategory(long id);
 

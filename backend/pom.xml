@@ -97,18 +97,9 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <includes>
-                            <include>**/LabelsControllerTest</include>
-                            <include>**/ExpensesControllerTest</include>
-                            <include>**/CategoriesControllerTest</include>
-                            <include>**/UserControllerTest</include>
-
-                            <include>**/LabelDaoTest</include>
-                            <include>**/CategoryDaoTest</include>
-                            <include>**/ExpenseDaoTest</include>
-                            <include>**/ExpenseViewDaoTest</include>
-
-                            <include>**/WebSecurityTest</include>
-
+                            <include>**/controller/**</include>
+                            <include>**/dao/**</include>
+                            <include>**/auth/**</include>
                             <include>**/e2e/**</include>
                         </includes>
                     </configuration>

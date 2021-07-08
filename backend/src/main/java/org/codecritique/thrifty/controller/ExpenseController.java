@@ -3,6 +3,7 @@ package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.dao.ExpenseDao;
 import org.codecritique.thrifty.entity.Expense;
+import org.codecritique.thrifty.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,14 +18,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest-api/expenses")
-public class ExpensesController extends BaseController {
+public class ExpenseController extends BaseController {
     @Autowired
     private ExpenseDao dao;
 
     @PreAuthorize("hasAuthority(#expense.accountId)")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createExpense(@RequestBody Expense expense) {
-        dao.store(expense);
+        dao.save(expense);
         URI location = toAbsoluteURI("/rest-api/expenses/" + expense.getId());
         return ResponseEntity.created(location).build();
     }
@@ -38,21 +38,21 @@ public class ExpensesController extends BaseController {
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Expense> getExpense(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Expense> getExpense(@PathVariable long id, @AuthenticationPrincipal User user) {
         Expense expense = dao.getExpense(id);
         if (expense == null)
             return ResponseEntity.notFound().build();
-        if (hasAuthority(userDetails, expense))
+        if (isAuthorizedToAccess(user, expense))
             return ResponseEntity.ok(expense);
         throw new AccessDeniedException("Access is denied");
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Resource> removeExpense(@PathVariable long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Resource> removeExpense(@PathVariable long id, @AuthenticationPrincipal User user) {
         Expense expense = dao.getExpense(id);
         if (expense == null)
             return ResponseEntity.notFound().build();
-        if (hasAuthority(userDetails, expense)) {
+        if (isAuthorizedToAccess(user, expense)) {
             dao.removeExpense(id);
             return ResponseEntity.ok().build();
         }
@@ -61,8 +61,8 @@ public class ExpensesController extends BaseController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Expense> getExpensesSortedByDate() {
-        return dao.getExpenses();
+    public List<Expense> getExpensesSortedByDate(@AuthenticationPrincipal User user) {
+        return dao.getExpenses(user.getAccountId());
     }
 
 }

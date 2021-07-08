@@ -24,7 +24,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         expense.setCategory(category);
         Label label = createAndGetLabel();
         expense.addLabel(label);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         assertTrue(category.getExpenses().contains(expense));
         assertTrue(label.getExpenses().contains(expense));
@@ -34,7 +34,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldGetExpense() {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
-        expenseDao.store(expense);
+        expenseDao.save(expense);
         assertEquals(expense, expenseDao.getExpense(expense.getId()));
     }
 
@@ -43,7 +43,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         //setup
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
-        expenseDao.store(expense);
+        expenseDao.save(expense);
         Label label = createAndGetLabel();
 
         //exercise
@@ -63,7 +63,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         Category category2 = createAndGetCategory();
 
@@ -81,13 +81,13 @@ class ExpenseDaoTest extends BaseDaoTest {
         //setup: create entities
         Label label = labelSupplier.get();
         Label label2 = labelSupplier.get();
-        labelDao.store(label);
-        labelDao.store(label2);
+        labelDao.save(label);
+        labelDao.save(label2);
 
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setLabels(Arrays.asList(label, label2));
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         //exercise
         expense.removeLabel(label2);
@@ -106,9 +106,10 @@ class ExpenseDaoTest extends BaseDaoTest {
         for (int i = 0; i < numEntities; i++) {
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
-            expenseDao.store(expense);
+            expenseDao.save(expense);
         }
-        Iterator<LocalDate> it = expenseDao.getExpenses().stream().map(Expense::getCreatedOn).iterator();
+        Iterator<LocalDate> it = expenseDao.getExpenses(accountId)
+                .stream().map(Expense::getCreatedOn).iterator();
         while (it.hasNext()) {
             LocalDate date = it.next();
             if (it.hasNext()) {
@@ -123,7 +124,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Category c = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(c);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         //exercise
         expense.setCreatedOn(dateSupplier.get());
@@ -146,7 +147,7 @@ class ExpenseDaoTest extends BaseDaoTest {
 
         Label label = createAndGetLabel();
         expense.addLabel(label);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         // exercise
         expenseDao.removeExpense(expense.getId());
@@ -169,7 +170,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
     }
 
     @Test
@@ -178,7 +179,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
+        assertThrows(ConstraintViolationException.class, () -> expenseDao.save(expense));
     }
 
     @Test
@@ -187,7 +188,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseDao.store(expense));
+        assertThrows(ConstraintViolationException.class, () -> expenseDao.save(expense));
     }
 
 }

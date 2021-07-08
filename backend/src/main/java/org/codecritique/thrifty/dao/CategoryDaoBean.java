@@ -5,21 +5,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author Eduard Dedu
- */
-
 @Service
-public class CategoryDaoBean extends BaseDao implements CategoryDao {
-
-    @Override
-    public void store(Category o) {
-        em.persist(o);
-    }
+public class CategoryDaoBean extends BaseDao<Category> implements CategoryDao {
 
     @Override
     public Category getCategory(long id) {
-        return em.find(Category.class, id);
+        return findById(Category.class, id);
     }
 
     @Override
@@ -34,9 +25,7 @@ public class CategoryDaoBean extends BaseDao implements CategoryDao {
 
     @Override
     public void removeCategory(long id) {
-        Category category = em.find(Category.class, id);
-        if (category != null)
-            em.remove(category);
+        super.remove(Category.class, id);
     }
 
     private List<Category> getCategoriesSortedByName(long accountId) {

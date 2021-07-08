@@ -1,6 +1,7 @@
 package org.codecritique.thrifty.controller;
 
 import org.codecritique.thrifty.entity.BaseEntity;
+import org.codecritique.thrifty.entity.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,8 +16,9 @@ public abstract class BaseController {
                 .build(new HashMap<>());
     }
 
-    protected boolean hasAuthority(UserDetails userDetails, BaseEntity entity) {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(entity.getAccountId().toString());
-        return userDetails.getAuthorities().contains(authority);
+    protected boolean isAuthorizedToAccess(User user, BaseEntity entity) {
+        if (user.getAccountId() == null || entity.getAccountId() == null)
+            return false;
+        return user.getAccountId().equals(entity.getAccountId());
     }
 }

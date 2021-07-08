@@ -6,16 +6,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class LabelDaoBean extends BaseDao implements LabelDao {
-
-    @Override
-    public void store(Label label) {
-        em.persist(label);
-    }
+public class LabelDaoBean extends BaseDao<Label> implements LabelDao {
 
     @Override
     public Label getLabel(long id) {
-        return em.find(Label.class, id);
+        return findById(Label.class, id);
     }
 
     @Override

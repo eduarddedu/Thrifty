@@ -14,7 +14,7 @@ class CategoryDaoTest extends BaseDaoTest {
     @Test
     void shouldStoreCategory() {
         Category category = categorySupplier.get();
-        categoryDao.store(category);
+        categoryDao.save(category);
         assertEquals(category, categoryDao.getCategory(category.getId()));
     }
 
@@ -24,7 +24,7 @@ class CategoryDaoTest extends BaseDaoTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            categoryDao.store(categorySupplier.get());
+            categoryDao.save(categorySupplier.get());
 
         Iterator<String> it = categoryDao.getCategories(accountId)
                 .stream().map(Category::getName).iterator();
@@ -41,10 +41,10 @@ class CategoryDaoTest extends BaseDaoTest {
     void shouldUpdateCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryDao.store(category);
+        categoryDao.save(category);
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseDao.store(expense);
+        expenseDao.save(expense);
 
         //exercise
         category.setName(stringSupplier.get());
@@ -60,7 +60,7 @@ class CategoryDaoTest extends BaseDaoTest {
     void shouldRemoveCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryDao.store(category);
+        categoryDao.save(category);
 
         //exercise
         categoryDao.removeCategory(category.getId());

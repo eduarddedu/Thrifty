@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LabelDao {
 
-    void store(Label label);
+    void save(Label label);
 
     Label getLabel(long id);
 

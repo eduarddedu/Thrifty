@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface ExpenseDao {
 
-    void store(Expense o);
+    void save(Expense o);
 
     Expense getExpense(long id);
 
-    List<Expense> getExpenses();
+    List<Expense> getExpenses(long accountId);
 
     void removeExpense(long id);
 

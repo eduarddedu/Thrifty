@@ -7,7 +7,7 @@ import org.codecritique.thrifty.jackson.JacksonConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser(authorities = {"1"})
+@WithUserDetails(value = "johndoe@example.com")
 public abstract class BaseControllerTest extends MockMvcTest {
     private final Map<Class<? extends BaseEntity>, String> mapEntityClassToUrl = new HashMap<>();
     protected final ObjectMapper mapper;
@@ -79,7 +79,7 @@ public abstract class BaseControllerTest extends MockMvcTest {
     }
 
     protected <T extends BaseEntity> T getEntity(Class<T> klass, Long id) throws Exception {
-        String url = id == null ? getUrl(klass) : getUrl(klass, id);
+        String url = id == null ? url(klass) : url(klass, id);
         String json = mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -91,11 +91,11 @@ public abstract class BaseControllerTest extends MockMvcTest {
         mockMvc.perform(delete(url).with(csrf())).andExpect(status().isOk());
     }
 
-    protected String getUrl(Class<? extends BaseEntity> klass) {
+    protected String url(Class<? extends BaseEntity> klass) {
         return mapEntityClassToUrl.get(klass);
     }
 
-    protected String getUrl(Class<? extends BaseEntity> klass, long id) {
+    protected String url(Class<? extends BaseEntity> klass, long id) {
         return mapEntityClassToUrl.get(klass).concat(id + "");
     }
 
