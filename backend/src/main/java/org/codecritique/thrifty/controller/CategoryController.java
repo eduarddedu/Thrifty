@@ -1,9 +1,7 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.CategoryDao;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest-api/categories")
 public class CategoryController extends BaseController {
-    @Autowired
-    private CategoryDao dao;
 
     @PreAuthorize("hasAuthority(#category.accountId)")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createCategory(@RequestBody Category category) {
-        dao.save(category);
+        repository.save(category);
         URI location = toAbsoluteURI("/rest-api/categories/" + category.getId());
         return ResponseEntity.created(location).build();
     }
@@ -32,13 +28,13 @@ public class CategoryController extends BaseController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority(#category.accountId)")
     public ResponseEntity<Resource> updateCategory(@RequestBody Category category) {
-        dao.updateCategory(category);
+        repository.updateEntity(category);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Category> getCategory(@PathVariable long id, @AuthenticationPrincipal User user) {
-        Category category = dao.getCategory(id);
+        Category category = repository.findById(Category.class, id);
         if (category == null)
             return ResponseEntity.notFound().build();
         if (isAuthorizedToAccess(user, category))
@@ -48,16 +44,16 @@ public class CategoryController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Category> getCategoriesSortedByName(@AuthenticationPrincipal User user) {
-        return dao.getCategories(user.getAccountId());
+        return repository.findCategories(user.getAccountId());
     }
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeCategory(@PathVariable long id, @AuthenticationPrincipal User user) {
-        Category category = dao.getCategory(id);
+        Category category = repository.findById(Category.class, id);
         if (category == null)
             return ResponseEntity.notFound().build();
         if (isAuthorizedToAccess(user, category) && category.getExpenses().isEmpty()) {
-            dao.removeCategory(id);
+            repository.removeCategory(id);
             return ResponseEntity.ok().build();
         }
         throw new AccessDeniedException("Access is denied");

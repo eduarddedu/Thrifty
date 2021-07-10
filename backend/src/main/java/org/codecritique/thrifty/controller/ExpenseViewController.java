@@ -1,9 +1,7 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.ExpenseViewDao;
 import org.codecritique.thrifty.entity.ExpenseView;
 import org.codecritique.thrifty.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,19 +14,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest-api/view/expenses")
-public class ExpenseViewController {
-
-    @Autowired
-    private ExpenseViewDao dao;
+public class ExpenseViewController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ExpenseView> getExpenses(@AuthenticationPrincipal User user) {
-        return dao.findAll(user.getAccountId());
+        return repository.findExpenseViews(user.getAccountId());
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ExpenseView> getExpense(@PathVariable long id) {
-        ExpenseView expense = dao.findById(id);
+        ExpenseView expense = repository.findById(ExpenseView.class, id);
         if (expense == null)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(expense);

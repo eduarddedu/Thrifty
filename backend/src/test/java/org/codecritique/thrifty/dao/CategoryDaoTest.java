@@ -14,19 +14,18 @@ class CategoryDaoTest extends BaseDaoTest {
     @Test
     void shouldStoreCategory() {
         Category category = categorySupplier.get();
-        categoryDao.save(category);
-        assertEquals(category, categoryDao.getCategory(category.getId()));
+        repository.save(category);
+        assertEquals(category, repository.findById(Category.class, category.getId()));
     }
 
     @Test
     void shouldGetCategoriesSortedByName() {
-
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            categoryDao.save(categorySupplier.get());
+            repository.save(categorySupplier.get());
 
-        Iterator<String> it = categoryDao.getCategories(accountId)
+        Iterator<String> it = repository.findCategories(ACCOUNT_ID)
                 .stream().map(Category::getName).iterator();
 
         while (it.hasNext()) {
@@ -41,18 +40,18 @@ class CategoryDaoTest extends BaseDaoTest {
     void shouldUpdateCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryDao.save(category);
+        repository.save(category);
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseDao.save(expense);
+        repository.save(expense);
 
         //exercise
         category.setName(stringSupplier.get());
         category.setDescription(stringSupplier.get());
-        categoryDao.updateCategory(category);
+        repository.updateEntity(category);
 
         //verify
-        assertEquals(category, categoryDao.getCategory(category.getId()));
+        assertEquals(category, repository.findById(Category.class, category.getId()));
         assertEquals(category, expense.getCategory());
     }
 
@@ -60,13 +59,13 @@ class CategoryDaoTest extends BaseDaoTest {
     void shouldRemoveCategory() {
         //setup
         Category category = categorySupplier.get();
-        categoryDao.save(category);
+        repository.save(category);
 
         //exercise
-        categoryDao.removeCategory(category.getId());
+        repository.removeCategory(category.getId());
 
         //verify
-        assertNull(categoryDao.getCategory(category.getId()));
+        assertNull(repository.findById(Category.class, category.getId()));
     }
 
 }

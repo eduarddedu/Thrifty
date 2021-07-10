@@ -15,7 +15,7 @@ class LabelDaoTest extends BaseDaoTest {
     @Test
     void shouldCreateLabel() {
         Label label = createAndGetLabel();
-        assertEquals(label, labelDao.getLabel(label.getId()));
+        assertEquals(label, repository.findById(Label.class, label.getId()));
     }
 
     @Test
@@ -23,9 +23,9 @@ class LabelDaoTest extends BaseDaoTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            labelDao.save(labelSupplier.get());
+            repository.save(labelSupplier.get());
 
-        Iterator<String> it = labelDao.getLabels(accountId)
+        Iterator<String> it = repository.findLabels(ACCOUNT_ID)
                 .stream().map(Label::getName).iterator();
 
         while (it.hasNext()) {
@@ -45,10 +45,10 @@ class LabelDaoTest extends BaseDaoTest {
 
         //exercise
         label.setName(stringSupplier.get());
-        labelDao.updateLabel(label);
+        repository.updateEntity(label);
 
         //verify
-        assertEquals(label, labelDao.getLabel(label.getId()));
+        assertEquals(label, repository.findById(Label.class, label.getId()));
 
         //verify the view from expense side is consistent
         assertEquals(1, expense.getLabels().size());
@@ -60,9 +60,9 @@ class LabelDaoTest extends BaseDaoTest {
     @Test
     void shouldRemoveLabel() {
         Label label = createAndGetLabel();
-        assertNotNull(labelDao.getLabel(label.getId()));
-        labelDao.removeLabel(label.getId());
-        assertNull(labelDao.getLabel(label.getId()));
+        assertNotNull(repository.findById(Label.class, label.getId()));
+        repository.removeLabel(label.getId());
+        assertNull(repository.findById(Label.class, label.getId()));
     }
 
     @Test
@@ -71,15 +71,15 @@ class LabelDaoTest extends BaseDaoTest {
         Expense expense = createAndGetExpense();
         Label label = createAndGetLabel();
         expense.addLabel(label);
-        expenseDao.updateExpense(expense);
+        repository.updateEntity(expense);
 
         // exercise
-        labelDao.removeLabel(label.getId());
+        repository.removeLabel(label.getId());
 
         // verify
-        assertNull(labelDao.getLabel(label.getId()));
+        assertNull(repository.findById(Label.class, label.getId()));
         //assertFalse(expense.getLabels().contains(label)); // fails
-        assertFalse(expenseDao.getExpense(expense.getId()).getLabels().contains(label));
+        assertFalse(repository.findById(Expense.class, expense.getId()).getLabels().contains(label));
     }
 
 }

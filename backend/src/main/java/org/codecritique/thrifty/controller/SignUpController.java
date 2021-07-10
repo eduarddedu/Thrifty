@@ -1,10 +1,11 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.validators.PasswordValidationException;
 import org.codecritique.thrifty.service.MessageService;
 import org.codecritique.thrifty.service.UserService;
+import org.codecritique.thrifty.validators.EmailValidationException;
+import org.codecritique.thrifty.validators.PasswordValidationException;
+import org.codecritique.thrifty.validators.UsernameExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,8 @@ public class SignUpController extends BaseController {
 
     @Autowired
     private MessageService messages;
+    
+    private final String USERNAME_PLACEHOLDER = "name@example.com";
 
     @PostMapping(path = "register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createUser(@RequestParam String username,
@@ -34,27 +37,30 @@ public class SignUpController extends BaseController {
             m.addAttribute("hasCompletedRegistration", true);
             return "registerForm";
         } catch (PasswordValidationException passwordException) {
-            m.addAttribute("emailPlaceholder", username);
+            m.addAttribute("usernamePlaceholder", username);
             m.addAttribute("passwordValidationError", messages.invalidPassword());
             m.addAttribute("accountId", 0);
             return "registerForm";
-        } catch (javax.validation.ConstraintViolationException e) {
-            m.addAttribute("emailPlaceholder", username);
-            m.addAttribute("emailValidationError", e.getConstraintViolations().iterator().next().getMessage());
+        } catch (EmailValidationException e) {
+            m.addAttribute("usernamePlaceholder", username);
+            m.addAttribute("usernameValidationError", e.getMessage());
             m.addAttribute("accountId", 0);
             return "registerForm";
-        } catch (DataIntegrityViolationException ex) {
-            m.addAttribute("emailPlaceholder", username);
-            m.addAttribute("emailValidationError", messages.emailExists());
+        } catch (UsernameExistsException e) {
+            m.addAttribute("usernamePlaceholder", USERNAME_PLACEHOLDER);
+            m.addAttribute("usernameValidationError", messages.usernameExists());
             m.addAttribute("accountId", 0);
             return "registerForm";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
     @GetMapping(path = "register")
     public String getRegisterForm(Model m) {
         m.addAttribute("hasCompletedRegistration", false);
-        m.addAttribute("emailPlaceholder", "name@example.com");
+        m.addAttribute("usernamePlaceholder", USERNAME_PLACEHOLDER);
         m.addAttribute("accountId", 0);
         return "registerForm";
     }

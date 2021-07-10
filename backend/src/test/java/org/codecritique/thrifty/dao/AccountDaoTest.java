@@ -4,7 +4,6 @@ import org.codecritique.thrifty.entity.Account;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.ExpenseView;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 
@@ -12,12 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AccountDaoTest extends BaseDaoTest {
-    @Autowired
-    private AccountDao service;
 
     @Test
     void shouldGetAccount() {
-        Account account = service.findById(1);
+        Account account = repository.findById(Account.class, ACCOUNT_ID);
         assertNotNull(account);
         assertEquals("Daily expenses", account.getName());
         Set<Category> categories = account.getCategories();

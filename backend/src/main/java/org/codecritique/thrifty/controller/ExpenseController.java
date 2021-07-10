@@ -1,10 +1,8 @@
 package org.codecritique.thrifty.controller;
 
 
-import org.codecritique.thrifty.dao.ExpenseDao;
 import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest-api/expenses")
 public class ExpenseController extends BaseController {
-    @Autowired
-    private ExpenseDao dao;
 
     @PreAuthorize("hasAuthority(#expense.accountId)")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> createExpense(@RequestBody Expense expense) {
-        dao.save(expense);
+        repository.save(expense);
         URI location = toAbsoluteURI("/rest-api/expenses/" + expense.getId());
         return ResponseEntity.created(location).build();
     }
@@ -33,13 +29,13 @@ public class ExpenseController extends BaseController {
     @PreAuthorize("hasAuthority(#expense.accountId)")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> updateExpense(@RequestBody Expense expense) {
-        dao.updateExpense(expense);
+        repository.updateEntity(expense);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Expense> getExpense(@PathVariable long id, @AuthenticationPrincipal User user) {
-        Expense expense = dao.getExpense(id);
+        Expense expense = repository.findById(Expense.class, id);
         if (expense == null)
             return ResponseEntity.notFound().build();
         if (isAuthorizedToAccess(user, expense))
@@ -49,11 +45,11 @@ public class ExpenseController extends BaseController {
 
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Resource> removeExpense(@PathVariable long id, @AuthenticationPrincipal User user) {
-        Expense expense = dao.getExpense(id);
+        Expense expense = repository.findById(Expense.class, id);
         if (expense == null)
             return ResponseEntity.notFound().build();
         if (isAuthorizedToAccess(user, expense)) {
-            dao.removeExpense(id);
+            repository.removeExpense(id);
             return ResponseEntity.ok().build();
         }
         throw new AccessDeniedException("Access is denied");
@@ -62,7 +58,7 @@ public class ExpenseController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Expense> getExpensesSortedByDate(@AuthenticationPrincipal User user) {
-        return dao.getExpenses(user.getAccountId());
+        return repository.findExpenses(user.getAccountId());
     }
 
 }

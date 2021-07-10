@@ -24,7 +24,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         expense.setCategory(category);
         Label label = createAndGetLabel();
         expense.addLabel(label);
-        expenseDao.save(expense);
+        repository.save(expense);
 
         assertTrue(category.getExpenses().contains(expense));
         assertTrue(label.getExpenses().contains(expense));
@@ -34,8 +34,8 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldGetExpense() {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
-        expenseDao.save(expense);
-        assertEquals(expense, expenseDao.getExpense(expense.getId()));
+        repository.save(expense);
+        assertEquals(expense, repository.findById(Expense.class, expense.getId()));
     }
 
     @Test
@@ -43,17 +43,17 @@ class ExpenseDaoTest extends BaseDaoTest {
         //setup
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
-        expenseDao.save(expense);
+        repository.save(expense);
         Label label = createAndGetLabel();
 
         //exercise
         expense.addLabel(label);
-        expenseDao.updateExpense(expense);
+        repository.updateEntity(expense);
 
         //verify
         assertTrue(expense.getLabels().contains(label));
         assertTrue(label.getExpenses().contains(expense));
-        Expense sameExpense = expenseDao.getExpense(expense.getId());
+        Expense sameExpense = repository.findById(Expense.class, expense.getId());
         assertTrue(sameExpense.getLabels().contains(label));
         assertEquals(expense, sameExpense);
     }
@@ -63,17 +63,17 @@ class ExpenseDaoTest extends BaseDaoTest {
         Category category = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(category);
-        expenseDao.save(expense);
+        repository.save(expense);
 
         Category category2 = createAndGetCategory();
 
         //exercise
         expense.setCategory(category2);
-        expenseDao.updateExpense(expense);
+        repository.updateEntity(expense);
 
         //verify
         assertEquals(expense.getCategory(), category2);
-        assertEquals(expense, expenseDao.getExpense(expense.getId()));
+        assertEquals(expense, repository.findById(Expense.class, expense.getId()));
     }
 
     @Test
@@ -81,22 +81,22 @@ class ExpenseDaoTest extends BaseDaoTest {
         //setup: create entities
         Label label = labelSupplier.get();
         Label label2 = labelSupplier.get();
-        labelDao.save(label);
-        labelDao.save(label2);
+        repository.save(label);
+        repository.save(label2);
 
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setLabels(Arrays.asList(label, label2));
-        expenseDao.save(expense);
+        repository.save(expense);
 
         //exercise
         expense.removeLabel(label2);
-        expenseDao.updateExpense(expense);
+        repository.updateEntity(expense);
 
         //verify
         assertFalse(expense.getLabels().contains(label2));
-        assertEquals(expense, expenseDao.getExpense(expense.getId()));
-        assertTrue(labelDao.getLabels(accountId).contains(label2));
+        assertEquals(expense, repository.findById(Expense.class, expense.getId()));
+        assertTrue(repository.findLabels(ACCOUNT_ID).contains(label2));
     }
 
     @Test
@@ -106,9 +106,9 @@ class ExpenseDaoTest extends BaseDaoTest {
         for (int i = 0; i < numEntities; i++) {
             Expense expense = expenseSupplier.get();
             expense.setCategory(category);
-            expenseDao.save(expense);
+            repository.save(expense);
         }
-        Iterator<LocalDate> it = expenseDao.getExpenses(accountId)
+        Iterator<LocalDate> it = repository.findExpenses(ACCOUNT_ID)
                 .stream().map(Expense::getCreatedOn).iterator();
         while (it.hasNext()) {
             LocalDate date = it.next();
@@ -124,7 +124,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Category c = createAndGetCategory();
         Expense expense = expenseSupplier.get();
         expense.setCategory(c);
-        expenseDao.save(expense);
+        repository.save(expense);
 
         //exercise
         expense.setCreatedOn(dateSupplier.get());
@@ -132,10 +132,10 @@ class ExpenseDaoTest extends BaseDaoTest {
         expense.setDescription(stringSupplier.get());
         expense.setCategory(createAndGetCategory());
         expense.addLabel(createAndGetLabel());
-        expenseDao.updateExpense(expense);
+        repository.updateEntity(expense);
 
         //verify
-        assertEquals(expense, expenseDao.getExpense(expense.getId()));
+        assertEquals(expense, repository.findById(Expense.class, expense.getId()));
     }
 
     @Test
@@ -147,20 +147,20 @@ class ExpenseDaoTest extends BaseDaoTest {
 
         Label label = createAndGetLabel();
         expense.addLabel(label);
-        expenseDao.save(expense);
+        repository.save(expense);
 
         // exercise
-        expenseDao.removeExpense(expense.getId());
+        repository.removeExpense(expense.getId());
 
         // verify that:
         //- expense has been deleted
-        assertNull(expenseDao.getExpense(expense.getId()));
+        assertNull(repository.findById(Expense.class, expense.getId()));
 
         //- its labels have not been deleted
-        assertTrue(labelDao.getLabels(accountId).contains(label));
+        assertTrue(repository.findLabels(ACCOUNT_ID).contains(label));
 
         //- its category has not been deleted
-        assertTrue(categoryDao.getCategories(accountId).contains(category));
+        assertTrue(repository.findCategories(ACCOUNT_ID).contains(category));
 
     }
 
@@ -170,7 +170,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        expenseDao.save(expense);
+        repository.save(expense);
     }
 
     @Test
@@ -179,7 +179,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseDao.save(expense));
+        assertThrows(ConstraintViolationException.class, () -> repository.save(expense));
     }
 
     @Test
@@ -188,7 +188,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
-        assertThrows(ConstraintViolationException.class, () -> expenseDao.save(expense));
+        assertThrows(ConstraintViolationException.class, () -> repository.save(expense));
     }
 
 }

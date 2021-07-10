@@ -13,13 +13,13 @@ public class MessageService {
     private MessageSource messageSource;
     private String invalidPasswordMessage;
     private String registrationSuccessfulMessage;
-    private String emailExistsMessage;
+    private String usernameExistsMessage;
 
     @PostConstruct
     void init() {
         invalidPasswordMessage = getMessage("invalid.password");
         registrationSuccessfulMessage = getMessage("registration.successful");
-        emailExistsMessage = getMessage("email.exists");
+        usernameExistsMessage = getMessage("username.exists");
     }
 
     private String getMessage(String key) {
@@ -34,7 +34,7 @@ public class MessageService {
         return registrationSuccessfulMessage;
     }
 
-    public String emailExists() {
-        return emailExistsMessage;
+    public String usernameExists() {
+        return usernameExistsMessage;
     }
 }

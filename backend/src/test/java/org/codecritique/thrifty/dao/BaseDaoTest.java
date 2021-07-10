@@ -8,31 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.codecritique.thrifty.Generator.*;
 
-public abstract class BaseDaoTest extends MockMvcTest {
+abstract class BaseDaoTest extends MockMvcTest {
     @Autowired
-    protected ExpenseDao expenseDao;
-    @Autowired
-    protected CategoryDao categoryDao;
-    @Autowired
-    protected LabelDao labelDao;
-    protected final long accountId = 1;
+    protected Repository repository;
+    protected final long ACCOUNT_ID = 1;
 
     protected Expense createAndGetExpense() {
         Expense expense = expenseSupplier.get();
         expense.setCategory(createAndGetCategory());
-        expenseDao.save(expense);
+        repository.save(expense);
         return expense;
     }
 
     protected Category createAndGetCategory() {
         Category category = categorySupplier.get();
-        categoryDao.save(category);
+        repository.save(category);
         return category;
     }
 
     protected Label createAndGetLabel() {
         Label label = labelSupplier.get();
-        labelDao.save(label);
+        repository.save(label);
         return label;
     }
 

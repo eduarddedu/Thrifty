@@ -6,14 +6,10 @@ import org.codecritique.thrifty.entity.Label;
 import org.codecritique.thrifty.entity.LabelView;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.stream.Collectors;
 
 public class ExpenseViewDaoTest extends BaseDaoTest {
-
-    @Autowired
-    private ExpenseViewDao expenseViewDao;
 
     @Test
     public void findById() {
@@ -21,8 +17,8 @@ public class ExpenseViewDaoTest extends BaseDaoTest {
         for (int i = 0; i < 2; i++) {
             expense.addLabel(createAndGetLabel());
         }
-        expenseDao.updateExpense(expense);
-        ExpenseView view = expenseViewDao.findById(expense.getId());
+        repository.updateEntity(expense);
+        ExpenseView view = repository.findById(ExpenseView.class, expense.getId());
         assertNotNull(view);
         assertEquals(expense.getId(), view.getId());
         assertEquals(expense.getCreatedOn(), view.getCreatedOn());

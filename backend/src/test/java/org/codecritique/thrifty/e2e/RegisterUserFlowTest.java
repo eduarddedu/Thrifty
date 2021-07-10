@@ -54,7 +54,7 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
     public void shouldFailRegistrationWhenInvalidEmail() {
         User wrong = new User("wrong_email_address", "password", 0L);
         ResponseEntity<String> submitFormResponse = register(wrong);
-        assertThat(submitFormResponse.getBody()).contains("Invalid email");
+        assertThat(submitFormResponse.getBody()).contains("Invalid email: &#39;wrong_email_address&#39;");
     }
 
     @Test
@@ -72,6 +72,6 @@ public class RegisterUserFlowTest extends BaseSecurityTest {
         String email = "bugs@bunny.com";
         User user = new User(email, "password", 0L);
         assertThat(register(user).getBody()).contains(messages.registrationSuccessful());
-        assertThat(register(user).getBody()).contains(messages.emailExists());
+        assertThat(register(user).getBody()).contains(messages.usernameExists());
     }
 }
