@@ -12,14 +12,15 @@ export enum Kind {
     LABEL_CREATE_OK,
     CATEGORY_DELETE_OK,
     EXPENSE_DELETE_OK,
+    LABEL_DELETE_OK,
+    ACCOUNT_DATA_DELETE_OK,
+    CATEGORY_EDIT_OK,
+    EXPENSE_EDIT_OK,
+    LABEL_EDIT_OK,
     CATEGORY_DELETE_WARN,
     EXPENSE_DELETE_WARN,
     LABEL_DELETE_WARN,
     ACCOUNT_DELETE_WARN,
-    LABEL_DELETE_OK,
-    CATEGORY_EDIT_OK,
-    EXPENSE_EDIT_OK,
-    LABEL_EDIT_OK,
     MUST_CREATE_CATEGORY
 }
 
@@ -101,6 +102,10 @@ export class AppMessage {
                 break;
             case Kind.LABEL_DELETE_OK:
                 this.text = 'Label deleted.';
+                this.alert = Alert.SUCCESS;
+                break;
+            case Kind.ACCOUNT_DATA_DELETE_OK:
+                this.text = 'Account data has been deleted.';
                 this.alert = Alert.SUCCESS;
                 break;
 

@@ -12,7 +12,7 @@ export class RestService {
         return this.http.get<AccountData>('account');
     }
 
-    public deleteAccount(): Observable<any> {
+    public deleteAccountData(): Observable<any> {
         return this.http.delete('account');
     }
 

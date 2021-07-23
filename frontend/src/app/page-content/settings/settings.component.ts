@@ -38,8 +38,9 @@ export class SettingsComponent implements OnInit {
   onConfirmDeleteAccount() {
     this.showForm = false;
     this.notifications.push(AppMessage.of(Kind.IN_PROGRESS));
-    this.rest.deleteAccount().subscribe(() => {
-      window.location.assign('/login');
+    this.rest.deleteAccountData().subscribe(() => {
+      this.notifications.push(AppMessage.of(Kind.ACCOUNT_DATA_DELETE_OK));
+      this.accountService.reload();
     }, err => this.notifications.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
   }
 
