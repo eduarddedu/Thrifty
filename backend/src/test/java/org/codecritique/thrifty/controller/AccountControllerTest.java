@@ -5,11 +5,15 @@ import org.codecritique.thrifty.entity.Account;
 import org.codecritique.thrifty.entity.Category;
 import org.codecritique.thrifty.entity.ExpenseView;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AccountControllerTest extends BaseControllerTest {
 
@@ -25,5 +29,11 @@ public class AccountControllerTest extends BaseControllerTest {
         assertNotNull(expenses);
     }
 
+    @Test
+    @WithUserDetails(value = "deleteme@example.com")
+    public void shouldDeleteAccountData() throws Exception {
+        String url = url(Account.class);
+        mockMvc.perform(delete(url).with(csrf())).andExpect(status().isOk());
+    }
 
 }

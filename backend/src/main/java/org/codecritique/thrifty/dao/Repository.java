@@ -75,4 +75,13 @@ public class Repository {
             em.remove(label);
         }
     }
+
+    public void removeAccountData(long accountId) {
+        Account account = em.find(Account.class, accountId);
+        if (account == null)
+            return;
+        account.getLabels().forEach(label -> removeLabel(label.getId()));
+        account.getExpenses().forEach(exp -> removeExpense(exp.getId()));
+        account.getCategories().forEach(c -> removeCategory(c.getId()));
+    }
 }
