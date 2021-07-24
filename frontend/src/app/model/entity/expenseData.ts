@@ -8,5 +8,5 @@ export interface ExpenseData {
     description: string;
     labels: LabelData[];
     category: CategoryData;
-    accountId?: number;
+    accountId: number;
 }

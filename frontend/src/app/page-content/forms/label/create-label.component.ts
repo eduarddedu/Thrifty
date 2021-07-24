@@ -37,8 +37,7 @@ export class CreateLabelComponent extends LabelForm implements OnInit {
 
     onSubmit() {
         this.showForm = false;
-        const label: LabelData = this.readFormData();
-        label.accountId = this.accountId;
+        const label: LabelData = Object.assign({accountId: this.accountId}, this.readFormData());
         this.ns.push(AppMessage.of(Kind.IN_PROGRESS));
         this.rest.createLabel(label).subscribe(() => {
             this.ns.push(AppMessage.of(Kind.LABEL_CREATE_OK));

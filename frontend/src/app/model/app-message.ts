@@ -43,6 +43,7 @@ export class AppMessage {
     private constructor(kind: Kind) {
         this.kind = kind;
         switch (kind) {
+
             /* Application error
             */
             case Kind.IN_PROGRESS:
@@ -57,6 +58,7 @@ export class AppMessage {
                 this.text = 'Server connection failed. Please come back later.';
                 this.alert = Alert.ERROR;
                 break;
+
             /* Create request
             */
             case Kind.CATEGORY_CREATE_OK:
@@ -75,6 +77,7 @@ export class AppMessage {
                 this.text = 'Please create a category first.';
                 this.alert = Alert.INFO;
                 break;
+
             /* Edit request
             */
             case Kind.CATEGORY_EDIT_OK:

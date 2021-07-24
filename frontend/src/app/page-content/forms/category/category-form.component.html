@@ -6,7 +6,7 @@
             </div>
             <div class="panel-body">
                 <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()" autocomplete="off">
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-4">
                         <label for="categoryName">Name</label>
                         <input type="text" class="form-control" id="categoryName" name="name" formControlName="name"
                             placeholder="Name">
@@ -16,7 +16,7 @@
                         <p *ngIf="name.dirty && name.errors && name.errors.forbiddenNames" class="alert alert-danger">
                             {{name.errors.forbiddenNames}}</p>
                     </div>
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-8">
                         <label for="description">Description</label>
                         <textarea class="form-control" rows="1" name="description" formControlName="description"
                             placeholder="Description">

@@ -1,5 +1,6 @@
 export interface LabelData {
     id?: number;
-    name?: string;
-    accountId?: number;
+    name: string;
+    description?: string;
+    accountId: number;
 }

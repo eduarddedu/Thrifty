@@ -1,6 +1,6 @@
 export interface CategoryData {
     id?: number;
-    name?: string;
-    description?: string;
-    accountId?: number;
+    name: string;
+    description: string;
+    accountId: number;
 }

@@ -50,7 +50,8 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
             category: {
                 id: this.selectedCategory.id,
                 name: this.selectedCategory.name,
-                description: this.selectedCategory.description
+                description: this.selectedCategory.description,
+                accountId: this.account.id
             }
         });
         this.rest.createExpense(expense).subscribe(

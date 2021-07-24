@@ -4,7 +4,7 @@
         <div class="col-lg-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3>{{entity.name}} <small>(label)</small></h3>
+                    <h3>{{entity.name}} <small>Label</small></h3>
                 </div>
                 <div class="panel-body">
                     <div class="row" *ngIf="hasExpenses">
@@ -27,7 +27,7 @@
                                     <td>
                                         <div class="description">
                                             <div class="description-inner">
-                                                {{entity.name}}
+                                                {{entity.description? entity.description: entity.name}}
                                             </div>
                                             <span (click)="onClickEditLabel()">
                                                 <i class="glyphicon glyphicon-edit"></i>

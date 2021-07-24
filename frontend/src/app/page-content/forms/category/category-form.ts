@@ -1,4 +1,4 @@
- import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 import { Category, CategoryData, RadioOption } from '../../../model';
@@ -24,16 +24,17 @@ export class CategoryForm {
     }
 
     protected createForm() {
-        this.form = this.fb.group({
-            name: [null, [Validators.required, Validators.maxLength(25), MyValidators.forbiddenNames(this.forbiddenNames)]],
-            description: [null, [Validators.required, Validators.maxLength(100)]]
-        });
+        this.form = this.fb.group(
+            {
+                name: [null, [Validators.required, Validators.maxLength(25), MyValidators.forbiddenNames(this.forbiddenNames)]],
+                description: [null, [Validators.required, Validators.maxLength(100)]]
+            });
     }
 
-    protected readFormData(): CategoryData {
+    protected readFormData() {
         return {
             name: (<string>this.name.value).trim(),
-            description: (<string>this.description.value).trim()
+            description: (<string>this.description.value).trim(),
         };
     }
 

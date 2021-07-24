@@ -35,7 +35,7 @@ export class EditLabelComponent extends LabelForm implements OnInit {
             this.label = account.labels.find(l => l.id === +params.get('id'));
             this.forbiddenNames = account.labels.filter(l => l.id !== this.label.id).map(l => l.name);
             this.createForm();
-            this.form.patchValue({ name: this.label.name });
+            this.form.patchValue({ name: this.label.name, description: this.label.description });
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
