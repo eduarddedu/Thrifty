@@ -52,7 +52,7 @@ export class Utils {
         if (typeof base !== 'number' || typeof qty !== 'number' || base === 0) {
             return '0%';
         }
-        return (qty * 100 / base).toFixed(2) + '%';
+        return Math.abs(100 * qty / base).toFixed(2) + '%';
     }
 
 }

@@ -9,6 +9,7 @@ import { AccountData } from './accountData';
 
 export class Account extends ExpenseGroup {
     id: number;
+    name: String;
     currency: String;
     categories: Category[];
     labels: Label[];
@@ -19,10 +20,11 @@ export class Account extends ExpenseGroup {
         super();
         this.id = data.id;
         this.currency = data.currency;
-        this.buildAccount(data.expenses, data.categories, data.labels);
+        this.name = data.name;
+        this.buildGraph(data.expenses, data.categories, data.labels);
     }
 
-    private buildAccount(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {
+    private buildGraph(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {
         this.mapCategories(categoryDatas);
         this.mapLabels(labelDatas);
         this.labels = Array.from(this.mapIdLabel.values());

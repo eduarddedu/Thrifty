@@ -1,7 +1,7 @@
 import { ExpenseData } from './expenseData';
-import { LocalDate } from '../localDate';
 import { Label } from './label';
-import { Category } from '../entity/category';
+import { Category } from './category';
+import { LocalDate } from '../localDate';
 
 export class Expense {
     id: number;
