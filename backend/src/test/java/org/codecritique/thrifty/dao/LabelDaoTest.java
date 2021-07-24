@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-import static org.codecritique.thrifty.Generator.labelSupplier;
-import static org.codecritique.thrifty.Generator.stringSupplier;
+import static org.codecritique.thrifty.Suppliers.labels;
+import static org.codecritique.thrifty.Suppliers.strings;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LabelDaoTest extends BaseDaoTest {
@@ -23,7 +23,7 @@ class LabelDaoTest extends BaseDaoTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            repository.save(labelSupplier.get());
+            repository.save(labels.get());
 
         Iterator<String> it = repository.findLabels(ACCOUNT_ID)
                 .stream().map(Label::getName).iterator();
@@ -44,7 +44,7 @@ class LabelDaoTest extends BaseDaoTest {
         expense.addLabel(label);
 
         //exercise
-        label.setName(stringSupplier.get());
+        label.setName(strings.get());
         repository.updateEntity(label);
 
         //verify
@@ -78,7 +78,6 @@ class LabelDaoTest extends BaseDaoTest {
 
         // verify
         assertNull(repository.findById(Label.class, label.getId()));
-        //assertFalse(expense.getLabels().contains(label)); // fails
         assertFalse(repository.findById(Expense.class, expense.getId()).getLabels().contains(label));
     }
 

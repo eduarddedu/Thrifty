@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Suppliers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -20,7 +20,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldStoreExpense() {
         Category category = createAndGetCategory();
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(category);
         Label label = createAndGetLabel();
         expense.addLabel(label);
@@ -32,7 +32,7 @@ class ExpenseDaoTest extends BaseDaoTest {
 
     @Test
     void shouldGetExpense() {
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         repository.save(expense);
         assertEquals(expense, repository.findById(Expense.class, expense.getId()));
@@ -41,7 +41,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldAddLabelToExpense() {
         //setup
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         repository.save(expense);
         Label label = createAndGetLabel();
@@ -61,7 +61,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldSetCategory() {
         Category category = createAndGetCategory();
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(category);
         repository.save(expense);
 
@@ -79,12 +79,12 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldRemoveLabel() {
         //setup: create entities
-        Label label = labelSupplier.get();
-        Label label2 = labelSupplier.get();
+        Label label = labels.get();
+        Label label2 = labels.get();
         repository.save(label);
         repository.save(label2);
 
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         expense.setLabels(Arrays.asList(label, label2));
         repository.save(expense);
@@ -104,7 +104,7 @@ class ExpenseDaoTest extends BaseDaoTest {
         int numEntities = 5;
         Category category = createAndGetCategory();
         for (int i = 0; i < numEntities; i++) {
-            Expense expense = expenseSupplier.get();
+            Expense expense = expenses.get();
             expense.setCategory(category);
             repository.save(expense);
         }
@@ -122,14 +122,14 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldUpdateExpense() {
         //setup
         Category c = createAndGetCategory();
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(c);
         repository.save(expense);
 
         //exercise
-        expense.setCreatedOn(dateSupplier.get());
+        expense.setCreatedOn(dates.get());
         expense.setAmount(new BigDecimal("17.23"));
-        expense.setDescription(stringSupplier.get());
+        expense.setDescription(strings.get());
         expense.setCategory(createAndGetCategory());
         expense.addLabel(createAndGetLabel());
         repository.updateEntity(expense);
@@ -142,7 +142,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     void shouldRemoveExpense() {
         // setup
         Category category = createAndGetCategory();
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(category);
 
         Label label = createAndGetLabel();
@@ -167,7 +167,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldAllowAmountWith_7_IntegerAnd_2_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.00");
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         repository.save(expense);
@@ -176,7 +176,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldNotAllowAmountWith_8_IntegerDigits() {
         BigDecimal amount = new BigDecimal("12345678.00");
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> repository.save(expense));
@@ -185,7 +185,7 @@ class ExpenseDaoTest extends BaseDaoTest {
     @Test
     void shouldNotAllowAmountWith_3_FractionalDigits() {
         BigDecimal amount = new BigDecimal("1234567.001");
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         expense.setAmount(amount);
         assertThrows(ConstraintViolationException.class, () -> repository.save(expense));

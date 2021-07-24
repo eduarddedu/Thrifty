@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-import static org.codecritique.thrifty.Generator.categorySupplier;
-import static org.codecritique.thrifty.Generator.stringSupplier;
+import static org.codecritique.thrifty.Suppliers.categories;
+import static org.codecritique.thrifty.Suppliers.strings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,7 +23,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestOnCreateCategoryWhenCategoryNameIsEmptyString() throws Exception {
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         category.setName("");
         mockMvc.perform(post(url(Category.class))
                 .with(csrf())
@@ -57,8 +57,8 @@ class CategoryControllerTest extends BaseControllerTest {
     @Test
     void shouldUpdateCategory() throws Exception {
         Category category = createAndGetCategory();
-        category.setName(stringSupplier.get());
-        category.setDescription(stringSupplier.get());
+        category.setName(strings.get());
+        category.setDescription(strings.get());
         assertEquals(category, updateAndGetEntity(category));
     }
 
@@ -69,7 +69,7 @@ class CategoryControllerTest extends BaseControllerTest {
         Category category = expense.getCategory();
 
         //exercise
-        category.setName(stringSupplier.get());
+        category.setName(strings.get());
         updateAndGetEntity(category);
 
         //verify
@@ -87,7 +87,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnForbiddenOnCreateCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         category.setAccountId(2);
         String json = mapper.writeValueAsString(category);
         mockMvc.perform(post(url(Category.class)).with(csrf())

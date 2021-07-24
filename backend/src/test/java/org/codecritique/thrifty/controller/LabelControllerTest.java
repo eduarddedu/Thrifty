@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-import static org.codecritique.thrifty.Generator.labelSupplier;
-import static org.codecritique.thrifty.Generator.stringSupplier;
+import static org.codecritique.thrifty.Suppliers.labels;
+import static org.codecritique.thrifty.Suppliers.strings;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -59,7 +59,7 @@ class LabelControllerTest extends BaseControllerTest {
     void shouldUpdateLabel() throws Exception {
         Label label = createAndGetLabel();
         //exercise
-        label.setName(stringSupplier.get());
+        label.setName(strings.get());
         //verify
         assertEquals(label, updateAndGetEntity(label));
     }
@@ -74,7 +74,7 @@ class LabelControllerTest extends BaseControllerTest {
         updateAndGetEntity(expense);
 
         //exercise
-        label.setName(stringSupplier.get());
+        label.setName(strings.get());
         updateAndGetEntity(label);
 
         //verify
@@ -112,7 +112,7 @@ class LabelControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnForbiddenOnCreateLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
-        Label label = labelSupplier.get();
+        Label label = labels.get();
         label.setAccountId(2);
         String json = mapper.writeValueAsString(label);
         mockMvc.perform(post(url(Label.class)).with(csrf())

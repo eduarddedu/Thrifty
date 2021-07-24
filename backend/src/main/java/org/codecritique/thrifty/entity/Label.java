@@ -21,6 +21,9 @@ public class Label extends BaseEntity {
     @Size(min = 1, max = 25)
     private String name;
 
+    @Size(min = 1, max = 100)
+    private String description;
+
     @ManyToMany(mappedBy = "labels")
     private final Set<Expense> expenses = new HashSet<>();
 
@@ -56,6 +59,12 @@ public class Label extends BaseEntity {
         this.name = name;
     }
 
+    public String getDescription() { return this.description; }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -65,7 +74,8 @@ public class Label extends BaseEntity {
         Label other = (Label) o;
         return  Objects.equals(id, other.id) &&
                 Objects.equals(accountId, other.accountId) &&
-                Objects.equals(name, other.name);
+                Objects.equals(name, other.name) &&
+                Objects.equals(description, other.description);
     }
 
     @Override

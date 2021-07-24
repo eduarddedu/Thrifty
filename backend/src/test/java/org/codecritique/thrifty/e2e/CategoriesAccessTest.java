@@ -17,7 +17,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.codecritique.thrifty.Generator.categorySupplier;
+import static org.codecritique.thrifty.Suppliers.categories;
 
 public class CategoriesAccessTest extends BaseSecurityTest {
 
@@ -33,7 +33,7 @@ public class CategoriesAccessTest extends BaseSecurityTest {
 
     @Test
     public void shouldCreateCategory() {
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         assertThat(category.getAccountId()).isEqualByComparingTo(mockUser.getAccountId());
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -46,8 +46,8 @@ public class CategoriesAccessTest extends BaseSecurityTest {
     }
 
     @Test
-    public void shouldForbidCreateCategory() {
-        Category category = categorySupplier.get();
+    public void shouldForbidCreateCategoryForAnotherAccount() {
+        Category category = categories.get();
         category.setAccountId(100);
         assertThat(category.getAccountId()).isNotEqualTo(mockUser.getAccountId());
 

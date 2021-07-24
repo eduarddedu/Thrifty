@@ -13,7 +13,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Suppliers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -38,17 +38,17 @@ public abstract class BaseControllerTest extends MockMvcTest {
     }
 
     protected Expense createAndGetExpense() throws Exception {
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         return createAndGetEntity(expense);
     }
 
     protected Category createAndGetCategory() throws Exception {
-        return createAndGetEntity(categorySupplier.get());
+        return createAndGetEntity(categories.get());
     }
 
     protected Label createAndGetLabel() throws Exception {
-        return createAndGetEntity(labelSupplier.get());
+        return createAndGetEntity(labels.get());
     }
 
     @SuppressWarnings("unchecked")

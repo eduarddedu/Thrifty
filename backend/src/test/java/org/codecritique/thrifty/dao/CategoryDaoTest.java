@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Suppliers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryDaoTest extends BaseDaoTest {
 
     @Test
     void shouldStoreCategory() {
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         repository.save(category);
         assertEquals(category, repository.findById(Category.class, category.getId()));
     }
@@ -23,7 +23,7 @@ class CategoryDaoTest extends BaseDaoTest {
         int numEntities = 10;
 
         for (int i = 0; i < numEntities; i++)
-            repository.save(categorySupplier.get());
+            repository.save(categories.get());
 
         Iterator<String> it = repository.findCategories(ACCOUNT_ID)
                 .stream().map(Category::getName).iterator();
@@ -39,15 +39,15 @@ class CategoryDaoTest extends BaseDaoTest {
     @Test
     void shouldUpdateCategory() {
         //setup
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         repository.save(category);
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(category);
         repository.save(expense);
 
         //exercise
-        category.setName(stringSupplier.get());
-        category.setDescription(stringSupplier.get());
+        category.setName(strings.get());
+        category.setDescription(strings.get());
         repository.updateEntity(category);
 
         //verify
@@ -58,7 +58,7 @@ class CategoryDaoTest extends BaseDaoTest {
     @Test
     void shouldRemoveCategory() {
         //setup
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         repository.save(category);
 
         //exercise

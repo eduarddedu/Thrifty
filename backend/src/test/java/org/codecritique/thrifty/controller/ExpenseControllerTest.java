@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Suppliers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -23,7 +23,7 @@ class ExpenseControllerTest extends BaseControllerTest {
 
     @Test
     void shouldReturnBadRequestOnCreateExpenseWhenCategoryIsNull() throws Exception {
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         assertNull(expense.getCategory());
         String json = mapper.writeValueAsString(expense);
         mockMvc.perform(post(url(Expense.class))
@@ -43,7 +43,7 @@ class ExpenseControllerTest extends BaseControllerTest {
     @Test
     void shouldUpdateExpenseAmount() throws Exception {
         Expense expense = createAndGetExpense();
-        expense.setAmount(expenseAmountSupplier.get());
+        expense.setAmount(amounts.get());
         assertEquals(expense, updateAndGetEntity(expense));
     }
 
@@ -58,7 +58,7 @@ class ExpenseControllerTest extends BaseControllerTest {
     @Test
     void shouldUpdateExpenseCreatedOn() throws Exception {
         Expense expense = createAndGetExpense();
-        expense.setCreatedOn(dateSupplier.get());
+        expense.setCreatedOn(dates.get());
         assertEquals(expense, updateAndGetEntity(expense));
     }
 
@@ -81,7 +81,7 @@ class ExpenseControllerTest extends BaseControllerTest {
     @Test
     @WithUserDetails(value = "hacker@example.com")
     void shouldReturnForbiddenOnCreateExpenseWhenExpenseAccountIdDoesNotEqualUserAccountId() throws Exception {
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         assertEquals(1, expense.getAccountId());
         String json = mapper.writeValueAsString(expense);
         mockMvc.perform(post(url(Expense.class)).with(csrf())

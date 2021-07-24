@@ -6,7 +6,7 @@ import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.codecritique.thrifty.Generator.*;
+import static org.codecritique.thrifty.Suppliers.*;
 
 abstract class BaseDaoTest extends MockMvcTest {
     @Autowired
@@ -14,20 +14,20 @@ abstract class BaseDaoTest extends MockMvcTest {
     protected final long ACCOUNT_ID = 1;
 
     protected Expense createAndGetExpense() {
-        Expense expense = expenseSupplier.get();
+        Expense expense = expenses.get();
         expense.setCategory(createAndGetCategory());
         repository.save(expense);
         return expense;
     }
 
     protected Category createAndGetCategory() {
-        Category category = categorySupplier.get();
+        Category category = categories.get();
         repository.save(category);
         return category;
     }
 
     protected Label createAndGetLabel() {
-        Label label = labelSupplier.get();
+        Label label = labels.get();
         repository.save(label);
         return label;
     }

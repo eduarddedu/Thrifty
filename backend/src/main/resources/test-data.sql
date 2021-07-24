@@ -4,7 +4,7 @@ INSERT INTO Account (id, name, currency) values(3, 'Delete me', 'EUR');
 INSERT INTO Category (id, name, description, account_id) values(1, 'Groceries',  'Groceries', 1);
 INSERT INTO Category (id, name, description, account_id) values(2, 'Rent',  'Rent', 1);
 INSERT INTO Category (id, name, description, account_id) values(3, 'Delete me',  'Delete me', 3);
-INSERT INTO Label (id, name, account_id) values(1, 'Cosmetics', 1);
+INSERT INTO Label (id, name, description, account_id) values(1, '2021 Cyprus', 'Holiday Cyprus 01-08-2021 - 10-08-2021', 1);
 INSERT INTO Label (id, name, account_id) values(2, 'Delete me', 3);
 INSERT INTO Expense (id, createdOn, description, amount, account_id) values(1, '2020-01-01', 'Supermarket', 100.12, 1);
 INSERT INTO Expense (id, createdOn, description, amount, account_id) values(2, '2020-02-01', 'Rent', 6000.12, 1);
