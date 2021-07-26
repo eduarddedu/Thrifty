@@ -31,8 +31,8 @@ import { RestService } from './services/rest.service';
 import { NotificationService } from './services/notification.service';
 import { DeleteEntityModalService } from './services/modal.service';
 import { AccountService } from './services/account.service';
-import { SessionTimeoutService } from './services/timeout.service';
-import { RestApiRequestInterceptor } from './http/request.interceptor';
+import { SessionService } from './services/session.service';
+import { RestRequestInterceptor } from './http/request.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
 import { DeleteEntityComponent } from './page-content/delete-entity/delete-entity.component';
 import { DeleteEntityModalComponent } from './page-content/delete-entity/delete-entity-modal.component';
@@ -82,8 +82,8 @@ import { SettingsComponent } from './page-content/settings/settings.component';
         NotificationService,
         DeleteEntityModalService,
         AccountService,
-        SessionTimeoutService,
-        { provide: HTTP_INTERCEPTORS, useClass: RestApiRequestInterceptor, multi: true },
+        SessionService,
+        { provide: HTTP_INTERCEPTORS, useClass: RestRequestInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
     ],
     bootstrap: [AppComponent]

@@ -2,9 +2,10 @@ server:
   servlet:
     context-path: /thrifty
     session:
+      timeout: 10m
       cookie:
         path: /
-        max-age: 30m
+        http-only: true
 
 spring:
   jpa:

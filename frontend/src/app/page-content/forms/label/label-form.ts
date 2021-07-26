@@ -1,6 +1,5 @@
 import { Validators, FormGroup, AbstractControl, FormBuilder } from '@angular/forms';
 
-import { LabelData } from '../../../model';
 import * as MyValidators from '../../../validators/validators';
 
 export class LabelForm {
@@ -26,14 +25,14 @@ export class LabelForm {
         this.form = this.fb.group(
             {
                 name: [null, validators],
-                description: [null, [Validators.required, Validators.maxLength(100)]]
+                description: [null, [Validators.maxLength(100)]]
             });
     }
 
     protected readFormData() {
         return {
             name: (<string>this.name.value).trim(),
-            description: (<string>this.description.value).trim()
+            description: (<string>this.description.value ? this.description.value : '').trim()
         };
     }
 }

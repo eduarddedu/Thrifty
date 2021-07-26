@@ -35,18 +35,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .sessionManagement().maximumSessions(6).and().and()
                 .cors(Customizer.withDefaults())
-                .csrf().csrfTokenRepository(cookieCsrfTokenRepository())
-                .and()
+                .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeRequests()
                 .antMatchers("/register", "/login", "/style.css").permitAll()
-                .anyRequest().authenticated()
-                .and()
+                .anyRequest().authenticated().and()
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .and()
+                .defaultSuccessUrl("/").and()
                 .logout()
                 .permitAll();
     }

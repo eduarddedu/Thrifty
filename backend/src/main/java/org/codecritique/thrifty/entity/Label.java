@@ -21,8 +21,8 @@ public class Label extends BaseEntity {
     @Size(min = 1, max = 25)
     private String name;
 
-    @Size(min = 1, max = 100)
-    private String description;
+    @Size(max = 100)
+    private String description = "";
 
     @ManyToMany(mappedBy = "labels")
     private final Set<Expense> expenses = new HashSet<>();

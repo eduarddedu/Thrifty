@@ -1,6 +1,6 @@
 
-import {catchError} from 'rxjs/operators';
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import {
@@ -8,7 +8,8 @@ import {
     HttpInterceptor,
     HttpHandler,
     HttpRequest,
-    HttpErrorResponse } from '@angular/common/http';
+    HttpErrorResponse
+} from '@angular/common/http';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -18,7 +19,11 @@ export class ErrorInterceptor implements HttpInterceptor {
     }
 
     private handleHttpError(err: HttpErrorResponse): Observable<never> {
-        console.log(err);
+        if (err.status === 200 && err.url.endsWith('login')) {
+            window.location.assign(err.url);
+        } else {
+            console.log(err);
+        }
         return observableThrowError(err);
     }
 }
