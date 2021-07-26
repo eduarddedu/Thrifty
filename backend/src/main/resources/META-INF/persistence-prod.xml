@@ -7,6 +7,8 @@
     <persistence-unit name="THRIFTY_PRODUCTION" transaction-type="JTA">
         <description>Production</description>
         <jta-data-source>java:/jdbc/thrifty/pool</jta-data-source>
+        <class>org.codecritique.thrifty.entity.User</class>
+        <class>org.codecritique.thrifty.entity.Account</class>
         <class>org.codecritique.thrifty.entity.Expense</class>
         <class>org.codecritique.thrifty.entity.Label</class>
         <class>org.codecritique.thrifty.entity.Category</class>

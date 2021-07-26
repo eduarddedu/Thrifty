@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
 @Table(name = "Account")
 public class Account extends BaseEntity {
     @NotNull
+    @Size(min = 1, max = 30)
     private String name = "My account";
 
     @NotNull
