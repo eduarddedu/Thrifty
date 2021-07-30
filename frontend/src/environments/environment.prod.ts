@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  baseUrl: '',
-  apiUrl: ''
+  baseUrl: 'https://thrifty.codecritique.org/',
+  apiUrl: 'https://thrifty.codecritique.org/rest-api/'
 };
