@@ -16,12 +16,12 @@ export class Account extends ExpenseGroup {
     private mapIdLabel: Map<number, Label> = new Map();
     private mapIdCategory: Map<number, Category> = new Map();
 
-    constructor(data: AccountData) {
+    constructor(accountData: AccountData, expenseDatas: ExpenseData[]) {
         super();
-        this.id = data.id;
-        this.currency = data.currency;
-        this.name = data.name;
-        this.buildGraph(data.expenses, data.categories, data.labels);
+        this.id = accountData.id;
+        this.currency = accountData.currency;
+        this.name = accountData.name;
+        this.buildGraph(expenseDatas, accountData.categories, accountData.labels);
     }
 
     private buildGraph(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {

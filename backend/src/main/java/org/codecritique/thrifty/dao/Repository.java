@@ -1,6 +1,7 @@
 package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public class Repository {
     @PersistenceContext
     private EntityManager em;
+    @Autowired
+    private ExpenseViewDao expenseViewDao;
 
     private void removeEntity(Class<? extends BaseEntity> klass, long id) {
         BaseEntity entity = em.find(klass, id);
@@ -46,8 +49,7 @@ public class Repository {
     }
 
     public List<ExpenseView> findExpenseViews(long accountId) {
-        String sql = "Select e from Expense e where e.accountId = :accountId order by e.createdOn DESC";
-        return em.createQuery(sql, ExpenseView.class).setParameter("accountId", accountId).getResultList();
+        return expenseViewDao.findByAccountId(accountId);
     }
 
     public List<Category> findCategories(long accountId) {
@@ -81,7 +83,7 @@ public class Repository {
         if (account == null)
             return;
         account.getLabels().forEach(label -> removeLabel(label.getId()));
-        account.getExpenses().forEach(exp -> removeExpense(exp.getId()));
+        expenseViewDao.findByAccountId(accountId).forEach(exp -> removeExpense(exp.getId()));
         account.getCategories().forEach(c -> removeCategory(c.getId()));
     }
 }

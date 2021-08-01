@@ -1,4 +1,4 @@
-import { ExpenseData, LabelData, CategoryData } from '..';
+import { LabelData, CategoryData } from '..';
 
 export interface AccountData {
     id: number;
@@ -6,5 +6,4 @@ export interface AccountData {
     currency: string;
     labels: LabelData[];
     categories: CategoryData[];
-    expenses: ExpenseData[];
 }

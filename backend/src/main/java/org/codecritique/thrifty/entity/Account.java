@@ -25,10 +25,6 @@ public class Account extends BaseEntity {
     @JoinColumn(name = "account_id")
     private Set<Label> labels;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
-    private Set<ExpenseView> expenses;
-
     public String getName() {
         return name;
     }
@@ -51,10 +47,6 @@ public class Account extends BaseEntity {
 
     public Set<Label> getLabels() {
         return labels;
-    }
-
-    public Set<ExpenseView> getExpenses() {
-        return expenses;
     }
 
     @JsonIgnore

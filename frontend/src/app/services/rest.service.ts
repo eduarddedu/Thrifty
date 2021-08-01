@@ -20,6 +20,10 @@ export class RestService {
         return this.http.get<{username: string}>('self');
     }
 
+    public getExpenses(): Observable<ExpenseData[]> {
+        return this.http.get<ExpenseData[]>('view/expenses');
+    }
+
     public createCategory(category: CategoryData) {
         return this.http.post('categories', JSON.stringify(category));
     }

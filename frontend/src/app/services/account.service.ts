@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs/index';
+import { of, zip } from 'rxjs';
 
 import { RestService } from './rest.service';
-import { Account, AccountData } from '../model';
+import { Account, AccountData, ExpenseData } from '../model';
 import { Utils } from '../util/utils';
 
 @Injectable()
@@ -21,9 +21,9 @@ export class AccountService {
         if (this.account) {
             return of(this.account);
         } else {
-            return this.rest.getAccount().pipe(
+            return zip(this.rest.getAccount(), this.rest.getExpenses()).pipe(
                     switchMap(data => {
-                        this.setAccount(data);
+                        this.setAccount(data[0], data[1]);
                         this.subject.next(this.account);
                         return of(this.account);
                     }));
@@ -35,9 +35,9 @@ export class AccountService {
         this.loadAccount().subscribe(() => console.log('Reload account...'));
     }
 
-    private setAccount(data: AccountData) {
+    private setAccount(accountData: AccountData, expenseDatas: ExpenseData[]) {
         try {
-            this.account = new Account(data);
+            this.account = new Account(accountData, expenseDatas);
             Utils.deepFreeze(this.account);
         } catch (error) {
             console.log('Error building account: ', error);

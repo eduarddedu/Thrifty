@@ -2,7 +2,6 @@ package org.codecritique.thrifty.dao;
 
 import org.codecritique.thrifty.entity.Account;
 import org.codecritique.thrifty.entity.Category;
-import org.codecritique.thrifty.entity.ExpenseView;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,8 +19,6 @@ public class AccountDaoTest extends BaseDaoTest {
         Set<Category> categories = account.getCategories();
         assertNotNull(categories);
         assertEquals(2, categories.stream().map(Category::getName).filter(name -> name.matches("Groceries|Rent")).count());
-        Set<ExpenseView> expenses = account.getExpenses();
-        assertNotNull(expenses);
     }
 
     @Test
@@ -31,7 +28,6 @@ public class AccountDaoTest extends BaseDaoTest {
         assertNotNull(account);
         repository.removeAccountData(accountId);
         account = repository.findById(Account.class, accountId);
-        assertTrue(account.getExpenses().isEmpty());
         assertTrue(account.getCategories().isEmpty());
         assertTrue(account.getLabels().isEmpty());
     }
