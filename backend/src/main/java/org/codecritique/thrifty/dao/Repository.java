@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +18,14 @@ public class Repository {
     private EntityManager em;
     @Autowired
     private ExpenseViewDao expenseViewDao;
+    @Autowired
+    private ExpenseDao expenseDao;
+    @Autowired
+    private CategoryDao categoryDao;
+    @Autowired
+    private LabelDao labelDao;
+    @Autowired
+    private UserDao userDao;
 
     private void removeEntity(Class<? extends BaseEntity> klass, long id) {
         BaseEntity entity = em.find(klass, id);
@@ -35,8 +44,7 @@ public class Repository {
     }
 
     public User findByUsernameIgnoreCase(String username) {
-        String sql = "Select u from User u where u.username = :username";
-        return em.createQuery(sql, User.class).setParameter("username", username).getSingleResult();
+        return userDao.findByUsernameIgnoreCase(username);
     }
 
     public <T extends BaseEntity> T findById(Class<T> klass, long id) {
@@ -44,8 +52,9 @@ public class Repository {
     }
 
     public List<Expense> findExpenses(long accountId) {
-        String sql = "Select e from Expense e where e.accountId = :accountId order by e.createdOn DESC";
-        return em.createQuery(sql, Expense.class).setParameter("accountId", accountId).getResultList();
+        List<Expense> result = expenseDao.findByAccountId(accountId);
+        result.sort(Comparator.comparing(Expense::getCreatedOn).reversed());
+        return result;
     }
 
     public List<ExpenseView> findExpenseViews(long accountId) {
@@ -53,13 +62,15 @@ public class Repository {
     }
 
     public List<Category> findCategories(long accountId) {
-        String sql = "Select c from Category c where c.accountId = :accountId order by c.name";
-        return em.createQuery(sql, Category.class).setParameter("accountId", accountId).getResultList();
+        List<Category> result = categoryDao.findByAccountId(accountId);
+        result.sort(Comparator.comparing(Category::getName));
+        return result;
     }
 
     public List<Label> findLabels(long accountId) {
-        String sql = "SELECT l from Label l where l.accountId = :accountId ORDER BY l.name";
-        return em.createQuery(sql, Label.class).setParameter("accountId", accountId).getResultList();
+        List<Label> result = labelDao.findByAccountId(accountId);
+        result.sort(Comparator.comparing(Label::getName));
+        return result;
     }
 
     public void removeExpense(long id) {
