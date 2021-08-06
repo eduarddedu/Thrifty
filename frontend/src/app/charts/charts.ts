@@ -83,7 +83,7 @@ const getAccountSpendingByCategoryDataPoints = function (account: Account, year?
                     click: callback
                 }
             };
-        });
+        }).sort((a, b) => a.y - b.y).reverse();
 };
 
 const getCategorySpendingByLabelDataPoints = function (category: Category, year?: number, onClick?: Function) {

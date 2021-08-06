@@ -27,12 +27,12 @@ export class Account extends ExpenseGroup {
     private buildGraph(expenseDatas: ExpenseData[], categoryDatas: CategoryData[], labelDatas: LabelData[]) {
         this.mapCategories(categoryDatas);
         this.mapLabels(labelDatas);
-        const compareByName = ((a: {name: string}, b: {name: string}) => a.name <= b.name ? -1 : 1);
+        const compareByName = ((a: { name: string }, b: { name: string }) => a.name <= b.name ? -1 : 1);
         this.categories = Array.from(this.mapIdCategory.values()).sort(compareByName);
         this.labels = Array.from(this.mapIdLabel.values()).sort(compareByName);
 
         for (const eData of expenseDatas) {
-            const expense: Expense = new Expense(Object.assign({accountId: this.id}, eData));
+            const expense: Expense = new Expense(Object.assign({ accountId: this.id }, eData));
             const category: Category = this.mapIdCategory.get(eData.category.id);
             const labels: Label[] = eData.labels.map(labelData => this.mapIdLabel.get(labelData.id));
 
@@ -55,7 +55,7 @@ export class Account extends ExpenseGroup {
     }
 
     private sortExpensesByDateDescending() {
-        this.expenses = this.expenses.sort((a, b) => {
+        this.expenses.sort((a, b) => {
             const yearDiff = a.createdOn.year - b.createdOn.year;
             const monthDiff = a.createdOn.month - b.createdOn.month;
             const dayDiff = a.createdOn.day - b.createdOn.day;
@@ -65,11 +65,11 @@ export class Account extends ExpenseGroup {
     }
 
     private mapCategories(categories: CategoryData[]) {
-        categories.forEach(d => this.mapIdCategory.set(d.id, new Category(Object.assign({accountId: this.id}, d))));
+        categories.forEach(d => this.mapIdCategory.set(d.id, new Category(Object.assign({ accountId: this.id }, d))));
     }
 
     private mapLabels(labels: LabelData[]) {
-        labels.forEach(d => this.mapIdLabel.set(d.id, new Label(Object.assign({accountId: this.id}, d))));
+        labels.forEach(d => this.mapIdLabel.set(d.id, new Label(Object.assign({ accountId: this.id }, d))));
     }
 
     private addExpenseToEntity(entity: ExpenseGroup, expense: Expense) {

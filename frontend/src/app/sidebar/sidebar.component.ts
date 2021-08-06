@@ -13,12 +13,12 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     labels: { id: number, name: string }[];
     account: Account;
 
-    constructor(protected analytics: AccountService) { }
+    constructor(protected service: AccountService) { }
 
     ngOnInit() {
-        this.analytics.dataChanged.subscribe((account: Account) => {
+        this.service.dataChanged.subscribe((account: Account) => {
             this.account = account;
-            this.resetNavLinks();
+            this.refresh();
         });
     }
 
@@ -26,10 +26,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
         $('#side-menu')['metisMenu']();
     }
 
-    resetNavLinks() {
+    private refresh() {
         if (this.account) {
-            this.categories = this.account.categories.map(c => ({ id: c.id, name: c.name }));
-            this.labels = this.account.labels.map(l => ({ id: l.id, name: l.name }));
+            this.categories = this.account.categories;
+            this.labels = this.account.labels;
         }
     }
 }
