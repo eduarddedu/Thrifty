@@ -102,8 +102,10 @@ const getCategorySpendingByLabelDataPoints = function (category: Category, year?
         dataPoint.y += Math.abs(e.cents / 100);
         map.set(key, dataPoint);
     }
-    const points: any = Array.from(map.values());
-    return points.filter(point => point.y !== 0);
+    return Array.from(map.values())
+    .filter((p: { y: number; }) => p.y !== 0)
+    .sort((a: { y: number; }, b: { y: number; }) => a.y - b.y)
+    .reverse();
 };
 
 const getLabelSpendingByCategoryDataPoints = function (label: Label, year?: number, onClick?: Function): { name: string, y: number }[] {
