@@ -4,9 +4,10 @@ import { FormBuilder } from '@angular/forms';
 import { RestService } from '../../../services/rest.service';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
-import { ExpenseData, Account, Category } from '../../../model';
+import { ExpenseData, AccountData, CategoryData } from '../../../model';
 import { ExpenseForm } from './expense-form';
 import { AccountService } from '../../../services/account.service';
+import { Utils } from '../../../util/utils';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { AccountService } from '../../../services/account.service';
 export class CreateExpenseComponent extends ExpenseForm implements OnInit {
     pageTitle = 'Create Expense';
     submitFormButtonText = 'Save';
-    account: Account;
+    account: AccountData;
 
     constructor(
         protected fb: FormBuilder,
@@ -27,14 +28,16 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
     }
 
     ngOnInit() {
-        this.accountService.loadAccount().subscribe(v => {
+        this.rest.getAccount().subscribe(v => {
             this.account = v;
+            this.account.categories.sort((a, b) => a.name.localeCompare(b.name));
             if (this.account.categories.length === 0) {
                 this.ns.push(AppMessage.of(Kind.MUST_CREATE_CATEGORY));
             } else {
                 this.setLabelOptions();
-                this.setDefaultCategoryOption();
+                this.setCategoryDropdownPreselectedValue();
                 this.showForm = true;
+                this.accountService.reload();
             }
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
@@ -56,22 +59,21 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
         });
         this.rest.createExpense(expense).subscribe(
             () => {
+                Utils.scrollPage();
                 this.ns.push(AppMessage.of(Kind.EXPENSE_CREATE_OK));
                 this.accountService.reload();
+                this.initForm();
+                this.setLabelOptions();
+                this.showForm = true;
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }
 
-    private setDefaultCategoryOption() {
-        this.form.patchValue({ category: this.findLargestCategory().name });
+    private setCategoryDropdownPreselectedValue() {
+        this.form.patchValue({ category: this.account.categories[0].name });
     }
 
-    private findLargestCategory(): Category {
-        return this.account.categories.slice().sort((a, b) => a.expenses.length - b.expenses.length)
-            .reverse()[0];
-    }
-
-    private get selectedCategory(): Category {
+    private get selectedCategory(): CategoryData {
         return this.account.categories.find(c => c.name === this.form.get('category').value);
     }
 
@@ -80,6 +82,7 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
     }
 
     private setLabelOptions() {
+        this.radioOptionsLabel = [];
         this.account.labels.forEach(label => this.radioOptionsLabel.push({
             id: label.id,
             name: label.name,

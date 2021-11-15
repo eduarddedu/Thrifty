@@ -22,6 +22,10 @@ export class ExpenseForm {
     selectedLabels: LabelData[] = [];
 
     constructor(protected fb: FormBuilder) {
+        this.initForm();
+    }
+
+    protected initForm() {
         this.form = this.fb.group({
             createdOn: [{ jsdate: new Date() }, Validators.required],
             description: [null, [Validators.required, Validators.maxLength(100)]],

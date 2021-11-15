@@ -17,7 +17,7 @@ import { SettingsComponent } from '../page-content/settings/settings.component';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'view/account',
+        redirectTo: 'new/expense',
         pathMatch: 'full'
     },
     {
