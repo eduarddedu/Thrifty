@@ -83,6 +83,7 @@ table.details td div.description span:hover {
     left: 0;
     bottom: 0;
     width: 250px;
+    overflow-y: scroll;
   }
 
   #sidebar-footer {
