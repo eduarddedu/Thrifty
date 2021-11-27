@@ -36,6 +36,7 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
             } else {
                 this.setLabelOptions();
                 this.setCategoryDropdownPreselectedValue();
+                this.showSpinner = false;
                 this.showForm = true;
                 this.accountService.reload();
             }

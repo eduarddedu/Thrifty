@@ -41,6 +41,7 @@ export class EditExpenseComponent extends ExpenseForm implements OnInit {
             this.fillForm();
             this.setLabelOptions();
             this.selectedLabels = this.expense.labels.map(l => ({ id: l.id, name: l.name, accountId: this.account.id }));
+            this.showSpinner = false;
             this.showForm = true;
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));

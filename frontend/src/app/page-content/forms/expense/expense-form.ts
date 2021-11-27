@@ -7,10 +7,9 @@ import { Utils } from '../../../util/utils';
 
 
 export class ExpenseForm {
-
     form: FormGroup;
-
     showForm = false;
+    showSpinner = true;
 
     datepickerOptions: INgxMyDpOptions = {
         dateFormat: 'dd-mm-yyyy',
