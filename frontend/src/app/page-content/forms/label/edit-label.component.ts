@@ -9,7 +9,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
 import { Account } from '../../../model';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 
 @Component({
     templateUrl: './label-form.component.html'
@@ -23,12 +23,12 @@ export class EditLabelComponent extends LabelForm implements OnInit {
         private route: ActivatedRoute,
         private rest: RestService,
         private ns: NotificationService,
-        private accountService: AccountService) {
+        private accountService: DataService) {
         super(fb);
     }
 
     ngOnInit() {
-        zip(this.route.paramMap, this.accountService.loadAccount()).subscribe(value => {
+        zip(this.route.paramMap, this.accountService.load()).subscribe(value => {
             const params: ParamMap = value[0];
             const account: Account = value[1];
             this.accountId = account.id;

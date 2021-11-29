@@ -9,7 +9,7 @@ import { Kind, AppMessage } from '../../../model/app-message';
 import { Expense, ExpenseData, Account, Category, RadioOption } from '../../../model';
 import { ExpenseForm } from './expense-form';
 import { Utils } from '../../../util/utils';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 
 @Component({
     templateUrl: './expense-form.component.html',
@@ -27,14 +27,14 @@ export class EditExpenseComponent extends ExpenseForm implements OnInit {
         private ns: NotificationService,
         private route: ActivatedRoute,
         private rest: RestService,
-        private accountService: AccountService) {
+        private ds: DataService) {
         super(fb);
     }
 
     ngOnInit() {
         this.route.paramMap.pipe(switchMap(params => {
             this.expenseId = +params.get('id');
-            return this.accountService.loadAccount();
+            return this.ds.load();
         })).subscribe((account: Account) => {
             this.account = account;
             this.expense = account.expenses.find(ex => ex.id === this.expenseId);
@@ -65,7 +65,7 @@ export class EditExpenseComponent extends ExpenseForm implements OnInit {
         this.rest.updateExpense(expense).subscribe(
             () => {
                 this.ns.push(AppMessage.of(Kind.EXPENSE_EDIT_OK));
-                this.accountService.reload();
+                this.ds.reload();
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

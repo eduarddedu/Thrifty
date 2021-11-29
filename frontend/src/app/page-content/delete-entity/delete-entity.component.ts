@@ -5,7 +5,7 @@ import { NotificationService } from '../../services/notification.service';
 import { RestService } from '../../services/rest.service';
 import { Kind, AppMessage } from '../../model/app-message';
 import { Utils } from '../../util/utils';
-import { AccountService } from '../../services/account.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-delete-entity',
@@ -20,7 +20,7 @@ export class DeleteEntityComponent implements OnInit {
     private route: ActivatedRoute,
     private ns: NotificationService,
     private rest: RestService,
-    private analytics: AccountService) { }
+    private analytics: DataService) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {

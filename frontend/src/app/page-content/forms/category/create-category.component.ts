@@ -6,7 +6,7 @@ import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
 import { Account } from '../../../model';
 import { CategoryForm } from './category-form';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 
 
 @Component({
@@ -19,12 +19,12 @@ export class CreateCategoryComponent extends CategoryForm implements OnInit {
     constructor(protected fb: FormBuilder,
         private rest: RestService,
         private ns: NotificationService,
-        private accountService: AccountService) {
+        private accountService: DataService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.accountService.loadAccount().subscribe((account: Account) => {
+        this.accountService.load().subscribe((account: Account) => {
             this.account = account;
             this.forbiddenNames = account.categories.map(c => c.name);
             this.createForm();

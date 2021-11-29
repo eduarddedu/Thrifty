@@ -5,7 +5,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
 import { Account, LabelData } from '../../../model';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 
 
 @Component({
@@ -19,12 +19,12 @@ export class CreateLabelComponent extends LabelForm implements OnInit {
     constructor(protected fb: FormBuilder,
         private rest: RestService,
         private ns: NotificationService,
-        private accountService: AccountService) {
+        private accountService: DataService) {
         super(fb);
     }
 
     ngOnInit() {
-        this.accountService.loadAccount().subscribe((account: Account) => {
+        this.accountService.load().subscribe((account: Account) => {
             this.accountId = account.id;
             this.forbiddenNames = account.labels.map(l => l.name);
             this.createForm();

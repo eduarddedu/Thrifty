@@ -30,7 +30,7 @@ import { NotificationComponent } from './notification/notification.component';
 import { RestService } from './services/rest.service';
 import { NotificationService } from './services/notification.service';
 import { DeleteEntityModalService } from './services/modal.service';
-import { AccountService } from './services/account.service';
+import { DataService } from './services/data.service';
 import { SessionService } from './services/session.service';
 import { RestRequestInterceptor } from './http/request.interceptor';
 import { ErrorInterceptor } from './http/error.interceptor';
@@ -81,7 +81,7 @@ import { SettingsComponent } from './page-content/settings/settings.component';
         RestService,
         NotificationService,
         DeleteEntityModalService,
-        AccountService,
+        DataService,
         SessionService,
         { provide: HTTP_INTERCEPTORS, useClass: RestRequestInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }

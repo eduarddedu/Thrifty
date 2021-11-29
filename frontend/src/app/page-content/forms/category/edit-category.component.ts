@@ -6,7 +6,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { RestService } from '../../../services/rest.service';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 import { Account, Category } from '../../../model';
 import { CategoryForm } from './category-form';
 
@@ -22,12 +22,12 @@ export class EditCategoryComponent extends CategoryForm implements OnInit {
         private route: ActivatedRoute,
         private rest: RestService,
         private ns: NotificationService,
-        private accountService: AccountService) {
+        private accountService: DataService) {
         super(fb);
     }
 
     ngOnInit() {
-        zip(this.route.paramMap, this.accountService.loadAccount()).subscribe(value => {
+        zip(this.route.paramMap, this.accountService.load()).subscribe(value => {
             const params: ParamMap = value[0];
             const account: Account = value[1];
             this.category = account.categories.find(c => c.id === +params.get('id'));

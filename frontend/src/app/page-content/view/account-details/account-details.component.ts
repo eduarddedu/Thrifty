@@ -7,7 +7,7 @@ import { Account, RefPeriod, Expense } from '../../../model';
 import { Utils } from '../../../util/utils';
 import { Charts } from '../../../charts/charts';
 import { NotificationService } from '../../../services/notification.service';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { Report as Report } from '../report';
 
@@ -33,12 +33,12 @@ export class AccountDetailsComponent extends Report implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private ns: NotificationService,
-        private accountService: AccountService) {
+        private ds: DataService) {
         super();
     }
 
     ngOnInit() {
-        this.route.paramMap.pipe(switchMap(() => this.accountService.loadAccount()))
+        this.route.paramMap.pipe(switchMap(() => this.ds.load()))
             .subscribe(this.init.bind(this), err => {
                 this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
             });

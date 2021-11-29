@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { Account } from '../model';
-import { AccountService } from '../services/account.service';
+import { DataService } from '../services/data.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -13,7 +13,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     labels: { id: number, name: string }[];
     account: Account;
 
-    constructor(protected service: AccountService) { }
+    constructor(protected service: DataService) { }
 
     ngOnInit() {
         this.service.dataChanged.subscribe((account: Account) => {

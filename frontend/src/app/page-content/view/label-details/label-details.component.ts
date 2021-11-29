@@ -7,7 +7,7 @@ import { Account, Label, RefPeriod } from '../../../model';
 import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { Utils } from '../../../util/utils';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 import { DeleteEntityModalService } from '../../../services/modal.service';
 import { Charts } from '../../../charts/charts';
 import { Report } from '../report';
@@ -30,7 +30,7 @@ export class LabelDetailsComponent extends Report implements OnInit {
   since: Date;
 
   constructor(
-    private accountService: AccountService,
+    private ds: DataService,
     private ns: NotificationService,
     private ms: DeleteEntityModalService,
     private route: ActivatedRoute,
@@ -41,7 +41,7 @@ export class LabelDetailsComponent extends Report implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.pipe(switchMap(params => {
       this.labelId = +params.get('id');
-      return this.accountService.loadAccount();
+      return this.ds.load();
     })).subscribe(this.init.bind(this), err => {
       this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
     });

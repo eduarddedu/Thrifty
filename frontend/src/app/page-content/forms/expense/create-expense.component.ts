@@ -6,7 +6,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Kind, AppMessage } from '../../../model/app-message';
 import { ExpenseData, AccountData, CategoryData } from '../../../model';
 import { ExpenseForm } from './expense-form';
-import { AccountService } from '../../../services/account.service';
+import { DataService } from '../../../services/data.service';
 import { Utils } from '../../../util/utils';
 
 
@@ -23,14 +23,16 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
         protected fb: FormBuilder,
         private ns: NotificationService,
         private rest: RestService,
-        private accountService: AccountService) {
+        private ds: DataService) {
         super(fb);
     }
 
     ngOnInit() {
         this.rest.getAccount().subscribe(v => {
             this.account = v;
-            this.account.categories.sort((a, b) => a.name.localeCompare(b.name));
+            const byName = (a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name);
+            this.account.categories.sort(byName);
+            this.account.labels.sort(byName);
             if (this.account.categories.length === 0) {
                 this.ns.push(AppMessage.of(Kind.MUST_CREATE_CATEGORY));
             } else {
@@ -38,7 +40,7 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
                 this.setCategoryDropdownPreselectedValue();
                 this.showSpinner = false;
                 this.showForm = true;
-                this.accountService.reload();
+                this.ds.reload();
             }
         }, err => {
             this.ns.push(AppMessage.of(Kind.WEB_SERVICE_OFFLINE));
@@ -62,10 +64,7 @@ export class CreateExpenseComponent extends ExpenseForm implements OnInit {
             () => {
                 Utils.scrollPage();
                 this.ns.push(AppMessage.of(Kind.EXPENSE_CREATE_OK));
-                this.accountService.reload();
-                this.initForm();
-                this.setLabelOptions();
-                this.showForm = true;
+                this.ds.reload();
             },
             err => this.ns.push(AppMessage.of(Kind.UNEXPECTED_ERROR)));
     }

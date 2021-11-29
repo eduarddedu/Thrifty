@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { zip } from 'rxjs';
 
-import { AccountService } from '../..//services/account.service';
+import { DataService } from '../../services/data.service';
 import { RestService } from '../../services/rest.service';
 import { DeleteEntityModalService } from '../../services/modal.service';
 import { NotificationService } from '../../services/notification.service';
@@ -18,11 +18,11 @@ export class SettingsComponent implements OnInit {
   username: String;
   currency: String;
   showForm = false;
-  constructor(private rest: RestService, private accountService: AccountService,
+  constructor(private rest: RestService, private accountService: DataService,
     private notifications: NotificationService, private ms: DeleteEntityModalService) { }
 
   ngOnInit() {
-    zip(this.rest.getUsername(), this.accountService.loadAccount()).subscribe(value => {
+    zip(this.rest.getUsername(), this.accountService.load()).subscribe(value => {
       this.username = value[0].username;
       this.currency = value[1].currency;
       this.showForm = true;
