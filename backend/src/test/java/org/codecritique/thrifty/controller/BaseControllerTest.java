@@ -3,9 +3,7 @@ package org.codecritique.thrifty.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.codecritique.thrifty.MockMvcTest;
 import org.codecritique.thrifty.entity.*;
-import org.codecritique.thrifty.jackson.JacksonConfig;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.web.util.UriTemplate;
@@ -23,19 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class BaseControllerTest extends MockMvcTest {
     private final static Map<Class<? extends BaseEntity>, String> mapEntityClassToUrl = new HashMap<>();
     private final static String BASE_URL = "http://localhost:8080/rest-api/";
-    protected final ObjectMapper mapper;
-
     static {
         mapEntityClassToUrl.put(Expense.class, BASE_URL.concat("expenses/"));
         mapEntityClassToUrl.put(Category.class, BASE_URL.concat("categories/"));
         mapEntityClassToUrl.put(Label.class, BASE_URL.concat("labels/"));
         mapEntityClassToUrl.put(Account.class, BASE_URL.concat("account/"));
     }
-
-    BaseControllerTest() {
-        ApplicationContext ctx = new AnnotationConfigApplicationContext(JacksonConfig.class);
-        mapper = ctx.getBean(ObjectMapper.class);
-    }
+    @Autowired
+    protected ObjectMapper mapper;
 
     protected Expense createAndGetExpense() throws Exception {
         Expense expense = expenses.get();
