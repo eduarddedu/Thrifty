@@ -23,7 +23,7 @@
     "@angular/router": "6.1.1",
     "angular-datatables": "^6.0.0",
     "angular-highcharts": "^6.0.0",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "core-js": "^2.5.7",
     "datatables.net": "^1.10.22",
     "datatables.net-dt": "^1.10.16",
