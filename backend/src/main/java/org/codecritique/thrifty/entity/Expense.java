@@ -1,5 +1,8 @@
 package org.codecritique.thrifty.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -13,6 +16,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Expense")
+@Getter
+@Setter
 public class Expense extends BaseEntity {
     @NotNull
     @Column(name = "account_id")
@@ -44,18 +49,6 @@ public class Expense extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "label_id"))
     private final Set<Label> labels = new HashSet<>();
 
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
     public void setCategory(Category category) {
         if (category == null || category.equals(this.category))
             return;
@@ -65,39 +58,11 @@ public class Expense extends BaseEntity {
         this.category.addExpense(this);
     }
 
-    public LocalDate getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(LocalDate createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     public void setLabels(Collection<Label> labels) {
         this.labels.clear();
         for (Label label : labels) {
             addLabel(label);
         }
-    }
-
-    public Set<Label> getLabels() {
-        return new HashSet<>(labels);
     }
 
     public void addLabel(Label label) {

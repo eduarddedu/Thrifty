@@ -53,7 +53,7 @@ public class BaseSecurityTest {
         mockUser = new User();
         mockUser.setUsername("johndoe@example.com");
         mockUser.setPassword("password");
-        mockUser.setAccountId(1);
+        mockUser.setAccountId(1L);
     }
 
     protected void initCustomRestTemplate() {

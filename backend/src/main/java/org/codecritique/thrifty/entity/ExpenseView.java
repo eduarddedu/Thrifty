@@ -1,6 +1,7 @@
 package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Expense")
+@Getter
 public class ExpenseView extends BaseEntity {
     @NotNull
     @Column(name = "account_id")
@@ -40,31 +42,11 @@ public class ExpenseView extends BaseEntity {
     @JoinTable(name = "Expense_Label",
             joinColumns = @JoinColumn(name = "expense_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id"))
-    private Set<LabelView> labels = new HashSet<>();
+    private final Set<LabelView> labels = new HashSet<>();
 
     @JsonIgnore
     public Long getAccountId() {
         return accountId;
-    }
-
-    public LocalDate getCreatedOn() {
-        return createdOn;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public CategoryView getCategory() {
-        return category;
-    }
-
-    public Set<LabelView> getLabels() {
-        return new HashSet<>(labels);
     }
 
 }

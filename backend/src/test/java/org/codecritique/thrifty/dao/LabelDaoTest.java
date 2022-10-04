@@ -4,7 +4,9 @@ import org.codecritique.thrifty.entity.Expense;
 import org.codecritique.thrifty.entity.Label;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import static org.codecritique.thrifty.Suppliers.labels;
 import static org.codecritique.thrifty.Suppliers.strings;
@@ -50,9 +52,17 @@ class LabelDaoTest extends BaseDaoTest {
         //verify
         assertEquals(label, repository.findById(Label.class, label.getId()));
 
-        //verify the view from expense side is consistent
+        //verify that the view from expense side is consistent
         assertEquals(1, expense.getLabels().size());
-        assertTrue(expense.getLabels().contains(label));
+
+        Set<Label> labelsHashSet = new HashSet<>(expense.getLabels());
+        assertTrue(labelsHashSet.contains(label)); // passes
+
+        // assertTrue(expense.getLabels().contains(label)); // fails!
+        // ...even though expense.getLabels() does contain an equal object!
+        // Expense.getLabels() returns org.hibernate.collection.internal.PersistentSet
+        // Looks like PersistentSet implementation of contains() violates the contract of the Set interface
+
         assertEquals(1, label.getExpenses().size());
         assertTrue(label.getExpenses().contains(expense));
     }

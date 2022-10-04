@@ -1,6 +1,9 @@
 package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +16,11 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "User", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
+@Getter
+@Setter
+@NoArgsConstructor
 public class User extends BaseEntity implements UserDetails {
+
     @NotNull
     @Email(message = "Invalid email: '${validatedValue}'")
     private String username;
@@ -23,9 +30,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "account_id")
     private Long accountId;
-
-    public User() {
-    }
 
     public User(String username, String password, Long accountId) {
         this.username = username;
@@ -43,27 +47,6 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getAccountId() {
-        return accountId;
     }
 
     @JsonIgnore

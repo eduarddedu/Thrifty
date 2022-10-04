@@ -1,6 +1,9 @@
 package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +14,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Category", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "account_id"}))
+@Getter
+@Setter
+@NoArgsConstructor
 public class Category extends BaseEntity {
 
     @NotNull
@@ -28,21 +34,10 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category")
     private final Set<Expense> expenses = new HashSet<>();
 
-    public Category() {
-    }
-
     public Category(long accountId, String name, String description) {
         this.accountId = accountId;
         this.name = name;
         this.description = description;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
     }
 
     @JsonIgnore
@@ -56,22 +51,6 @@ public class Category extends BaseEntity {
 
     public void removeExpense(Expense expense) {
         this.expenses.remove(expense);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

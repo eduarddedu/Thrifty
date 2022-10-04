@@ -38,7 +38,7 @@ class CategoryControllerTest extends BaseControllerTest {
         Category duplicate = new Category();
         duplicate.setName(original.getName());
         duplicate.setDescription("description");
-        duplicate.setAccountId(1);
+        duplicate.setAccountId(1L);
         mockMvc.perform(post(url(Category.class))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ class CategoryControllerTest extends BaseControllerTest {
     @Test
     void shouldReturnForbiddenOnCreateCategoryWhenCategoryAccountIdDoesNotEqualUserAccountId() throws Exception {
         Category category = categories.get();
-        category.setAccountId(2);
+        category.setAccountId(2L);
         String json = mapper.writeValueAsString(category);
         mockMvc.perform(post(url(Category.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))

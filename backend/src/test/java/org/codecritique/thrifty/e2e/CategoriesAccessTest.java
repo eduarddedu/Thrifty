@@ -48,7 +48,7 @@ public class CategoriesAccessTest extends BaseSecurityTest {
     @Test
     public void shouldForbidCreateCategoryForAnotherAccount() {
         Category category = categories.get();
-        category.setAccountId(100);
+        category.setAccountId(100L);
         assertThat(category.getAccountId()).isNotEqualTo(mockUser.getAccountId());
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

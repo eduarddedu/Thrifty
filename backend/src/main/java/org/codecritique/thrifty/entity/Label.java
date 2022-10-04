@@ -1,6 +1,9 @@
 package org.codecritique.thrifty.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +14,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Label", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "account_id"}))
+@Getter
+@Setter
+@NoArgsConstructor
 public class Label extends BaseEntity {
 
     @NotNull
@@ -27,17 +33,6 @@ public class Label extends BaseEntity {
     @ManyToMany(mappedBy = "labels")
     private final Set<Expense> expenses = new HashSet<>();
 
-    public Label() {
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
     @JsonIgnore
     public Set<Expense> getExpenses() {
         return new HashSet<>(expenses);
@@ -51,20 +46,6 @@ public class Label extends BaseEntity {
         this.expenses.remove(expense);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() { return this.description; }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -72,7 +53,7 @@ public class Label extends BaseEntity {
         else if (!(o instanceof Label))
             return false;
         Label other = (Label) o;
-        return  Objects.equals(id, other.id) &&
+        return Objects.equals(id, other.id) &&
                 Objects.equals(accountId, other.accountId) &&
                 Objects.equals(name, other.name) &&
                 Objects.equals(description, other.description);
@@ -80,7 +61,7 @@ public class Label extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountId, name);
+        return Objects.hash(id, accountId, name, description);
     }
 
     @Override

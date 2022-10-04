@@ -26,7 +26,7 @@ class LabelControllerTest extends BaseControllerTest {
     void shouldReturnBadRequestOnCreateLabelWhenLabelNameIsEmptyString() throws Exception {
         Label label = new Label();
         label.setName("");
-        label.setAccountId(1);
+        label.setAccountId(1L);
         mockMvc.perform(post(url(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
@@ -39,7 +39,7 @@ class LabelControllerTest extends BaseControllerTest {
         Label original = createAndGetLabel();
         Label duplicate = new Label();
         duplicate.setName(original.getName());
-        duplicate.setAccountId(1);
+        duplicate.setAccountId(1L);
         mockMvc.perform(post(url(Label.class))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
@@ -113,7 +113,7 @@ class LabelControllerTest extends BaseControllerTest {
     @Test
     void shouldReturnForbiddenOnCreateLabelWhenLabelAccountIdDoesNotEqualUserAccountId() throws Exception {
         Label label = labels.get();
-        label.setAccountId(2);
+        label.setAccountId(2L);
         String json = mapper.writeValueAsString(label);
         mockMvc.perform(post(url(Label.class)).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON).content(json))
