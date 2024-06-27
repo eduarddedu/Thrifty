@@ -1,6 +1,6 @@
 package org.codecritique.thrifty.controller;
 
-import org.codecritique.thrifty.dao.Repository;
+import org.codecritique.thrifty.repository.Repository;
 import org.codecritique.thrifty.entity.BaseEntity;
 import org.codecritique.thrifty.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;

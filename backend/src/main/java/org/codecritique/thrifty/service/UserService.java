@@ -1,6 +1,6 @@
 package org.codecritique.thrifty.service;
 
-import org.codecritique.thrifty.dao.Repository;
+import org.codecritique.thrifty.repository.Repository;
 import org.codecritique.thrifty.entity.Account;
 import org.codecritique.thrifty.entity.User;
 import org.codecritique.thrifty.validators.EmailValidationException;
@@ -13,8 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.validation.ConstraintViolationException;
 
 @Service
 public class UserService implements UserDetailsService {

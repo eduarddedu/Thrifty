@@ -1,4 +1,4 @@
-package org.codecritique.thrifty.dao;
+package org.codecritique.thrifty.repository;
 
 import org.codecritique.thrifty.entity.Label;
 import org.springframework.data.repository.Repository;
