@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Collectors;
 
-public class ExpenseViewDaoTest extends BaseDaoTest {
+public class ExpenseViewRepositoryTest extends BaseDaoTest {
 
     @Test
     public void findById() {

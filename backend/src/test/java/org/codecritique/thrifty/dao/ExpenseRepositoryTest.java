@@ -15,7 +15,7 @@ import static org.codecritique.thrifty.Suppliers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class ExpenseDaoTest extends BaseDaoTest {
+class ExpenseRepositoryTest extends BaseDaoTest {
 
     @Test
     void shouldStoreExpense() {

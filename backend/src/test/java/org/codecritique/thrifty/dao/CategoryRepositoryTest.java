@@ -9,7 +9,7 @@ import java.util.Iterator;
 import static org.codecritique.thrifty.Suppliers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class CategoryDaoTest extends BaseDaoTest {
+class CategoryRepositoryTest extends BaseDaoTest {
 
     @Test
     void shouldStoreCategory() {

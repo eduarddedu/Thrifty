@@ -6,6 +6,6 @@ import org.springframework.data.repository.Repository;
 import java.util.List;
 
 
-interface LabelDao extends Repository<Label, Long> {
+interface LabelRespository extends Repository<Label, Long> {
     List<Label> findByAccountId(long accountId);
 }

@@ -17,15 +17,15 @@ public class Repository {
     @PersistenceContext
     private EntityManager em;
     @Autowired
-    private ExpenseViewDao expenseViewDao;
+    private ExpenseViewRepository expenseViewRepository;
     @Autowired
-    private ExpenseDao expenseDao;
+    private ExpenseRepository expenseRepository;
     @Autowired
-    private CategoryDao categoryDao;
+    private CategoryRepository categoryRepository;
     @Autowired
-    private LabelDao labelDao;
+    private LabelRespository labelRespository;
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     private void removeEntity(Class<? extends BaseEntity> klass, long id) {
         BaseEntity entity = em.find(klass, id);
@@ -44,7 +44,7 @@ public class Repository {
     }
 
     public User findByUsernameIgnoreCase(String username) {
-        return userDao.findByUsernameIgnoreCase(username);
+        return userRepository.findByUsernameIgnoreCase(username);
     }
 
     public <T extends BaseEntity> T findById(Class<T> klass, long id) {
@@ -52,23 +52,23 @@ public class Repository {
     }
 
     public List<Expense> findExpenses(long accountId) {
-        List<Expense> result = expenseDao.findByAccountId(accountId);
+        List<Expense> result = expenseRepository.findByAccountId(accountId);
         result.sort(Comparator.comparing(Expense::getCreatedOn).reversed());
         return result;
     }
 
     public List<ExpenseView> findExpenseViews(long accountId) {
-        return expenseViewDao.findByAccountId(accountId);
+        return expenseViewRepository.findByAccountId(accountId);
     }
 
     public List<Category> findCategories(long accountId) {
-        List<Category> result = categoryDao.findByAccountId(accountId);
+        List<Category> result = categoryRepository.findByAccountId(accountId);
         result.sort(Comparator.comparing(Category::getName));
         return result;
     }
 
     public List<Label> findLabels(long accountId) {
-        List<Label> result = labelDao.findByAccountId(accountId);
+        List<Label> result = labelRespository.findByAccountId(accountId);
         result.sort(Comparator.comparing(Label::getName));
         return result;
     }
@@ -94,7 +94,7 @@ public class Repository {
         if (account == null)
             return;
         account.getLabels().forEach(label -> removeLabel(label.getId()));
-        expenseViewDao.findByAccountId(accountId).forEach(exp -> removeExpense(exp.getId()));
+        expenseViewRepository.findByAccountId(accountId).forEach(exp -> removeExpense(exp.getId()));
         account.getCategories().forEach(c -> removeCategory(c.getId()));
     }
 }

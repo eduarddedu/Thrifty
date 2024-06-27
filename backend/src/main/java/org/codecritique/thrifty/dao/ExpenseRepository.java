@@ -6,6 +6,6 @@ import org.springframework.data.repository.Repository;
 import java.util.List;
 
 
-interface ExpenseDao extends Repository<Expense, Long> {
+interface ExpenseRepository extends Repository<Expense, Long> {
     List<Expense> findByAccountId(long accountId);
 }

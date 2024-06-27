@@ -5,6 +5,6 @@ import org.springframework.data.repository.Repository;
 
 import java.util.List;
 
-interface CategoryDao extends Repository<Category, Long> {
+interface CategoryRepository extends Repository<Category, Long> {
     List<Category> findByAccountId(long accountId);
 }
