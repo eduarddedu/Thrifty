@@ -2,7 +2,7 @@ server:
   servlet:
     context-path: /thrifty
     session:
-      timeout: 10m
+      timeout: 10d
       cookie:
         path: /
         http-only: true
