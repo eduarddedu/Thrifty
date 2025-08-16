@@ -12,7 +12,7 @@ import static org.codecritique.thrifty.Suppliers.labels;
 import static org.codecritique.thrifty.Suppliers.strings;
 import static org.junit.jupiter.api.Assertions.*;
 
-class LabelRespositoryTest extends BaseDaoTest {
+class LabelRepositoryTest extends BaseDaoTest {
 
     @Test
     void shouldCreateLabel() {

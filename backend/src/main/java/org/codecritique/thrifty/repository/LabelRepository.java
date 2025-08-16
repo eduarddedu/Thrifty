@@ -6,6 +6,6 @@ import org.springframework.data.repository.Repository;
 import java.util.List;
 
 
-interface LabelRespository extends Repository<Label, Long> {
+interface LabelRepository extends Repository<Label, Long> {
     List<Label> findByAccountId(long accountId);
 }

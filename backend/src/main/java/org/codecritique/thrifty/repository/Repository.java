@@ -23,10 +23,13 @@ public class Repository {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private LabelRespository labelRespository;
+    private LabelRepository labelRepository;
     @Autowired
     private UserRepository userRepository;
 
+    //TODO Some generic entity CRUD operations
+    // might be done in a class that extends CrudRepository<BaseEntity, Long>
+    // (or even JpaRepository if we want support for paging and sorting)
     private void removeEntity(Class<? extends BaseEntity> klass, long id) {
         BaseEntity entity = em.find(klass, id);
         if (entity != null)
@@ -68,7 +71,7 @@ public class Repository {
     }
 
     public List<Label> findLabels(long accountId) {
-        List<Label> result = labelRespository.findByAccountId(accountId);
+        List<Label> result = labelRepository.findByAccountId(accountId);
         result.sort(Comparator.comparing(Label::getName));
         return result;
     }
