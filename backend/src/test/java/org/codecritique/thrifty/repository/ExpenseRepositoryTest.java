@@ -113,7 +113,7 @@ class ExpenseRepositoryTest extends BaseDaoTest {
         while (it.hasNext()) {
             LocalDate date = it.next();
             if (it.hasNext()) {
-                assertTrue(date.compareTo(it.next()) >= 0);
+                assertFalse(date.isBefore(it.next()));
             }
         }
     }
